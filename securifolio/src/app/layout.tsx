@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,7 +9,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-display",
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="dark">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
+      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
         <Navbar />
         <main className="flex-1 overflow-y-auto bg-[#0B0F19] flex flex-col">
           <div className="flex-1 flex flex-col">
