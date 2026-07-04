@@ -29,9 +29,9 @@ export default function Navbar() {
         
         {/* Left Side: Logo & Title */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative bg-brand-surface text-brand-primary p-2 rounded-xl group-hover:scale-105 transition-transform duration-200 border border-brand-border shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center justify-center w-10 h-10">
-            <Shield size={24} className="text-brand-accent absolute" strokeWidth={1.5} />
-            <Map size={10} className="text-brand-primary absolute mt-1" strokeWidth={2.5} />
+          <div className="relative flex items-center justify-center w-8 h-8 group-hover:scale-105 transition-transform duration-200">
+            <Shield size={32} className="text-brand-accent absolute" strokeWidth={1.5} />
+            <Map size={14} className="text-brand-primary absolute mt-1" strokeWidth={2.5} />
           </div>
           <div>
             <h1 className="font-display font-black text-sm md:text-base text-white tracking-tight">

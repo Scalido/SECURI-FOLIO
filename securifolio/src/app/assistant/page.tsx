@@ -54,19 +54,19 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-brand-bg border-x border-brand-border shadow-[0_0_50px_rgba(16,185,129,0.03)] relative overflow-hidden transition-colors duration-200">
+    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-brand-bg border-x border-slate-200 dark:border-brand-border shadow-[0_0_50px_rgba(16,185,129,0.03)] relative overflow-hidden transition-colors duration-200">
       
       {/* Glow Effect */}
       <div className="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header */}
-      <div className="bg-brand-surface/80 border-b border-brand-border p-5 flex items-center justify-between shadow-sm relative z-10 backdrop-blur-xl">
+      <div className="bg-white dark:bg-brand-surface/80 border-b border-slate-200 dark:border-brand-border p-5 flex items-center justify-between shadow-sm relative z-10 backdrop-blur-xl">
         <div className="flex items-center gap-4">
-          <div className="bg-brand-bg p-3 rounded-xl text-brand-primary border border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <div className="bg-brand-bg p-3 rounded-xl text-brand-primary border border-slate-200 dark:border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)]">
             <Bot size={24} />
           </div>
           <div>
-            <h1 className="font-display font-extrabold text-white text-lg tracking-tight">
+            <h1 className="font-display font-extrabold text-slate-900 dark:text-white text-lg tracking-tight">
               Assistant Foncier RDC
             </h1>
             <p className="text-[10px] text-brand-primary font-bold flex items-center gap-1.5 mt-1 uppercase tracking-widest bg-brand-primary/10 w-fit px-2 py-0.5 rounded border border-brand-primary/20">
@@ -78,7 +78,7 @@ export default function AssistantPage() {
       </div>
       
       {/* Bandeau Informatif */}
-      <div className="bg-brand-surface/40 p-5 sm:px-8 border-b border-brand-border text-xs text-slate-400 relative z-10">
+      <div className="bg-white dark:bg-brand-surface/40 p-5 sm:px-8 border-b border-slate-200 dark:border-brand-border text-xs text-slate-500 dark:text-slate-400 relative z-10">
         <p className="font-bold text-slate-200 mb-3 text-sm">Textes de loi maîtrisés par l&apos;assistant :</p>
         <ul className="space-y-2 mb-4">
           <li className="flex items-center gap-2"><span className="text-brand-primary">■</span> Loi Foncière (Loi 73-021 modifiée par Loi 25/062 de 2025)</li>
@@ -102,14 +102,14 @@ export default function AssistantPage() {
               <div className={`w-10 h-10 flex-shrink-0 rounded-xl flex items-center justify-center shadow-sm border ${
                 msg.role === "user" 
                   ? "bg-brand-primary/20 text-brand-primary border-brand-primary/30" 
-                  : "bg-brand-surface text-slate-300 border-brand-border"
+                  : "bg-white dark:bg-brand-surface text-slate-600 dark:text-slate-300 border-slate-200 dark:border-brand-border"
               }`}>
                 {msg.role === "user" ? <User size={18} /> : <Bot size={18} className="text-brand-accent" />}
               </div>
               <div className={`p-5 rounded-2xl text-sm leading-relaxed ${
                 msg.role === "user" 
                   ? "bg-brand-primary/10 text-emerald-50 border border-brand-primary/20 rounded-tr-sm shadow-[0_0_15px_rgba(16,185,129,0.05)]" 
-                  : "bg-brand-surface/80 border border-brand-border text-slate-300 rounded-tl-sm shadow-[0_0_15px_rgba(0,0,0,0.2)]"
+                  : "bg-white dark:bg-brand-surface/80 border border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-300 rounded-tl-sm shadow-[0_0_15px_rgba(0,0,0,0.2)]"
               }`}>
                 <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
               </div>
@@ -120,10 +120,10 @@ export default function AssistantPage() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="flex gap-4 max-w-[80%]">
-              <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-brand-surface text-slate-300 flex items-center justify-center border border-brand-border">
+              <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-white dark:bg-brand-surface text-slate-600 dark:text-slate-300 flex items-center justify-center border border-slate-200 dark:border-brand-border">
                 <Bot size={18} className="text-brand-accent" />
               </div>
-              <div className="p-5 rounded-2xl bg-brand-surface/80 border border-brand-border rounded-tl-sm flex items-center h-14 shadow-sm">
+              <div className="p-5 rounded-2xl bg-white dark:bg-brand-surface/80 border border-slate-200 dark:border-brand-border rounded-tl-sm flex items-center h-14 shadow-sm">
                 <div className="flex gap-2 px-2">
                   <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce shadow-[0_0_5px_rgba(16,185,129,0.5)]" style={{ animationDelay: '0ms' }} />
                   <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce shadow-[0_0_5px_rgba(16,185,129,0.5)]" style={{ animationDelay: '150ms' }} />
@@ -137,14 +137,14 @@ export default function AssistantPage() {
       </div>
 
       {/* Input Area */}
-      <div className="p-5 sm:p-6 bg-brand-surface/80 backdrop-blur-xl border-t border-brand-border relative z-10">
+      <div className="p-5 sm:p-6 bg-white dark:bg-brand-surface/80 backdrop-blur-xl border-t border-slate-200 dark:border-brand-border relative z-10">
         <form onSubmit={handleSubmit} className="flex gap-3 relative max-w-3xl mx-auto">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Posez votre question sur la législation foncière..."
-            className="flex-1 border border-brand-border rounded-2xl py-4 px-6 pr-16 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-white bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all"
+            className="flex-1 border border-slate-200 dark:border-brand-border rounded-2xl py-4 px-6 pr-16 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-slate-900 dark:text-white bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all"
             disabled={isLoading}
           />
           <button
@@ -159,7 +159,7 @@ export default function AssistantPage() {
           <p className="text-[10px] text-brand-primary/70 font-bold uppercase tracking-widest">
             Entraîné sur le code foncier congolais (Loi n° 73-021 modifiée)
           </p>
-          <p className="text-[10px] text-slate-500 font-medium">
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
             Les réponses sont générées par IA et ne remplacent pas l&apos;avis officiel d&apos;un Conservateur des Titres Immobiliers.
           </p>
         </div>

@@ -1,0 +1,809 @@
+diff --git a/securifolio/src/app/anti-folio/page.tsx b/securifolio/src/app/anti-folio/page.tsx
+index 0b5c5ae..8555c95 100644
+--- a/securifolio/src/app/anti-folio/page.tsx
++++ b/securifolio/src/app/anti-folio/page.tsx
+@@ -46,7 +46,7 @@ export default function AntiFolioPage() {
+   };
+ 
+   return (
+-    <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
++    <div className="min-h-screen bg-brand-bg text-brand-text font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+       
+       {/* Background Gradients */}
+       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+@@ -57,10 +57,10 @@ export default function AntiFolioPage() {
+           <div className="inline-flex items-center justify-center p-3 bg-brand-surface border border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
+             <ShieldCheck className="w-8 h-8 text-brand-primary" />
+           </div>
+-          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
++          <h1 className="font-display text-4xl md:text-5xl font-black text-brand-text tracking-tight leading-tight">
+             Vérification <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Anti-Folio</span>
+           </h1>
+-          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
++          <p className="text-brand-muted text-sm md:text-base max-w-xl mx-auto font-medium">
+             Portail institutionnel de validation de conformité des titres fonciers de la RDC. Détectez instantanément les faux et les superpositions d&apos;enregistrement.
+           </p>
+         </div>
+@@ -76,7 +76,7 @@ export default function AntiFolioPage() {
+               value={query}
+               onChange={(e) => setQuery(e.target.value)}
+               placeholder="N° d'enregistrement (ex: SU/GOM/1023)"
+-              className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
++              className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-brand-text placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
+             />
+             <button
+               type="submit"
+@@ -106,7 +106,7 @@ export default function AntiFolioPage() {
+                 <div className="p-4 bg-brand-primary/10 rounded-full border border-brand-primary/30 text-brand-primary shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                   <ShieldCheck className="w-12 h-12" />
+                 </div>
+-                <h2 className="text-2xl font-black text-white tracking-tight">
++                <h2 className="text-2xl font-black text-brand-text tracking-tight">
+                   CERTIFICAT AUTHENTIQUE
+                 </h2>
+                 <p className="text-sm font-bold text-brand-primary bg-brand-primary/10 px-5 py-2 rounded-full border border-brand-primary/20 tracking-wide uppercase">
+@@ -116,19 +116,19 @@ export default function AntiFolioPage() {
+                   <div className="w-full mt-8 bg-brand-bg/50 rounded-2xl p-6 border border-brand-border text-left">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+                       <div>
+-                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Propriétaire enregistré</span>
+-                        <p className="font-bold text-white text-base">{details[0].nom_proprietaire}</p>
++                        <span className="text-brand-muted/70 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Propriétaire enregistré</span>
++                        <p className="font-bold text-brand-text text-base">{details[0].nom_proprietaire}</p>
+                       </div>
+                       <div>
+-                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Circonscription</span>
+-                        <p className="font-bold text-white text-base">{details[0].circonscription}</p>
++                        <span className="text-brand-muted/70 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Circonscription</span>
++                        <p className="font-bold text-brand-text text-base">{details[0].circonscription}</p>
+                       </div>
+                       <div>
+-                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Volume / Folio</span>
+-                        <p className="font-bold text-white text-base">{details[0].volume} / {details[0].folio}</p>
++                        <span className="text-brand-muted/70 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Volume / Folio</span>
++                        <p className="font-bold text-brand-text text-base">{details[0].volume} / {details[0].folio}</p>
+                       </div>
+                       <div>
+-                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">N° d&apos;enregistrement</span>
++                        <span className="text-brand-muted/70 uppercase tracking-wider text-[10px] font-bold block mb-1.5">N° d&apos;enregistrement</span>
+                         <p className="font-bold text-brand-primary text-base">{details[0].numero_cadastral}</p>
+                       </div>
+                     </div>
+@@ -147,13 +147,13 @@ export default function AntiFolioPage() {
+                 <div className="p-4 bg-red-500/10 rounded-full border border-red-500/30 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                   <ShieldAlert className="w-12 h-12" />
+                 </div>
+-                <h2 className="text-2xl font-black text-white tracking-tight uppercase">
++                <h2 className="text-2xl font-black text-brand-text tracking-tight uppercase">
+                   Alerte : Anomalie Majeure
+                 </h2>
+                 <p className="text-sm font-bold text-red-400 bg-red-500/10 px-5 py-2 rounded-full border border-red-500/20 tracking-wide uppercase">
+                   Risque de Phénomène Folio ou Faux
+                 </p>
+-                <div className="text-slate-300 text-sm max-w-lg mt-4 leading-relaxed">
++                <div className="text-brand-text text-sm max-w-lg mt-4 leading-relaxed">
+                  <strong className="text-red-400 block mb-2">Attention :</strong> Ce numéro d&apos;enregistrement n&apos;est pas validé par le registre central ou présente des contradictions graves avec les livres fonciers (ex: superposition de propriétaires).
+                 </div>
+                 
+@@ -167,8 +167,8 @@ export default function AntiFolioPage() {
+                     <div className="space-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
+                       {details.map((titre, idx) => (
+                         <div key={idx} className="bg-brand-surface p-4 rounded-xl border border-brand-border text-xs flex flex-col gap-2">
+-                          <p className="text-white font-bold text-sm">{titre.nom_proprietaire}</p>
+-                          <p className="text-slate-400 font-medium">Vol: {titre.volume} / Folio: {titre.folio} — Statut: <span className={titre.statut === 'Valide' ? 'text-brand-primary font-bold' : 'text-red-400 font-bold'}>{titre.statut}</span></p>
++                          <p className="text-brand-text font-bold text-sm">{titre.nom_proprietaire}</p>
++                          <p className="text-brand-muted font-medium">Vol: {titre.volume} / Folio: {titre.folio} — Statut: <span className={titre.statut === 'Valide' ? 'text-brand-primary font-bold' : 'text-red-400 font-bold'}>{titre.statut}</span></p>
+                         </div>
+                       ))}
+                     </div>
+@@ -182,20 +182,20 @@ export default function AntiFolioPage() {
+         <section className="max-w-4xl mx-auto my-16 space-y-6 w-full">
+           {/* Qu’est‑ce que le phénomène Folio ? */}
+           <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
++            <h2 className="flex items-center gap-3 text-xl font-bold text-brand-text mb-4">
+               <BookOpen className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Qu’est‑ce que le phénomène Folio ?
+             </h2>
+-            <div className="text-slate-400 text-sm leading-relaxed space-y-4">
++            <div className="text-brand-muted text-sm leading-relaxed space-y-4">
+               <p>
+                 Le phénomène « Folio » survient lorsque l&apos;administration émet par erreur (ou suite à des fraudes) plusieurs certificats d&apos;enregistrement authentiques pour une seule et même concession. Cela crée des conflits interminables entre propriétaires légitimes de bonne foi.
+               </p>
+               <div className="bg-brand-bg/50 p-5 rounded-xl border border-brand-border/50">
+-                <strong className="text-white mb-2 block">Notre système de classification :</strong>
++                <strong className="text-brand-text mb-2 block">Notre système de classification :</strong>
+                 <ul className="space-y-2 mt-3">
+                   <li className="flex items-center gap-2"><span className="text-brand-primary">■</span> <strong className="text-slate-200 w-24">Valide</strong> Certificat unique, conforme et sans contestation.</li>
+                   <li className="flex items-center gap-2"><span className="text-brand-accent">■</span> <strong className="text-slate-200 w-24">Litige</strong> Titre gelé administrativement ou judiciairement.</li>
+                   <li className="flex items-center gap-2"><span className="text-red-500">■</span> <strong className="text-slate-200 w-24">Falsifié</strong> Incohérence majeure avec le registre.</li>
+-                  <li className="flex items-center gap-2"><span className="text-slate-500">■</span> <strong className="text-slate-200 w-24">Inconnu</strong> Numéro introuvable, contrefaçon intégrale.</li>
++                  <li className="flex items-center gap-2"><span className="text-brand-muted/70">■</span> <strong className="text-slate-200 w-24">Inconnu</strong> Numéro introuvable, contrefaçon intégrale.</li>
+                 </ul>
+               </div>
+             </div>
+@@ -203,10 +203,10 @@ export default function AntiFolioPage() {
+ 
+           {/* Comment fonctionne la validation ? */}
+           <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
++            <h2 className="flex items-center gap-3 text-xl font-bold text-brand-text mb-4">
+               <Code className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Comment fonctionne la validation ?
+             </h2>
+-            <p className="text-slate-400 text-sm leading-relaxed">
++            <p className="text-brand-muted text-sm leading-relaxed">
+               Notre moteur analyse le certificat visuellement, compare le numéro d&apos;enregistrement avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
+             </p>
+           </div>
+diff --git a/securifolio/src/app/assistant/page.tsx b/securifolio/src/app/assistant/page.tsx
+index e49a2c6..662fac4 100644
+--- a/securifolio/src/app/assistant/page.tsx
++++ b/securifolio/src/app/assistant/page.tsx
+@@ -66,7 +66,7 @@ export default function AssistantPage() {
+             <Bot size={24} />
+           </div>
+           <div>
+-            <h1 className="font-display font-extrabold text-white text-lg tracking-tight">
++            <h1 className="font-display font-extrabold text-brand-text text-lg tracking-tight">
+               Assistant Foncier RDC
+             </h1>
+             <p className="text-[10px] text-brand-primary font-bold flex items-center gap-1.5 mt-1 uppercase tracking-widest bg-brand-primary/10 w-fit px-2 py-0.5 rounded border border-brand-primary/20">
+@@ -78,7 +78,7 @@ export default function AssistantPage() {
+       </div>
+       
+       {/* Bandeau Informatif */}
+-      <div className="bg-brand-surface/40 p-5 sm:px-8 border-b border-brand-border text-xs text-slate-400 relative z-10">
++      <div className="bg-brand-surface/40 p-5 sm:px-8 border-b border-brand-border text-xs text-brand-muted relative z-10">
+         <p className="font-bold text-slate-200 mb-3 text-sm">Textes de loi maîtrisés par l&apos;assistant :</p>
+         <ul className="space-y-2 mb-4">
+           <li className="flex items-center gap-2"><span className="text-brand-primary">■</span> Loi Foncière (Loi 73-021 modifiée par Loi 25/062 de 2025)</li>
+@@ -102,14 +102,14 @@ export default function AssistantPage() {
+               <div className={`w-10 h-10 flex-shrink-0 rounded-xl flex items-center justify-center shadow-sm border ${
+                 msg.role === "user" 
+                   ? "bg-brand-primary/20 text-brand-primary border-brand-primary/30" 
+-                  : "bg-brand-surface text-slate-300 border-brand-border"
++                  : "bg-brand-surface text-brand-text border-brand-border"
+               }`}>
+                 {msg.role === "user" ? <User size={18} /> : <Bot size={18} className="text-brand-accent" />}
+               </div>
+               <div className={`p-5 rounded-2xl text-sm leading-relaxed ${
+                 msg.role === "user" 
+                   ? "bg-brand-primary/10 text-emerald-50 border border-brand-primary/20 rounded-tr-sm shadow-[0_0_15px_rgba(16,185,129,0.05)]" 
+-                  : "bg-brand-surface/80 border border-brand-border text-slate-300 rounded-tl-sm shadow-[0_0_15px_rgba(0,0,0,0.2)]"
++                  : "bg-brand-surface/80 border border-brand-border text-brand-text rounded-tl-sm shadow-[0_0_15px_rgba(0,0,0,0.2)]"
+               }`}>
+                 <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
+               </div>
+@@ -120,7 +120,7 @@ export default function AssistantPage() {
+         {isLoading && (
+           <div className="flex justify-start">
+             <div className="flex gap-4 max-w-[80%]">
+-              <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-brand-surface text-slate-300 flex items-center justify-center border border-brand-border">
++              <div className="w-10 h-10 flex-shrink-0 rounded-xl bg-brand-surface text-brand-text flex items-center justify-center border border-brand-border">
+                 <Bot size={18} className="text-brand-accent" />
+               </div>
+               <div className="p-5 rounded-2xl bg-brand-surface/80 border border-brand-border rounded-tl-sm flex items-center h-14 shadow-sm">
+@@ -144,13 +144,13 @@ export default function AssistantPage() {
+             value={input}
+             onChange={(e) => setInput(e.target.value)}
+             placeholder="Posez votre question sur la législation foncière..."
+-            className="flex-1 border border-brand-border rounded-2xl py-4 px-6 pr-16 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-white bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all"
++            className="flex-1 border border-brand-border rounded-2xl py-4 px-6 pr-16 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-brand-text bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all"
+             disabled={isLoading}
+           />
+           <button
+             type="submit"
+             disabled={!input.trim() || isLoading}
+-            className="absolute right-2 top-2 bottom-2 bg-brand-primary text-brand-bg rounded-xl w-12 flex items-center justify-center hover:bg-emerald-400 transition-all disabled:bg-brand-surface disabled:text-slate-600 border border-transparent disabled:border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.2)] disabled:shadow-none"
++            className="absolute right-2 top-2 bottom-2 bg-brand-primary text-brand-bg rounded-xl w-12 flex items-center justify-center hover:bg-emerald-400 transition-all disabled:bg-brand-surface disabled:text-brand-muted border border-transparent disabled:border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.2)] disabled:shadow-none"
+           >
+             <Send size={18} className="ml-0.5" />
+           </button>
+@@ -159,7 +159,7 @@ export default function AssistantPage() {
+           <p className="text-[10px] text-brand-primary/70 font-bold uppercase tracking-widest">
+             Entraîné sur le code foncier congolais (Loi n° 73-021 modifiée)
+           </p>
+-          <p className="text-[10px] text-slate-500 font-medium">
++          <p className="text-[10px] text-brand-muted/70 font-medium">
+             Les réponses sont générées par IA et ne remplacent pas l&apos;avis officiel d&apos;un Conservateur des Titres Immobiliers.
+           </p>
+         </div>
+diff --git a/securifolio/src/app/globals.css b/securifolio/src/app/globals.css
+index 13d40b8..721e418 100644
+--- a/securifolio/src/app/globals.css
++++ b/securifolio/src/app/globals.css
+@@ -2,22 +2,37 @@
+ @tailwind components;
+ @tailwind utilities;
+ 
+-:root {
+-  --background: #ffffff;
+-  --foreground: #171717;
+-}
+-
+-@media (prefers-color-scheme: dark) {
++@layer base {
+   :root {
+-    --background: #0a0a0a;
+-    --foreground: #ededed;
++    --background: #F8FAFC;
++    --foreground: #0F172A;
++    --brand-primary: #059669;
++    --brand-secondary: #047857;
++    --brand-accent: #D97706;
++    --brand-bg: #F8FAFC;
++    --brand-surface: #FFFFFF;
++    --brand-border: #E2E8F0;
++    --brand-text: #0F172A;
++    --brand-muted: #64748B;
++  }
++
++  .dark {
++    --background: #0B0F19;
++    --foreground: #F8FAFC;
++    --brand-primary: #10B981;
++    --brand-secondary: #047857;
++    --brand-accent: #F59E0B;
++    --brand-bg: #0B0F19;
++    --brand-surface: #111827;
++    --brand-border: #1F2937;
++    --brand-text: #F8FAFC;
++    --brand-muted: #94A3B8;
+   }
+ }
+ 
+ body {
+   color: var(--foreground);
+   background: var(--background);
+-  font-family: Arial, Helvetica, sans-serif;
+ }
+ 
+ @layer utilities {
+diff --git a/securifolio/src/app/layout.tsx b/securifolio/src/app/layout.tsx
+index 8798264..0f60587 100644
+--- a/securifolio/src/app/layout.tsx
++++ b/securifolio/src/app/layout.tsx
+@@ -2,6 +2,8 @@ import type { Metadata } from "next";
+ import { Inter, Space_Grotesk } from "next/font/google";
+ import "./globals.css";
+ import Navbar from "@/components/Navbar";
++import Footer from "@/components/Footer";
++import { ThemeProvider } from "@/components/ThemeProvider";
+ 
+ const inter = Inter({
+   subsets: ["latin"],
+@@ -24,12 +26,22 @@ export default function RootLayout({
+   children: React.ReactNode;
+ }>) {
+   return (
+-    <html lang="fr" className="dark">
+-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
+-        <Navbar />
+-        <main className="flex-1 overflow-y-auto bg-[#0B0F19]">
+-          {children}
+-        </main>
++    <html lang="fr" suppressHydrationWarning>
++      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-brand-bg text-brand-text flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
++        <ThemeProvider
++          attribute="class"
++          defaultTheme="dark"
++          enableSystem
++          disableTransitionOnChange
++        >
++          <Navbar />
++          <main className="flex-1 overflow-y-auto bg-brand-bg flex flex-col">
++            <div className="flex-1 flex flex-col">
++              {children}
++            </div>
++            <Footer />
++          </main>
++        </ThemeProvider>
+       </body>
+     </html>
+   );
+diff --git a/securifolio/src/app/page.tsx b/securifolio/src/app/page.tsx
+index 3aad369..aae82e4 100644
+--- a/securifolio/src/app/page.tsx
++++ b/securifolio/src/app/page.tsx
+@@ -12,7 +12,7 @@ import {
+ 
+ export default function Home() {
+   return (
+-    <div className="min-h-screen bg-brand-bg text-slate-300 font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-x-hidden">
++    <div className="min-h-screen bg-brand-bg text-brand-text font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-x-hidden">
+       
+       {/* Background glow effects */}
+       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
+@@ -21,24 +21,24 @@ export default function Home() {
+       <header className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6">
+         <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+           
+-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-brand-primary/30 bg-brand-primary/5 text-brand-primary text-sm font-medium tracking-wide uppercase mb-10 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-sm">
+-            <Lock size={16} />
+-            Système Foncier Sécurisé
++          <div className="inline-flex flex-col items-center gap-3 px-4 py-2 rounded-full border border-brand-primary/30 bg-brand-primary/5 text-brand-primary text-sm font-medium tracking-wide uppercase mb-10 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-sm">
++            <p className="text-brand-muted text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] mb-4">
++              République Démocratique du Congo
++            </p>
++            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-black text-brand-text leading-[1.1] tracking-tight">
++              <span className="block">Authentification &</span>
++              <span className="block text-brand-primary">Numérisation</span>
++              <span className="block">Foncière</span>
++            </h1>
++            <p className="text-brand-muted md:text-lg mt-6 leading-relaxed max-w-xl mx-auto lg:mx-0">
++              Infrastructure de traitement sécurisé pour la modernisation et la transparence du cadastre congolais.
++            </p>
+           </div>
+-
+-          <h1 className="font-display font-black text-white text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight max-w-5xl">
+-            L&apos;Intégrité Numérique <br/>
+-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">du Foncier Congolais</span>
+-          </h1>
+-
+-          <p className="mt-8 text-slate-400 text-lg md:text-2xl font-light leading-relaxed max-w-3xl">
+-            La plateforme institutionnelle haute sécurité pour la validation des titres, la protection des archives et l&apos;assistance juridique.
+-          </p>
+           
+           <div className="mt-14 flex flex-col sm:flex-row gap-6">
+             <Link 
+               href="/smart-archive" 
+-              className="group relative inline-flex items-center justify-center gap-3 bg-brand-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-secondary transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
++              className="group relative inline-flex items-center justify-center gap-3 bg-brand-primary text-brand-text px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-secondary transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
+             >
+               <Database size={20} className="group-hover:animate-pulse" />
+               Accéder aux Archives
+@@ -46,7 +46,7 @@ export default function Home() {
+             
+             <Link 
+               href="/anti-folio" 
+-              className="group inline-flex items-center justify-center gap-3 bg-transparent border border-slate-700 text-white px-8 py-4 rounded-xl font-bold text-lg hover:border-brand-primary/50 hover:bg-brand-primary/10 transition-all duration-300"
++              className="group inline-flex items-center justify-center gap-3 bg-transparent border border-slate-700 text-brand-text px-8 py-4 rounded-xl font-bold text-lg hover:border-brand-primary/50 hover:bg-brand-primary/10 transition-all duration-300"
+             >
+               <ShieldAlert size={20} className="text-brand-primary" />
+               Vérifier un Titre
+@@ -60,10 +60,10 @@ export default function Home() {
+         <div className="max-w-7xl mx-auto">
+           
+           <div className="mb-16 flex flex-col items-center text-center space-y-4">
+-            <h2 className="font-display text-3xl md:text-5xl font-bold text-white tracking-tight">
++            <h2 className="font-display text-3xl md:text-5xl font-bold text-brand-text tracking-tight">
+               Périmètre de Sécurité
+             </h2>
+-            <p className="text-slate-400 text-lg md:text-xl max-w-2xl font-light">
++            <p className="text-brand-muted text-lg md:text-xl max-w-2xl font-light">
+               Des modules spécialisés pour auditer, protéger et clarifier la situation juridique des concessions.
+             </p>
+           </div>
+@@ -77,8 +77,8 @@ export default function Home() {
+                 <ShieldAlert size={28} />
+               </div>
+               <div className="space-y-3">
+-                <h3 className="font-display font-bold text-white text-2xl group-hover:text-brand-primary transition-colors">Anti-Folio</h3>
+-                <p className="text-slate-400 text-sm leading-relaxed">
++                <h3 className="font-display font-bold text-brand-text text-2xl group-hover:text-brand-primary transition-colors">Anti-Folio</h3>
++                <p className="text-brand-muted text-sm leading-relaxed">
+                   Détection algorithmique des superpositions. Vérifiez l&apos;unicité d&apos;un certificat foncier pour garantir qu&apos;aucune autre personne ne revendique la même parcelle.
+                 </p>
+               </div>
+@@ -91,8 +91,8 @@ export default function Home() {
+                 <FileSearch size={28} />
+               </div>
+               <div className="space-y-3">
+-                <h3 className="font-display font-bold text-white text-2xl group-hover:text-brand-primary transition-colors">Smart-Archive</h3>
+-                <p className="text-slate-400 text-sm leading-relaxed">
++                <h3 className="font-display font-bold text-brand-text text-2xl group-hover:text-brand-primary transition-colors">Smart-Archive</h3>
++                <p className="text-brand-muted text-sm leading-relaxed">
+                   Numérisation et extraction OCR des livrets cadastraux. Remplacez la fouille manuelle par une recherche instantanée sur des archives infalsifiables.
+                 </p>
+               </div>
+@@ -105,8 +105,8 @@ export default function Home() {
+                 <Bot size={28} />
+               </div>
+               <div className="space-y-3">
+-                <h3 className="font-display font-bold text-white text-2xl group-hover:text-brand-accent transition-colors">Foncier-Édu</h3>
+-                <p className="text-slate-400 text-sm leading-relaxed">
++                <h3 className="font-display font-bold text-brand-text text-2xl group-hover:text-brand-accent transition-colors">Foncier-Édu</h3>
++                <p className="text-brand-muted text-sm leading-relaxed">
+                   Assistant d&apos;intelligence artificielle spécialisé dans la législation congolaise pour éclairer les citoyens et assister les agents de l&apos;État.
+                 </p>
+               </div>
+@@ -126,8 +126,8 @@ export default function Home() {
+                 <Zap size={20} />
+               </div>
+               <div>
+-                <h4 className="font-display font-bold text-white text-lg">Vitesse</h4>
+-                <p className="text-slate-500 text-xs mt-1 leading-relaxed">Extraction immédiate des archives volumineuses.</p>
++                <h4 className="font-display font-bold text-brand-text text-lg">Vitesse</h4>
++                <p className="text-brand-muted text-xs mt-1 leading-relaxed">Extraction immédiate des archives volumineuses.</p>
+               </div>
+             </div>
+ 
+@@ -136,8 +136,8 @@ export default function Home() {
+                 <CheckCircle2 size={20} />
+               </div>
+               <div>
+-                <h4 className="font-display font-bold text-white text-lg">Fiabilité</h4>
+-                <p className="text-slate-500 text-xs mt-1 leading-relaxed">Réduction drastique des erreurs de retranscription.</p>
++                <h4 className="font-display font-bold text-brand-text text-lg">Fiabilité</h4>
++                <p className="text-brand-muted text-xs mt-1 leading-relaxed">Réduction drastique des erreurs de retranscription.</p>
+               </div>
+             </div>
+ 
+@@ -146,8 +146,8 @@ export default function Home() {
+                 <Scale size={20} />
+               </div>
+               <div>
+-                <h4 className="font-display font-bold text-white text-lg">Conformité</h4>
+-                <p className="text-slate-500 text-xs mt-1 leading-relaxed">Alignement continu avec les arrêtés ministériels.</p>
++                <h4 className="font-display font-bold text-brand-text text-lg">Conformité</h4>
++                <p className="text-brand-muted text-xs mt-1 leading-relaxed">Alignement continu avec les arrêtés ministériels.</p>
+               </div>
+             </div>
+ 
+@@ -156,8 +156,8 @@ export default function Home() {
+                 <ShieldAlert size={20} />
+               </div>
+               <div>
+-                <h4 className="font-display font-bold text-white text-lg">Protection</h4>
+-                <p className="text-slate-500 text-xs mt-1 leading-relaxed">Blocage anticipé des superpositions de titres.</p>
++                <h4 className="font-display font-bold text-brand-text text-lg">Protection</h4>
++                <p className="text-brand-muted text-xs mt-1 leading-relaxed">Blocage anticipé des superpositions de titres.</p>
+               </div>
+             </div>
+ 
+@@ -165,17 +165,6 @@ export default function Home() {
+         </div>
+       </section>
+ 
+-      {/* FOOTER */}
+-      <footer className="py-12 border-t border-brand-border text-center">
+-        <div className="max-w-7xl mx-auto px-6">
+-          <p className="font-display text-brand-primary text-sm font-bold tracking-[0.2em] uppercase mb-2">
+-            Sécurifolio RDC
+-          </p>
+-          <p className="text-slate-600 text-xs">
+-            Infrastructure de Traitement Sécurisé. © 2026 Tous droits réservés.
+-          </p>
+-        </div>
+-      </footer>
+     </div>
+   );
+ }
+diff --git a/securifolio/src/app/smart-archive/page.tsx b/securifolio/src/app/smart-archive/page.tsx
+index d834e6c..505650d 100644
+--- a/securifolio/src/app/smart-archive/page.tsx
++++ b/securifolio/src/app/smart-archive/page.tsx
+@@ -283,7 +283,7 @@ export default function SmartArchivePage() {
+   };
+ 
+   return (
+-    <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
++    <div className="min-h-screen bg-brand-bg text-brand-text font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+       
+       {/* Background Gradients */}
+       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+@@ -294,10 +294,10 @@ export default function SmartArchivePage() {
+           <div className="inline-flex items-center justify-center p-3 bg-brand-surface border border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
+             <FileImage className="w-8 h-8 text-brand-primary" />
+           </div>
+-          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
++          <h1 className="font-display text-4xl md:text-5xl font-black text-brand-text tracking-tight leading-tight">
+             Smart <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Archive</span>
+           </h1>
+-          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
++          <p className="text-brand-muted text-sm md:text-base max-w-xl mx-auto font-medium">
+             Numérisez et extrayez instantanément les données clés de vos certificats d&apos;enregistrement et plans scannés.
+           </p>
+         </div>
+@@ -331,10 +331,10 @@ export default function SmartArchivePage() {
+                 <UploadCloud className="w-8 h-8" />
+               </div>
+               <div>
+-                <p className="text-base font-bold text-white">
++                <p className="text-base font-bold text-brand-text">
+                   Glissez-déposez le certificat (Image ou PDF)
+                 </p>
+-                <p className="text-xs text-slate-400 mt-2 font-medium">
++                <p className="text-xs text-brand-muted mt-2 font-medium">
+                   ou cliquez pour parcourir les dossiers
+                 </p>
+               </div>
+@@ -346,7 +346,7 @@ export default function SmartArchivePage() {
+                 fileInputRef.current?.click();
+               }}
+               disabled={status === 'uploading' || status === 'analyzing'}
+-              className="mt-8 bg-brand-surface border border-brand-border hover:border-brand-primary/50 text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
++              className="mt-8 bg-brand-surface border border-brand-border hover:border-brand-primary/50 text-brand-text hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+             >
+               Sélectionner un fichier
+             </button>
+@@ -358,17 +358,17 @@ export default function SmartArchivePage() {
+           <div className="mt-8 w-full max-w-2xl bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-3xl p-6 shadow-sm space-y-4">
+             <div className="flex items-center gap-3">
+               <Sparkles className="w-5 h-5 text-brand-accent" />
+-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">Générateur de Certificats</h2>
++              <h2 className="text-sm font-bold text-brand-text uppercase tracking-wider">Générateur de Certificats</h2>
+             </div>
+-            <p className="text-xs text-slate-400">
++            <p className="text-xs text-brand-muted">
+               Générez et téléchargez des images factices de certificats d&apos;enregistrement foncier pour tester les cas d&apos;usage de la plateforme (intégration base de données, détection de faux, litiges).
+             </p>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+               <div className="space-y-2">
+-                <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Scénario de test</label>
++                <label className="text-[10px] text-brand-muted/70 font-bold uppercase tracking-widest">Scénario de test</label>
+                 <select 
+                   id="scenario-select"
+-                  className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-primary cursor-pointer font-medium appearance-none"
++                  className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-3 text-xs text-brand-text focus:outline-none focus:border-brand-primary cursor-pointer font-medium appearance-none"
+                 >
+                   <option value="conforme">Scénario 1 : Conforme (Jean-Claude K.)</option>
+                   <option value="divergent">Scénario 2 : Usurpation (Divergent)</option>
+@@ -378,7 +378,7 @@ export default function SmartArchivePage() {
+                 </select>
+               </div>
+               <div className="flex items-center pt-6 px-2">
+-                <label className="flex items-center gap-3 text-xs text-slate-300 cursor-pointer select-none font-semibold group">
++                <label className="flex items-center gap-3 text-xs text-brand-text cursor-pointer select-none font-semibold group">
+                   <div className="relative flex items-center justify-center w-5 h-5">
+                      <input 
+                        type="checkbox" 
+@@ -389,7 +389,7 @@ export default function SmartArchivePage() {
+                        <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                   </div>
+-                  <span className="group-hover:text-white transition-colors">Simuler des ratures visuelles</span>
++                  <span className="group-hover:text-brand-text transition-colors">Simuler des ratures visuelles</span>
+                 </label>
+               </div>
+             </div>
+@@ -399,7 +399,7 @@ export default function SmartArchivePage() {
+                 const hasRatures = (document.getElementById('ratures-checkbox') as HTMLInputElement)?.checked || false;
+                 generateMockCertificate(scenario, hasRatures);
+               }}
+-              className="w-full flex items-center justify-center gap-2 mt-4 bg-brand-bg hover:bg-brand-surface border border-brand-border text-white hover:text-brand-primary text-xs font-bold py-3.5 rounded-xl transition-all uppercase tracking-widest"
++              className="w-full flex items-center justify-center gap-2 mt-4 bg-brand-bg hover:bg-brand-surface border border-brand-border text-brand-text hover:text-brand-primary text-xs font-bold py-3.5 rounded-xl transition-all uppercase tracking-widest"
+             >
+               <Download className="w-4 h-4" /> Générer le PNG
+             </button>
+@@ -443,7 +443,7 @@ export default function SmartArchivePage() {
+               <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                 <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                 <div>
+-                  <h3 className="text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
++                  <h3 className="text-brand-text font-bold text-base uppercase tracking-wider">Document Intègre</h3>
+                   <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le document scanné.</p>
+                 </div>
+               </div>
+@@ -454,12 +454,12 @@ export default function SmartArchivePage() {
+               <div className="animate-in slide-in-from-bottom-2 duration-300">
+                 {!dbVerification.found ? (
+                   <div className="bg-brand-surface/80 backdrop-blur-sm border border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
+-                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-400 border border-brand-border">
++                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-brand-muted border border-brand-border">
+                       <AlertTriangle className="w-6 h-6" />
+                     </div>
+                     <div>
+-                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
+-                      <p className="text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
++                      <h3 className="text-brand-text font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
++                      <p className="text-brand-muted text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
+                     </div>
+                   </div>
+                 ) : dbVerification.status === 'Falsifié' ? (
+@@ -490,7 +490,7 @@ export default function SmartArchivePage() {
+                   <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                     <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                     <div>
+-                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
++                      <h3 className="text-brand-text font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
+                       <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Toutes les informations concordent parfaitement avec le registre central officiel de la RDC.</p>
+                     </div>
+                   </div>
+@@ -502,14 +502,14 @@ export default function SmartArchivePage() {
+             <div className="bg-brand-surface/60 backdrop-blur-xl border border-brand-border rounded-3xl overflow-hidden shadow-sm">
+               <div className="px-6 py-5 border-b border-brand-border bg-brand-bg/50 flex items-center gap-3">
+                 <FileText className="w-5 h-5 text-brand-primary" />
+-                <h2 className="text-base font-bold text-white tracking-wide">Données Extraites (IA)</h2>
++                <h2 className="text-base font-bold text-brand-text tracking-wide">Données Extraites (IA)</h2>
+               </div>
+               <div className="p-6">
+                 <table className="w-full text-left border-collapse">
+                   <tbody>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
+-                      <td className="py-4 text-sm font-bold text-white">
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">
+                         <div className="flex items-center gap-3 flex-wrap">
+                           <span>{result.nom || 'Non détecté'}</span>
+                           {dbVerification && dbVerification.found && (
+@@ -527,8 +527,8 @@ export default function SmartArchivePage() {
+                       </td>
+                     </tr>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
+-                      <td className="py-4 text-sm font-bold text-white">
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">
+                         <div className="flex items-center gap-3 flex-wrap">
+                           <span>{result.numero_cadastral || 'Non détecté'}</span>
+                           {dbVerification && (
+@@ -537,7 +537,7 @@ export default function SmartArchivePage() {
+                                 <CheckCircle2 className="w-3.5 h-3.5" /> Répertorié
+                               </span>
+                             ) : (
+-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 bg-brand-surface border border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
++                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-muted bg-brand-surface border border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
+                                 <AlertTriangle className="w-3.5 h-3.5" /> Inconnu
+                               </span>
+                             )
+@@ -546,8 +546,8 @@ export default function SmartArchivePage() {
+                       </td>
+                     </tr>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Volume</th>
+-                      <td className="py-4 text-sm font-bold text-white">
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">Volume</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">
+                         <div className="flex items-center gap-3 flex-wrap">
+                           <span>{result.volume || 'Non détecté'}</span>
+                           {dbVerification && dbVerification.found && (
+@@ -565,8 +565,8 @@ export default function SmartArchivePage() {
+                       </td>
+                     </tr>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Folio</th>
+-                      <td className="py-4 text-sm font-bold text-white">
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">Folio</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">
+                         <div className="flex items-center gap-3 flex-wrap">
+                           <span>{result.folio || 'Non détecté'}</span>
+                           {dbVerification && dbVerification.found && (
+@@ -584,8 +584,8 @@ export default function SmartArchivePage() {
+                       </td>
+                     </tr>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Circonscription</th>
+-                      <td className="py-4 text-sm font-bold text-white">
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">Circonscription</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">
+                         <div className="flex items-center gap-3 flex-wrap">
+                           <span>{result.circonscription || 'Non détecté'}</span>
+                           {dbVerification && dbVerification.found && (
+@@ -603,12 +603,12 @@ export default function SmartArchivePage() {
+                       </td>
+                     </tr>
+                     <tr className="border-b border-brand-border/50">
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Superficie</th>
+-                      <td className="py-4 text-sm font-bold text-white">{result.superficie || 'Non détecté'}</td>
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">Superficie</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">{result.superficie || 'Non détecté'}</td>
+                     </tr>
+                     <tr>
+-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
+-                      <td className="py-4 text-sm font-bold text-white">{result.date_etablissement || 'Non détecté'}</td>
++                      <th className="py-4 text-brand-muted/70 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
++                      <td className="py-4 text-sm font-bold text-brand-text">{result.date_etablissement || 'Non détecté'}</td>
+                     </tr>
+                   </tbody>
+                 </table>
+@@ -623,7 +623,7 @@ export default function SmartArchivePage() {
+                     setStatus('idle');
+                     setFile(null);
+                   }}
+-                  className="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
++                  className="text-brand-muted/70 hover:text-brand-text text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
+                >
+                  Analyser un autre document
+                </button>
+@@ -633,15 +633,15 @@ export default function SmartArchivePage() {
+         
+         <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
+           <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
++            <h2 className="flex items-center gap-3 text-xl font-bold text-brand-text mb-4">
+               <Sparkles className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Intelligence Artificielle & Audit
+             </h2>
+-            <div className="text-slate-400 text-sm leading-relaxed space-y-4">
++            <div className="text-brand-muted text-sm leading-relaxed space-y-4">
+               <p>
+                 Les archives foncières congolaises ont longtemps souffert de conditions de conservation précaires. De nombreux certificats sont froissés, partiellement effacés ou falsifiés manuellement (utilisation de blanc correcteur pour modifier une superficie ou un nom).
+               </p>
+               <div className="bg-brand-bg/50 p-5 rounded-xl border border-brand-border/50">
+-                <strong className="text-white block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
++                <strong className="text-brand-text block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
+                 <ul className="space-y-3">
+                   <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées depuis n&apos;importe quel scan PDF ou photo.</span></li>
+                   <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</span></li>
+@@ -651,10 +651,10 @@ export default function SmartArchivePage() {
+             </div>
+           </div>
+           <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-3">
++            <h2 className="flex items-center gap-3 text-xl font-bold text-brand-text mb-3">
+               <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
+             </h2>
+-            <p className="text-slate-400 text-sm leading-relaxed">
++            <p className="text-brand-muted text-sm leading-relaxed">
+               Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
+             </p>
+           </div>
+diff --git a/securifolio/src/components/Navbar.tsx b/securifolio/src/components/Navbar.tsx
+index 3e69abd..2aca4ef 100644
+--- a/securifolio/src/components/Navbar.tsx
++++ b/securifolio/src/components/Navbar.tsx
+@@ -4,6 +4,7 @@ import { useState } from "react";
+ import Link from "next/link";
+ import { usePathname } from "next/navigation";
+ import { ShieldCheck, FileSearch, GraduationCap, Home, Landmark, Menu, X, Lock, Shield, Map } from "lucide-react";
++import { ThemeSwitcher } from "./ThemeSwitcher";
+ 
+ export default function Navbar() {
+   const pathname = usePathname();
+@@ -29,15 +30,15 @@ export default function Navbar() {
+         
+         {/* Left Side: Logo & Title */}
+         <Link href="/" className="flex items-center gap-3 group">
+-          <div className="relative bg-brand-surface text-brand-primary p-2 rounded-xl group-hover:scale-105 transition-transform duration-200 border border-brand-border shadow-[0_0_10px_rgba(16,185,129,0.1)] flex items-center justify-center w-10 h-10">
+-            <Shield size={24} className="text-brand-accent absolute" strokeWidth={1.5} />
+-            <Map size={10} className="text-brand-primary absolute mt-1" strokeWidth={2.5} />
++          <div className="relative flex items-center justify-center w-8 h-8 group-hover:scale-105 transition-transform duration-200">
++            <Shield size={32} className="text-brand-accent absolute" strokeWidth={1.5} />
++            <Map size={14} className="text-brand-primary absolute mt-1" strokeWidth={2.5} />
+           </div>
+           <div>
+-            <h1 className="font-display font-black text-sm md:text-base text-white tracking-tight">
++            <h1 className="font-display font-black text-sm md:text-base text-brand-text tracking-tight">
+               Sécurifolio <span className="text-brand-primary">RDC</span>
+             </h1>
+-            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider -mt-0.5">
++            <p className="text-[9px] text-brand-muted font-bold uppercase tracking-wider -mt-0.5">
+               Affaires Foncières
+             </p>
+           </div>
+@@ -55,18 +56,20 @@ export default function Navbar() {
+                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                   isActive 
+                     ? "bg-brand-surface text-brand-primary shadow-[0_0_15px_rgba(16,185,129,0.15)] border border-brand-border" 
+-                    : "text-slate-400 hover:bg-brand-surface hover:text-white"
++                    : "text-brand-muted hover:bg-brand-surface hover:text-brand-text"
+                 }`}
+               >
+-                <Icon size={14} className={isActive ? "text-brand-primary" : "text-slate-500"} />
++                <Icon size={14} className={isActive ? "text-brand-primary" : "text-brand-muted/70"} />
+                 <span>{item.name}</span>
+               </Link>
+             );
+           })}
+         </nav>
+ 
+-        {/* Right Side: Secure Badge */}
++        {/* Right Side: Secure Badge & Theme Switcher */}
+         <div className="flex items-center gap-3">
++          <ThemeSwitcher />
++          
+           <div className="hidden lg:flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+             <Lock size={12} />
+             L4 Clearance
+@@ -75,7 +78,7 @@ export default function Navbar() {
+           {/* Mobile menu button */}
+           <button 
+             onClick={() => setIsOpen(!isOpen)}
+-            className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-brand-surface rounded-xl transition-all"
++            className="md:hidden p-2 text-brand-muted hover:text-brand-text hover:bg-brand-surface rounded-xl transition-all"
+           >
+             {isOpen ? <X size={20} /> : <Menu size={20} />}
+           </button>
+@@ -97,10 +100,10 @@ export default function Navbar() {
+                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                     isActive 
+                       ? "bg-brand-surface text-brand-primary border border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
+-                      : "text-slate-400 hover:bg-brand-surface"
++                      : "text-brand-muted hover:bg-brand-surface"
+                   }`}
+                 >
+-                  <Icon size={16} className={isActive ? "text-brand-primary" : "text-slate-500"} />
++                  <Icon size={16} className={isActive ? "text-brand-primary" : "text-brand-muted/70"} />
+                   <span>{item.name}</span>
+                 </Link>
+               );

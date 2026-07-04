@@ -283,7 +283,7 @@ export default function SmartArchivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+    <div className="min-h-screen bg-brand-bg text-slate-900 dark:text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
       
       {/* Background Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
@@ -291,13 +291,13 @@ export default function SmartArchivePage() {
       <main className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center relative z-10">
         {/* En-tête */}
         <div className="text-center mb-12 space-y-4">
-          <div className="inline-flex items-center justify-center p-3 bg-brand-surface border border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
+          <div className="inline-flex items-center justify-center p-3 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
             <FileImage className="w-8 h-8 text-brand-primary" />
           </div>
-          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="font-display text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
             Smart <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Archive</span>
           </h1>
-          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
+          <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
             Numérisez et extrayez instantanément les données clés de vos certificats d&apos;enregistrement et plans scannés.
           </p>
         </div>
@@ -305,10 +305,10 @@ export default function SmartArchivePage() {
         {/* Drag & Drop Area */}
         {(status === 'idle' || status === 'uploading' || status === 'analyzing') && (
           <div 
-            className={`w-full max-w-2xl bg-brand-surface/50 backdrop-blur-xl border-2 border-dashed rounded-3xl p-12 text-center transition-all flex flex-col items-center justify-center cursor-pointer min-h-[320px] shadow-[0_0_30px_rgba(0,0,0,0.5)] ${
+            className={`w-full max-w-2xl bg-white dark:bg-brand-surface/50 backdrop-blur-xl border-2 border-dashed rounded-3xl p-12 text-center transition-all flex flex-col items-center justify-center cursor-pointer min-h-[320px] shadow-[0_0_30px_rgba(0,0,0,0.5)] ${
               isDragging 
                 ? 'border-brand-primary bg-brand-primary/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]' 
-                : 'border-brand-border hover:border-brand-primary/50 hover:bg-brand-surface/80'
+                : 'border-slate-200 dark:border-brand-border hover:border-brand-primary/50 hover:bg-brand-surface/80'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -327,14 +327,14 @@ export default function SmartArchivePage() {
             />
             
             <div className="flex flex-col items-center space-y-5 pointer-events-none">
-              <div className="p-5 bg-brand-bg rounded-2xl border border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)] text-brand-primary">
+              <div className="p-5 bg-brand-bg rounded-2xl border border-slate-200 dark:border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)] text-brand-primary">
                 <UploadCloud className="w-8 h-8" />
               </div>
               <div>
-                <p className="text-base font-bold text-white">
+                <p className="text-base font-bold text-slate-900 dark:text-white">
                   Glissez-déposez le certificat (Image ou PDF)
                 </p>
-                <p className="text-xs text-slate-400 mt-2 font-medium">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
                   ou cliquez pour parcourir les dossiers
                 </p>
               </div>
@@ -346,7 +346,7 @@ export default function SmartArchivePage() {
                 fileInputRef.current?.click();
               }}
               disabled={status === 'uploading' || status === 'analyzing'}
-              className="mt-8 bg-brand-surface border border-brand-border hover:border-brand-primary/50 text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+              className="mt-8 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
             >
               Sélectionner un fichier
             </button>
@@ -355,20 +355,20 @@ export default function SmartArchivePage() {
 
         {/* Demo Certificate Generator */}
         {status === 'idle' && (
-          <div className="mt-8 w-full max-w-2xl bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="mt-8 w-full max-w-2xl bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center gap-3">
               <Sparkles className="w-5 h-5 text-brand-accent" />
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">Générateur de Certificats</h2>
+              <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Générateur de Certificats</h2>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Générez et téléchargez des images factices de certificats d&apos;enregistrement foncier pour tester les cas d&apos;usage de la plateforme (intégration base de données, détection de faux, litiges).
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
               <div className="space-y-2">
-                <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Scénario de test</label>
+                <label className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">Scénario de test</label>
                 <select 
                   id="scenario-select"
-                  className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-primary cursor-pointer font-medium appearance-none"
+                  className="w-full bg-brand-bg border border-slate-200 dark:border-brand-border rounded-xl px-4 py-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary cursor-pointer font-medium appearance-none"
                 >
                   <option value="conforme">Scénario 1 : Conforme (Jean-Claude K.)</option>
                   <option value="divergent">Scénario 2 : Usurpation (Divergent)</option>
@@ -378,12 +378,12 @@ export default function SmartArchivePage() {
                 </select>
               </div>
               <div className="flex items-center pt-6 px-2">
-                <label className="flex items-center gap-3 text-xs text-slate-300 cursor-pointer select-none font-semibold group">
+                <label className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300 cursor-pointer select-none font-semibold group">
                   <div className="relative flex items-center justify-center w-5 h-5">
                      <input 
                        type="checkbox" 
                        id="ratures-checkbox"
-                       className="peer appearance-none w-5 h-5 border border-brand-border rounded bg-brand-bg checked:bg-brand-primary checked:border-brand-primary transition-all cursor-pointer"
+                       className="peer appearance-none w-5 h-5 border border-slate-200 dark:border-brand-border rounded bg-brand-bg checked:bg-brand-primary checked:border-brand-primary transition-all cursor-pointer"
                      />
                      <svg className="absolute w-3 h-3 text-brand-bg pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                        <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -399,7 +399,7 @@ export default function SmartArchivePage() {
                 const hasRatures = (document.getElementById('ratures-checkbox') as HTMLInputElement)?.checked || false;
                 generateMockCertificate(scenario, hasRatures);
               }}
-              className="w-full flex items-center justify-center gap-2 mt-4 bg-brand-bg hover:bg-brand-surface border border-brand-border text-white hover:text-brand-primary text-xs font-bold py-3.5 rounded-xl transition-all uppercase tracking-widest"
+              className="w-full flex items-center justify-center gap-2 mt-4 bg-brand-bg hover:bg-brand-surface border border-slate-200 dark:border-brand-border text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold py-3.5 rounded-xl transition-all uppercase tracking-widest"
             >
               <Download className="w-4 h-4" /> Générer le PNG
             </button>
@@ -443,7 +443,7 @@ export default function SmartArchivePage() {
               <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                 <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                 <div>
-                  <h3 className="text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
+                  <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
                   <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le document scanné.</p>
                 </div>
               </div>
@@ -453,13 +453,13 @@ export default function SmartArchivePage() {
             {dbVerification && (
               <div className="animate-in slide-in-from-bottom-2 duration-300">
                 {!dbVerification.found ? (
-                  <div className="bg-brand-surface/80 backdrop-blur-sm border border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
-                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-400 border border-brand-border">
+                  <div className="bg-white dark:bg-brand-surface/80 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
+                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-brand-border">
                       <AlertTriangle className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
-                      <p className="text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
+                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
                     </div>
                   </div>
                 ) : dbVerification.status === 'Falsifié' ? (
@@ -490,7 +490,7 @@ export default function SmartArchivePage() {
                   <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                     <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                     <div>
-                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
+                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
                       <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Toutes les informations concordent parfaitement avec le registre central officiel de la RDC.</p>
                     </div>
                   </div>
@@ -499,17 +499,17 @@ export default function SmartArchivePage() {
             )}
 
             {/* Extracted Fields Table */}
-            <div className="bg-brand-surface/60 backdrop-blur-xl border border-brand-border rounded-3xl overflow-hidden shadow-sm">
-              <div className="px-6 py-5 border-b border-brand-border bg-brand-bg/50 flex items-center gap-3">
+            <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl overflow-hidden shadow-sm">
+              <div className="px-6 py-5 border-b border-slate-200 dark:border-brand-border bg-brand-bg/50 flex items-center gap-3">
                 <FileText className="w-5 h-5 text-brand-primary" />
-                <h2 className="text-base font-bold text-white tracking-wide">Données Extraites (IA)</h2>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Données Extraites (IA)</h2>
               </div>
               <div className="p-6">
                 <table className="w-full text-left border-collapse">
                   <tbody>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
-                      <td className="py-4 text-sm font-bold text-white">
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.nom || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
@@ -526,9 +526,9 @@ export default function SmartArchivePage() {
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
-                      <td className="py-4 text-sm font-bold text-white">
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.numero_cadastral || 'Non détecté'}</span>
                           {dbVerification && (
@@ -537,7 +537,7 @@ export default function SmartArchivePage() {
                                 <CheckCircle2 className="w-3.5 h-3.5" /> Répertorié
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 bg-brand-surface border border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
                                 <AlertTriangle className="w-3.5 h-3.5" /> Inconnu
                               </span>
                             )
@@ -545,9 +545,9 @@ export default function SmartArchivePage() {
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Volume</th>
-                      <td className="py-4 text-sm font-bold text-white">
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Volume</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.volume || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
@@ -564,9 +564,9 @@ export default function SmartArchivePage() {
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Folio</th>
-                      <td className="py-4 text-sm font-bold text-white">
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Folio</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.folio || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
@@ -583,9 +583,9 @@ export default function SmartArchivePage() {
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Circonscription</th>
-                      <td className="py-4 text-sm font-bold text-white">
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Circonscription</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.circonscription || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
@@ -602,13 +602,13 @@ export default function SmartArchivePage() {
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-brand-border/50">
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Superficie</th>
-                      <td className="py-4 text-sm font-bold text-white">{result.superficie || 'Non détecté'}</td>
+                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Superficie</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">{result.superficie || 'Non détecté'}</td>
                     </tr>
                     <tr>
-                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
-                      <td className="py-4 text-sm font-bold text-white">{result.date_etablissement || 'Non détecté'}</td>
+                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
+                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">{result.date_etablissement || 'Non détecté'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -623,7 +623,7 @@ export default function SmartArchivePage() {
                     setStatus('idle');
                     setFile(null);
                   }}
-                  className="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
+                  className="text-slate-400 dark:text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
                >
                  Analyser un autre document
                </button>
@@ -632,16 +632,16 @@ export default function SmartArchivePage() {
         )}
         
         <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
-          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
+          <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-4">
               <Sparkles className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Intelligence Artificielle & Audit
             </h2>
-            <div className="text-slate-400 text-sm leading-relaxed space-y-4">
+            <div className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed space-y-4">
               <p>
                 Les archives foncières congolaises ont longtemps souffert de conditions de conservation précaires. De nombreux certificats sont froissés, partiellement effacés ou falsifiés manuellement (utilisation de blanc correcteur pour modifier une superficie ou un nom).
               </p>
-              <div className="bg-brand-bg/50 p-5 rounded-xl border border-brand-border/50">
-                <strong className="text-white block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
+              <div className="bg-brand-bg/50 p-5 rounded-xl border border-slate-200 dark:border-brand-border/50">
+                <strong className="text-slate-900 dark:text-white block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées depuis n&apos;importe quel scan PDF ou photo.</span></li>
                   <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</span></li>
@@ -650,11 +650,11 @@ export default function SmartArchivePage() {
               </div>
             </div>
           </div>
-          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
-            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-3">
+          <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-3">
               <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
             </h2>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
               Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
             </p>
           </div>
