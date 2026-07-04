@@ -450,7 +450,7 @@ export default function SmartArchivePage() {
                     </div>
                     <div>
                       <h3 className="text-slate-800 dark:text-slate-200 font-bold text-base">Titre Inconnu dans le Registre</h3>
-                      <p className="text-slate-500 dark:text-slate-450 text-xs mt-0.5 font-medium">Ce numéro d'enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
+                      <p className="text-slate-500 dark:text-slate-450 text-xs mt-0.5 font-medium">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
                     </div>
                   </div>
                 ) : dbVerification.status === 'Falsifié' ? (
@@ -518,7 +518,7 @@ export default function SmartArchivePage() {
                       </td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">N° d'enregistrement</th>
+                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">N° d&apos;enregistrement</th>
                       <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span>{result.numero_cadastral || 'Non détecté'}</span>
