@@ -124,7 +124,7 @@ export default function AntiFolioPage() {
                         <p className="font-bold text-slate-800 dark:text-slate-100 text-base">{details[0].volume} / {details[0].folio}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">N° d'enregistrement</span>
+                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">N° d&apos;enregistrement</span>
                         <p className="font-bold text-emerald-600 dark:text-emerald-400 text-base">{details[0].numero_cadastral}</p>
                       </div>
                     </div>
@@ -150,8 +150,12 @@ export default function AntiFolioPage() {
                   Risque de phénomène Folio ou faux certificat
                 </p>
                 <div className="text-red-650 dark:text-red-400 text-xs max-w-lg mt-2 leading-relaxed font-semibold">
-                  Attention : Ce numéro d'enregistrement n&apos;est pas enregistré dans le registre central ou présente des contradictions graves avec les livres cadastraux (ex: superposition de propriétaires).
+                 Attention : Ce numéro d&apos;enregistrement n&apos;est pas enregistré dans le registre central ou présente des contradictions graves avec les livres fonciers (ex: superposition de propriétaires).
                 </div>
+                
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-4">
+                  Si votre titre foncier est signalé en rouge (Phénomène Folio détecté ou Faux), nous vous recommandons d&apos;utiliser notre assistant virtuel <b>Foncier-Édu</b> ou de consulter la conservation des titres immobiliers la plus proche.
+                </p>
                 
                 {/* Affichage des conflits si plusieurs certificats trouvés */}
                 {details.length > 1 && (
@@ -190,7 +194,7 @@ export default function AntiFolioPage() {
               <Code className="w-6 h-6 text-[#007FFF]" /> Comment fonctionne la validation ?
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Notre moteur analyse le certificat visuellement, compare le numéro d'enregistrement avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
+              Notre moteur analyse le certificat visuellement, compare le numéro d&apos;enregistrement avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
             </p>
             <svg viewBox="0 0 200 80" className="mt-4 mx-auto w-full max-w-xs" aria-hidden="true">
               <path d="M10 40 L60 20 L110 40 L160 20" stroke="#007FFF" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
@@ -199,8 +203,8 @@ export default function AntiFolioPage() {
           </div>
           {/* Rappels légaux */}
           <div className="flex flex-wrap gap-2">
-            <span className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 text-xs font-medium px-3 py-1 rounded-full border border-amber-300 dark:border-amber-700">Loi n° 25/062 (Loi N'Sele)</span>
-            <span className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-700">Décret 1990/0012 – Cadastre</span>
+            <span className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 text-xs font-medium px-3 py-1 rounded-full border border-amber-300 dark:border-amber-700">Loi n° 25/062 (Loi N&apos;Sele)</span>
+            <span className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-700">Décret 1990/0012 – Foncier</span>
             <span className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs font-medium px-3 py-1 rounded-full border border-indigo-300 dark:border-indigo-700">Loi n° 2015‑002 – Baux à loyer</span>
           </div>
         </section>
