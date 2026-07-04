@@ -55,6 +55,26 @@ export default function Home() {
         </div>
       </header>
 
+      {/* VISION & FONDEMENTS SECTION */}
+      <section className="py-20 px-6 relative bg-transparent">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Vision & Fondements
+          </h2>
+          <div className="space-y-6 text-slate-600 dark:text-slate-400 text-lg md:text-xl font-light leading-relaxed">
+            <p>
+              <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> est la plateforme institutionnelle dédiée à l&apos;assainissement, la conformité et la sécurisation du secteur foncier et immobilier en République Démocratique du Congo.
+            </p>
+            <p>
+              Face aux défis historiques liés aux erreurs d&apos;archivage, à la perte de documents physiques et au phénomène ravageur des superpositions de titres, notre écosystème apporte une réponse technologique radicale.
+            </p>
+            <p>
+              Notre mission est d&apos;éradiquer l&apos;insécurité juridique et la falsification documentaire en fournissant aux citoyens, ainsi qu&apos;à l&apos;État, des outils d&apos;audit fiables, instantanés et infalsifiables.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* THREE PILLARS SECTION */}
       <section className="py-24 px-6 relative border-t border-slate-200 dark:border-brand-border/50 bg-white dark:bg-brand-surface/30">
         <div className="max-w-7xl mx-auto">
