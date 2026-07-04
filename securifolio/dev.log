@@ -273,3 +273,15 @@ FetchError: request to https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_n
  GET /_next/static/chunks/app-pages-internals.js 404 in 1291ms
  GET /icon?97d7eb22eab5ba69 200 in 1145ms
  ✓ Compiled in 1116ms (611 modules)
+ GET / 200 in 204ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 777ms (614 modules)
+ GET /_next/static/chunks/main-app.js?v=1783204893466 404 in 974ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 1003ms
+ GET /icon?97d7eb22eab5ba69 200 in 573ms
+ GET / 200 in 483ms
+ GET /_next/static/chunks/main-app.js?v=1783204929330 404 in 174ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 177ms
+ GET /icon?97d7eb22eab5ba69 200 in 28ms
+ ✓ Compiled in 1746ms (614 modules)
+ ✓ Compiled in 1150ms (611 modules)
