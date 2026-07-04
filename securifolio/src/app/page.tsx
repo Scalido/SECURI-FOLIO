@@ -165,17 +165,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-12 border-t border-slate-200 dark:border-brand-border text-center">
-        <div className="max-w-7xl mx-auto px-6">
-          <p className="font-display text-brand-primary text-sm font-bold tracking-[0.2em] uppercase mb-2">
-            Sécurifolio RDC
-          </p>
-          <p className="text-slate-600 text-xs">
-            Infrastructure de Traitement Sécurisé. © 2026 Tous droits réservés.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

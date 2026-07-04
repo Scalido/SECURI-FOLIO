@@ -250,3 +250,4 @@ FetchError: request to https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_n
  GET /_next/static/chunks/app-pages-internals.js 404 in 139ms
  GET /_next/static/chunks/main-app.js?v=1783203581156 404 in 150ms
  ✓ Compiled in 1479ms (611 modules)
+ ✓ Compiled in 6.6s (611 modules)
