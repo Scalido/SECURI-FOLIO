@@ -111,7 +111,7 @@ export default function SmartArchivePage() {
 
     const fields = [
       { label: 'Circonscription Foncière :', val: circonscription },
-      { label: 'Numéro Cadastral de la Parcelle :', val: numero_cadastral },
+      { label: 'Numéro d\'Enregistrement de la Parcelle :', val: numero_cadastral },
       { label: 'Superficie de la Concession :', val: superficie },
       { label: 'Volume du Registre :', val: volume },
       { label: 'Folio du Registre :', val: folio },
@@ -450,7 +450,7 @@ export default function SmartArchivePage() {
                     </div>
                     <div>
                       <h3 className="text-slate-800 dark:text-slate-200 font-bold text-base">Titre Inconnu dans le Registre</h3>
-                      <p className="text-slate-500 dark:text-slate-450 text-xs mt-0.5 font-medium">Ce numéro cadastral n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
+                      <p className="text-slate-500 dark:text-slate-450 text-xs mt-0.5 font-medium">Ce numéro d'enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
                     </div>
                   </div>
                 ) : dbVerification.status === 'Falsifié' ? (
@@ -518,7 +518,7 @@ export default function SmartArchivePage() {
                       </td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">N° Cadastral</th>
+                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">N° d'enregistrement</th>
                       <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span>{result.numero_cadastral || 'Non détecté'}</span>
@@ -621,6 +621,29 @@ export default function SmartArchivePage() {
             </div>
           </div>
         )}
+        
+        <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
+          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
+              <Sparkles className="w-6 h-6 text-[#007FFF]" /> Qu&apos;est-ce que le Smart Archive ?
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+              Le module <strong>Smart Archive</strong> utilise l&apos;intelligence artificielle (Vision) pour lire et numériser instantanément les informations des certificats d&apos;enregistrement papier ou PDF. 
+            </p>
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              Il permet non seulement d&apos;extraire le nom, le numéro d&apos;enregistrement, le volume et le folio, mais aussi de croiser ces données en temps réel avec le <strong>Registre Central</strong> de la RDC afin de détecter d&apos;éventuelles usurpations d&apos;identité ou ratures (Phénomène Folio).
+            </p>
+          </div>
+          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
+              <ShieldAlert className="w-6 h-6 text-[#007FFF]" /> Bases Légales (Numérisation)
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
+            </p>
+          </div>
+        </section>
+
       </main>
       
       <style dangerouslySetInnerHTML={{__html: `

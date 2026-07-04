@@ -29,7 +29,7 @@ export default function AntiFolioPage() {
 
       // Le phénomène "Folio" est détecté si :
       // 1. Un des titres a explicitement le statut "Falsifié" ou "Litige"
-      // 2. Il y a plusieurs certificats pour un même numéro cadastral (superposition)
+      // 2. Il y a plusieurs certificats pour un même numéro d'enregistrement (superposition)
       const isFraud = results.some(r => r.statut === 'Falsifié' || r.statut === 'Litige') || results.length > 1;
 
       if (isFraud) {
@@ -71,7 +71,7 @@ export default function AntiFolioPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="N° Cadastral (ex: SU/GOM/1023)"
+              placeholder="N° d'enregistrement (ex: SU/GOM/1023)"
               className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
             />
             <button
@@ -124,7 +124,7 @@ export default function AntiFolioPage() {
                         <p className="font-bold text-slate-800 dark:text-slate-100 text-base">{details[0].volume} / {details[0].folio}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">N° Cadastral</span>
+                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">N° d'enregistrement</span>
                         <p className="font-bold text-emerald-600 dark:text-emerald-400 text-base">{details[0].numero_cadastral}</p>
                       </div>
                     </div>
@@ -150,7 +150,7 @@ export default function AntiFolioPage() {
                   Risque de phénomène Folio ou faux certificat
                 </p>
                 <div className="text-red-650 dark:text-red-400 text-xs max-w-lg mt-2 leading-relaxed font-semibold">
-                  Attention : Ce numéro cadastral n&apos;est pas enregistré dans le registre central ou présente des contradictions graves avec les livres cadastraux (ex: superposition de propriétaires).
+                  Attention : Ce numéro d'enregistrement n&apos;est pas enregistré dans le registre central ou présente des contradictions graves avec les livres cadastraux (ex: superposition de propriétaires).
                 </div>
                 
                 {/* Affichage des conflits si plusieurs certificats trouvés */}
@@ -190,7 +190,7 @@ export default function AntiFolioPage() {
               <Code className="w-6 h-6 text-[#007FFF]" /> Comment fonctionne la validation ?
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Notre moteur analyse le certificat visuellement, compare le numéro cadastral avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
+              Notre moteur analyse le certificat visuellement, compare le numéro d'enregistrement avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
             </p>
             <svg viewBox="0 0 200 80" className="mt-4 mx-auto w-full max-w-xs" aria-hidden="true">
               <path d="M10 40 L60 20 L110 40 L160 20" stroke="#007FFF" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />

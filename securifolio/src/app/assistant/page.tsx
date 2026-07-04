@@ -130,6 +130,14 @@ export default function AssistantPage() {
             <Send size={16} className="ml-0.5" />
           </button>
         </form>
+        <div className="mt-4 text-center space-y-1">
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+            L&apos;Assistant Foncier-Édu est entraîné sur le code foncier congolais (Loi n° 73-021 modifiée par la Loi n° 25/062 du 25 mars 2025).
+          </p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-500">
+            Les réponses sont générées par IA et ne remplacent pas l&apos;avis officiel d&apos;un Conservateur des Titres Immobiliers ou d&apos;un avocat.
+          </p>
+        </div>
       </div>
     </div>
   );
