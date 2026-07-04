@@ -240,3 +240,13 @@ FetchError: request to https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_n
  ✓ Compiled in 382ms (286 modules)
  GET / 200 in 62ms
  ✓ Compiled in 2.4s (606 modules)
+ ○ Compiling /legal ...
+ ✓ Compiled /legal in 733ms (597 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 864ms (600 modules)
+ GET / 404 in 1304ms
+ GET /_next/static/css/app/layout.css?v=1783203581156 404 in 82ms
+ GET /_next/static/chunks/app/layout.js 404 in 134ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 139ms
+ GET /_next/static/chunks/main-app.js?v=1783203581156 404 in 150ms
+ ✓ Compiled in 1479ms (611 modules)

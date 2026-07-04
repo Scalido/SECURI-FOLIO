@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShieldCheck, FileSearch, GraduationCap, Home, Landmark, Menu, X, Lock, Shield, Map } from "lucide-react";
+import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, Shield, Map } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
