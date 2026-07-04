@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download } from 'lucide-react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock } from 'lucide-react';
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -553,7 +553,7 @@ export default function SmartArchivePage() {
                       <div key={key} className="space-y-1.5">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
-                          <span className={\`text-[9px] font-mono px-1.5 py-0.5 rounded \${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}\`}>
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}`}>
                             Confiance IA: {confidence}%
                           </span>
                         </div>
@@ -561,7 +561,7 @@ export default function SmartArchivePage() {
                           type="text" 
                           value={formData[key] || ''} 
                           onChange={(e) => setFormData({...formData, [key]: e.target.value})}
-                          className={\`w-full bg-brand-bg/50 border \${isDivergent ? 'border-brand-accent/50 focus:border-brand-accent' : 'border-slate-200 dark:border-brand-border focus:border-brand-primary'} rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-white focus:outline-none transition-colors\`}
+                          className={`w-full bg-brand-bg/50 border ${isDivergent ? 'border-brand-accent/50 focus:border-brand-accent' : 'border-slate-200 dark:border-brand-border focus:border-brand-primary'} rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-white focus:outline-none transition-colors`}
                         />
                         {isDivergent && (
                            <p className="text-[10px] text-brand-accent font-medium flex items-center gap-1 mt-1">
