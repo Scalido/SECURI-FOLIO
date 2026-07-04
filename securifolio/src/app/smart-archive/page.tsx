@@ -356,8 +356,8 @@ export default function SmartArchivePage() {
           </div>
         )}
 
-        {/* Demo Certificate Generator */}
-        {status === 'idle' && (
+        {/* Demo Certificate Generator (Uniquement en développement) */}
+        {status === 'idle' && process.env.NODE_ENV === 'development' && (
           <div className="mt-8 w-full max-w-2xl bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center gap-3">
               <Sparkles className="w-5 h-5 text-brand-accent" />
