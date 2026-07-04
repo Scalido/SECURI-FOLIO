@@ -6,6 +6,7 @@ import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriang
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'analyzing' | 'success' | 'error'>('idle');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
@@ -198,11 +199,25 @@ export default function SmartArchivePage() {
       ctx.strokeRect(380, startY + 4 * lineHeight - 15, 60, 24);
     }
 
-    // 9. Télécharger
-    const link = document.createElement('a');
-    link.download = `certificat_demo_${scenario}${hasRatures ? '_rature' : ''}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    // 9. Créer le fichier et lancer l'analyse automatiquement
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const fileName = `certificat_demo_${scenario}${hasRatures ? '_rature' : ''}.png`;
+      const generatedFile = new File([blob], fileName, { type: 'image/png' });
+      
+      // Mettre à jour l'état de prévisualisation
+      setFile(generatedFile);
+      setPreviewUrl(URL.createObjectURL(generatedFile));
+      
+      // Optionnel: Télécharger aussi le fichier
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = URL.createObjectURL(generatedFile);
+      link.click();
+      
+      // Lancer le traitement
+      processFile(generatedFile);
+    }, 'image/png');
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -222,6 +237,7 @@ export default function SmartArchivePage() {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       setFile(droppedFile);
+      setPreviewUrl(URL.createObjectURL(droppedFile));
       processFile(droppedFile);
     }
   };
@@ -230,6 +246,7 @@ export default function SmartArchivePage() {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
       processFile(selectedFile);
     }
   };
@@ -507,9 +524,9 @@ export default function SmartArchivePage() {
 
                 {/* File Preview */}
                 <div className="bg-brand-surface/40 border border-brand-border rounded-3xl overflow-hidden aspect-[3/4] relative flex items-center justify-center">
-                   {file ? (
+                   {previewUrl ? (
                      // eslint-disable-next-line @next/next/no-img-element
-                     <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-contain" />
+                     <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
                    ) : (
                      <div className="text-slate-500 flex flex-col items-center">
                        <FileImage className="w-12 h-12 mb-2 opacity-50" />

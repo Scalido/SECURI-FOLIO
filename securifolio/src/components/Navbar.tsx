@@ -2,13 +2,39 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, Shield, Map, User, ZapOff, Zap } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, Shield, Map, User, ZapOff, Zap, LogOut } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [ecoMode, setEcoMode] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [user, setUser] = useState<any>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   // Gérer l'activation du Mode Éco / Terrain
   useEffect(() => {
@@ -78,16 +104,22 @@ export default function Navbar() {
         {/* Right Side: Secure Badge, Agent Identity & Controls */}
         <div className="flex items-center gap-4">
           
-          {/* Agent Identity (Mock) */}
-          <div className="hidden lg:flex flex-col items-end mr-2">
-            <div className="flex items-center gap-2 text-brand-text">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Matricule:</span>
-              <span className="text-xs font-mono font-bold text-brand-accent">AF-7892</span>
+          {/* Agent Identity */}
+          {user ? (
+            <div className="hidden lg:flex flex-col items-end mr-2">
+              <div className="flex items-center gap-2 text-brand-text">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Agent:</span>
+                <span className="text-xs font-mono font-bold text-brand-accent truncate max-w-[150px]">{user.email}</span>
+              </div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                <User size={10} /> Connecté
+              </div>
             </div>
-            <div className="text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-1">
-              <User size={10} /> Zone: Gombe
-            </div>
-          </div>
+          ) : (
+            <Link href="/login" className="hidden lg:flex text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/50 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-2 rounded-xl transition-all">
+              Connexion Agent
+            </Link>
+          )}
 
           <div className="hidden lg:flex items-center gap-2 border-l border-brand-border pl-4">
             {/* Mode Terrain / Éco Toggle */}
@@ -103,11 +135,16 @@ export default function Navbar() {
               {ecoMode ? <ZapOff size={16} /> : <Zap size={16} />}
             </button>
 
-            {/* Clearance Badge */}
-            <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-              <Lock size={12} />
-              L4 Clearance
-            </div>
+            {/* Clearance Badge & SignOut */}
+            {user && (
+              <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                <Lock size={12} />
+                L4 Clearance
+                <button onClick={handleSignOut} title="Déconnexion" className="ml-2 pl-2 border-l border-brand-primary/30 text-slate-400 hover:text-red-400 transition-colors">
+                  <LogOut size={12} />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
