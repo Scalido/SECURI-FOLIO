@@ -39,9 +39,20 @@ export default function Home() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl font-normal max-w-3xl mx-auto leading-relaxed">
-            La plateforme institutionnelle pour la validation des titres, la sécurisation des archives et l&apos;assistance juridique du secteur foncier congolais.
-          </p>
+          <div className="space-y-4 max-w-3xl mx-auto">
+            <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl font-normal leading-relaxed">
+              La plateforme institutionnelle pour la validation des titres, la sécurisation des archives et l&apos;assistance juridique du secteur foncier congolais.
+            </p>
+            <div className="bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm border border-slate-200/50 dark:border-slate-800/50 p-6 rounded-2xl shadow-sm text-left mt-6">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-[#007FFF]" /> Éradiquer l&apos;insécurité juridique en RDC
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                Historiquement, le secteur foncier congolais souffre de défis majeurs : pertes d&apos;archives physiques, altérations manuelles de documents, et le fameux « phénomène Folio » (superposition de titres). <br className="hidden md:block"/>
+                <strong className="text-slate-800 dark:text-slate-200 font-semibold">SÉCURIFOLIO RDC</strong> a été conçu comme la plateforme centralisée pour restaurer la confiance. Grâce à l&apos;intelligence artificielle et à l&apos;interconnexion avec le Registre Central, nous garantissons la transparence, l&apos;unicité foncière et la sécurité des investissements immobiliers.
+              </p>
+            </div>
+          </div>
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -100,7 +111,7 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-display font-black text-slate-800 dark:text-white text-xl group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Anti-Folio</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Vérifiez l&apos;authenticité des livrets et certificats d&apos;enregistrement en croisant les données avec la base centrale pour détecter les altérations et faux documents.
+                  Luttez contre la superposition de titres. Notre moteur vérifie l&apos;unicité de votre certificat foncier en temps réel pour garantir qu&apos;aucune autre personne ne revendique la même concession de bonne foi.
                 </p>
               </div>
             </Link>
@@ -113,7 +124,7 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-display font-black text-slate-800 dark:text-white text-xl group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Smart-Archive</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Numérisez les archives foncières physiques. Le système extrait automatiquement les données textuelles, les parcelles et croquis depuis des documents même dégradés.
+                  Sauvegardez le patrimoine foncier. Notre IA lit, structure et numérise instantanément les archives physiques, même détériorées, tout en détectant les falsifications visuelles (grattages, blanc correcteur).
                 </p>
               </div>
             </Link>
@@ -126,7 +137,7 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-display font-black text-slate-800 dark:text-white text-xl group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Foncier-Édu</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Posez vos questions à l&apos;assistant juridique virtuel spécialisé dans la Loi Foncière Congolaise pour interpréter les textes et résoudre les litiges complexes.
+                  Démocratisez l&apos;accès au droit. Un assistant juridique intelligent avec un verrou d&apos;intégrité strict, formé sur la législation congolaise pour éclairer les citoyens et orienter vers les Conservateurs officiels.
                 </p>
               </div>
             </Link>

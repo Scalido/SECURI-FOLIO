@@ -67,9 +67,26 @@ export default function AssistantPage() {
             </h1>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 mt-0.5">
               <ShieldAlert size={12} className="text-emerald-500" />
-              Verrou d&apos;intégrité légale activé (Loi n° 25/062)
+              Verrou d&apos;intégrité légale activé
             </p>
           </div>
+        </div>
+      </div>
+      
+      {/* Bandeau Informatif */}
+      <div className="bg-slate-50/80 dark:bg-slate-900/40 p-4 sm:px-6 border-b border-slate-200 dark:border-slate-800/80 text-xs text-slate-600 dark:text-slate-400">
+        <p className="font-bold text-slate-800 dark:text-slate-200 mb-2">Textes de loi maîtrisés par l&apos;assistant :</p>
+        <ul className="list-disc list-inside space-y-1 mb-3 ml-1">
+          <li>Loi Foncière (Loi 73-021 modifiée par la Loi 25/062 de 2025)</li>
+          <li>Ordonnance n° 74/148 (Mesures d&apos;exécution et procédures)</li>
+          <li>Loi n° 15/025 de 2015 sur les Baux à loyer</li>
+          <li>Arrêtés n° 0075 (Tarification) et n° 90-0012 (Mesurage et bornage)</li>
+        </ul>
+        <div className="bg-amber-50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 p-2.5 rounded-lg border border-amber-200 dark:border-amber-900/30 font-medium flex items-start gap-2">
+          <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600 dark:text-amber-500" />
+          <p>
+            <strong>Verrou d&apos;intégrité :</strong> Cet assistant ne fait aucune déduction hasardeuse. En cas de doute juridique ou de situation complexe non prévue par les textes, il vous orientera vers un Conservateur des Titres Immobiliers officiel.
+          </p>
         </div>
       </div>
 

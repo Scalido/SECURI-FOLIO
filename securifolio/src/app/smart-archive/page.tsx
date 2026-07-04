@@ -625,14 +625,21 @@ export default function SmartArchivePage() {
         <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
           <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              <Sparkles className="w-6 h-6 text-[#007FFF]" /> Qu&apos;est-ce que le Smart Archive ?
+              <Sparkles className="w-6 h-6 text-[#007FFF]" /> La Numérisation Intelligente et l&apos;Audit de Sécurité
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-              Le module <strong>Smart Archive</strong> utilise l&apos;intelligence artificielle (Vision) pour lire et numériser instantanément les informations des certificats d&apos;enregistrement papier ou PDF. 
-            </p>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Il permet non seulement d&apos;extraire le nom, le numéro d&apos;enregistrement, le volume et le folio, mais aussi de croiser ces données en temps réel avec le <strong>Registre Central</strong> de la RDC afin de détecter d&apos;éventuelles usurpations d&apos;identité ou ratures (Phénomène Folio).
-            </p>
+            <div className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed space-y-4">
+              <p>
+                Les archives foncières congolaises ont longtemps souffert de conditions de conservation précaires. De nombreux certificats sont froissés, partiellement effacés ou falsifiés manuellement (utilisation de blanc correcteur pour modifier une superficie ou un nom).
+              </p>
+              <div>
+                <strong className="text-slate-800 dark:text-slate-200">Le rôle de l&apos;IA (Vision AI) :</strong>
+                <ul className="mt-2 space-y-1.5 ml-1">
+                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées (nom, volume, folio, superficie, circonscription) depuis n&apos;importe quel scan PDF ou photo.</li>
+                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</li>
+                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Validation Croisée :</strong> Les données extraites sont instantanément confrontées à la base de données historique de l&apos;État pour assurer une correspondance parfaite.</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
             <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">

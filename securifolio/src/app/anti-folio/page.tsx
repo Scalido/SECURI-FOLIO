@@ -184,9 +184,21 @@ export default function AntiFolioPage() {
             <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
               <BookOpen className="w-6 h-6 text-[#007FFF]" /> Qu’est‑ce que le phénomène Folio ?
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Le phénomène « Folio » désigne la présence de plusieurs certificats d’enregistrement pour la même parcelle, souvent indiquant des superpositions de propriété ou des falsifications. Cela peut résulter d’erreurs d’enregistrement, de fraudes volontaires ou de conflits de succession.
-            </p>
+            <div className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed space-y-4">
+              <p>
+                Le phénomène « Folio » survient lorsque l&apos;administration émet par erreur (ou suite à des fraudes) plusieurs certificats d&apos;enregistrement authentiques pour une seule et même concession. Cela crée des conflits interminables entre propriétaires légitimes de bonne foi.
+              </p>
+              <div>
+                <strong className="text-slate-800 dark:text-slate-200">Notre système de classification exclusif :</strong><br/>
+                L&apos;outil Anti-Folio utilise le Numéro d&apos;enregistrement unique pour auditer votre titre et lui attribuer un statut clair :
+                <ul className="mt-2 space-y-1.5 ml-1">
+                  <li>✅ <strong className="text-slate-700 dark:text-slate-300">Valide :</strong> Certificat unique, conforme et sans contestation.</li>
+                  <li>⚠️ <strong className="text-slate-700 dark:text-slate-300">Litige :</strong> Titre gelé administrativement ou judiciairement.</li>
+                  <li>🚨 <strong className="text-slate-700 dark:text-slate-300">Falsifié :</strong> Incohérence majeure entre le document physique et le registre numérique.</li>
+                  <li>❌ <strong className="text-slate-700 dark:text-slate-300">Inconnu :</strong> Numéro introuvable, indiquant une contrefaçon intégrale.</li>
+                </ul>
+              </div>
+            </div>
           </div>
           {/* Comment fonctionne la validation ? */}
           <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
