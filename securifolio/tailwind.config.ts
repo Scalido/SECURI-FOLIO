@@ -12,10 +12,18 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        brand: {
+          primary: "#10B981", // Neon Emerald (validation/success)
+          secondary: "#047857", // Deep Emerald
+          accent: "#F59E0B", // Subtle Gold
+          bg: "#0B0F19", // Deep Black/Slate Grey
+          surface: "#111827", // Card backgrounds
+          border: "#1F2937", // Luminous borders
+        }
       },
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],
-        display: ["var(--font-plus-jakarta)", "sans-serif"],
+        display: ["var(--font-display)", "sans-serif"],
       },
     },
   },

@@ -268,7 +268,7 @@ export default function SmartArchivePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'analyse du document.');
+        throw new Error(data.error || "Erreur lors de l'analyse du document.");
       }
 
       setResult(data.data);
@@ -283,17 +283,21 @@ export default function SmartArchivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans selection:bg-[#007FFF]/20 transition-colors duration-200">
-      <main className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
+    <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+      
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <main className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center relative z-10">
         {/* En-tête */}
-        <div className="text-center mb-12 space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-white dark:bg-slate-900 text-slate-850 dark:text-white rounded-2xl mb-3 shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-880">
-            <FileImage className="w-8 h-8 text-[#F7D618]" />
+        <div className="text-center mb-12 space-y-4">
+          <div className="inline-flex items-center justify-center p-3 bg-brand-surface border border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
+            <FileImage className="w-8 h-8 text-brand-primary" />
           </div>
-          <h1 className="font-display text-4xl font-black text-[#0a192f] dark:text-white tracking-tight leading-tight">
-            Smart Archive
+          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            Smart <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Archive</span>
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xl mx-auto font-medium">
+          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
             Numérisez et extrayez instantanément les données clés de vos certificats d&apos;enregistrement et plans scannés.
           </p>
         </div>
@@ -301,10 +305,10 @@ export default function SmartArchivePage() {
         {/* Drag & Drop Area */}
         {(status === 'idle' || status === 'uploading' || status === 'analyzing') && (
           <div 
-            className={`w-full max-w-2xl bg-white dark:bg-slate-900/30 border-2 border-dashed rounded-3xl p-12 text-center transition-all flex flex-col items-center justify-center cursor-pointer min-h-[320px] shadow-sm ${
+            className={`w-full max-w-2xl bg-brand-surface/50 backdrop-blur-xl border-2 border-dashed rounded-3xl p-12 text-center transition-all flex flex-col items-center justify-center cursor-pointer min-h-[320px] shadow-[0_0_30px_rgba(0,0,0,0.5)] ${
               isDragging 
-                ? 'border-[#007FFF] bg-[#007FFF]/5 dark:bg-[#007FFF]/5' 
-                : 'border-slate-300 dark:border-slate-800 hover:border-[#007FFF]/50 hover:bg-slate-50 dark:hover:bg-slate-900/50'
+                ? 'border-brand-primary bg-brand-primary/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]' 
+                : 'border-brand-border hover:border-brand-primary/50 hover:bg-brand-surface/80'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -322,15 +326,15 @@ export default function SmartArchivePage() {
               disabled={status === 'uploading' || status === 'analyzing'}
             />
             
-            <div className="flex flex-col items-center space-y-4 pointer-events-none">
-              <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-850 shadow-sm text-slate-400 dark:text-slate-500">
+            <div className="flex flex-col items-center space-y-5 pointer-events-none">
+              <div className="p-5 bg-brand-bg rounded-2xl border border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.1)] text-brand-primary">
                 <UploadCloud className="w-8 h-8" />
               </div>
               <div>
-                <p className="text-base font-bold text-slate-700 dark:text-slate-200">
+                <p className="text-base font-bold text-white">
                   Glissez-déposez le certificat (Image ou PDF)
                 </p>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">
+                <p className="text-xs text-slate-400 mt-2 font-medium">
                   ou cliquez pour parcourir les dossiers
                 </p>
               </div>
@@ -342,7 +346,7 @@ export default function SmartArchivePage() {
                 fileInputRef.current?.click();
               }}
               disabled={status === 'uploading' || status === 'analyzing'}
-              className="mt-6 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800 text-slate-750 dark:text-white text-xs font-bold py-3 px-6 rounded-xl transition-all shadow-sm disabled:opacity-50"
+              className="mt-8 bg-brand-surface border border-brand-border hover:border-brand-primary/50 text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
             >
               Sélectionner un fichier
             </button>
@@ -351,36 +355,41 @@ export default function SmartArchivePage() {
 
         {/* Demo Certificate Generator */}
         {status === 'idle' && (
-          <div className="mt-8 w-full max-w-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-850 rounded-3xl p-6 shadow-sm space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
-              <h2 className="text-sm font-bold text-slate-750 dark:text-slate-200">Générateur de Certificats de Démo</h2>
+          <div className="mt-8 w-full max-w-2xl bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-brand-accent" />
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">Générateur de Certificats</h2>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-405">
+            <p className="text-xs text-slate-400">
               Générez et téléchargez des images factices de certificats d&apos;enregistrement foncier pour tester les cas d&apos;usage de la plateforme (intégration base de données, détection de faux, litiges).
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Scénario de test</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+              <div className="space-y-2">
+                <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Scénario de test</label>
                 <select 
                   id="scenario-select"
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-700 dark:text-slate-355 focus:outline-none cursor-pointer font-medium"
+                  className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-primary cursor-pointer font-medium appearance-none"
                 >
-                  <option value="conforme">Scénario 1 : Certificat Conforme (Jean-Claude Kalombo)</option>
-                  <option value="divergent">Scénario 2 : Usurpation (Nom du propriétaire divergent)</option>
-                  <option value="falsifie">Scénario 3 : Certificat Falsifié Répertorié</option>
-                  <option value="litige">Scénario 4 : Parcelle en Litige Juridique</option>
-                  <option value="inconnu">Scénario 5 : Certificat Inconnu (Hors-registre)</option>
+                  <option value="conforme">Scénario 1 : Conforme (Jean-Claude K.)</option>
+                  <option value="divergent">Scénario 2 : Usurpation (Divergent)</option>
+                  <option value="falsifie">Scénario 3 : Falsifié Répertorié</option>
+                  <option value="litige">Scénario 4 : Parcelle en Litige</option>
+                  <option value="inconnu">Scénario 5 : Certificat Inconnu</option>
                 </select>
               </div>
-              <div className="flex items-center pt-5 px-1">
-                <label className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 cursor-pointer select-none font-semibold">
-                  <input 
-                    type="checkbox" 
-                    id="ratures-checkbox"
-                    className="rounded border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-[#007FFF] focus:ring-0 w-4 h-4 cursor-pointer"
-                  />
-                  <span>Simuler des ratures / anomalies visuelles</span>
+              <div className="flex items-center pt-6 px-2">
+                <label className="flex items-center gap-3 text-xs text-slate-300 cursor-pointer select-none font-semibold group">
+                  <div className="relative flex items-center justify-center w-5 h-5">
+                     <input 
+                       type="checkbox" 
+                       id="ratures-checkbox"
+                       className="peer appearance-none w-5 h-5 border border-brand-border rounded bg-brand-bg checked:bg-brand-primary checked:border-brand-primary transition-all cursor-pointer"
+                     />
+                     <svg className="absolute w-3 h-3 text-brand-bg pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                       <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                     </svg>
+                  </div>
+                  <span className="group-hover:text-white transition-colors">Simuler des ratures visuelles</span>
                 </label>
               </div>
             </div>
@@ -390,9 +399,9 @@ export default function SmartArchivePage() {
                 const hasRatures = (document.getElementById('ratures-checkbox') as HTMLInputElement)?.checked || false;
                 generateMockCertificate(scenario, hasRatures);
               }}
-              className="w-full flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 dark:bg-[#112240]/40 dark:hover:bg-[#112240]/80 border border-slate-200 dark:border-slate-850 text-slate-700 dark:text-slate-200 text-xs font-bold py-3 rounded-xl transition-all"
+              className="w-full flex items-center justify-center gap-2 mt-4 bg-brand-bg hover:bg-brand-surface border border-brand-border text-white hover:text-brand-primary text-xs font-bold py-3.5 rounded-xl transition-all uppercase tracking-widest"
             >
-              <Download className="w-4 h-4" /> Générer & Télécharger le Certificat (PNG)
+              <Download className="w-4 h-4" /> Générer le PNG
             </button>
           </div>
         )}
@@ -400,19 +409,19 @@ export default function SmartArchivePage() {
         {/* Status Indicators */}
         {(status === 'uploading' || status === 'analyzing') && (
           <div className="mt-12 flex flex-col items-center space-y-4 animate-in fade-in duration-500">
-            <Loader2 className="w-8 h-8 text-[#007FFF] animate-spin" />
-            <p className="text-sm text-[#007FFF] font-semibold">
-              Analyse en cours par Gemini Vision...
+            <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
+            <p className="text-sm text-brand-primary font-bold uppercase tracking-widest drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+              Analyse IA en cours...
             </p>
           </div>
         )}
 
         {status === 'error' && (
-          <div className="mt-12 w-full max-w-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-3xl p-6 flex items-start gap-4 shadow-sm animate-in fade-in">
-            <AlertTriangle className="w-6 h-6 text-red-650 dark:text-red-500 shrink-0 mt-0.5" />
+          <div className="mt-12 w-full max-w-2xl bg-red-500/10 border border-red-500/30 rounded-3xl p-6 flex items-start gap-4 shadow-sm animate-in fade-in">
+            <AlertTriangle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-red-800 dark:text-red-300 font-bold text-base">Échec de l&apos;opération</h3>
-              <p className="text-red-600 dark:text-red-400 mt-1 text-sm">{errorMsg}</p>
+              <h3 className="text-red-400 font-bold text-base">Échec de l&apos;opération</h3>
+              <p className="text-red-400/80 mt-1 text-sm">{errorMsg}</p>
             </div>
           </div>
         )}
@@ -423,19 +432,19 @@ export default function SmartArchivePage() {
             
             {/* Visual Integrity Banner */}
             {result.alerte_phenomene_folio ? (
-              <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-500 shrink-0" />
+              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+                <ShieldAlert className="w-10 h-10 text-red-500 shrink-0 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
                 <div>
-                  <h3 className="text-red-800 dark:text-red-300 font-bold text-base">Alerte Rature Visuelle</h3>
-                  <p className="text-red-600 dark:text-red-450 text-xs mt-0.5 font-medium">Gemini a détecté des modifications suspectes ou du blanc correcteur sur les chiffres. Risque de phénomène Folio.</p>
+                  <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte Rature Visuelle</h3>
+                  <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">L&apos;IA a détecté des modifications suspectes ou du blanc correcteur sur le document physique. Risque de phénomène Folio majeur.</p>
                 </div>
               </div>
             ) : (
-              <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                 <div>
-                  <h3 className="text-emerald-800 dark:text-emerald-300 font-bold text-base">Document Visuellement Intègre</h3>
-                  <p className="text-emerald-650 dark:text-emerald-455 text-xs mt-0.5 font-medium">Aucune altération visuelle suspecte détectée sur le document.</p>
+                  <h3 className="text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
+                  <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le document scanné.</p>
                 </div>
               </div>
             )}
@@ -444,45 +453,45 @@ export default function SmartArchivePage() {
             {dbVerification && (
               <div className="animate-in slide-in-from-bottom-2 duration-300">
                 {!dbVerification.found ? (
-                  <div className="bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                    <div className="bg-white dark:bg-slate-950 p-2 rounded-xl shrink-0 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-850">
-                      <AlertTriangle className="w-5 h-5" />
+                  <div className="bg-brand-surface/80 backdrop-blur-sm border border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
+                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-400 border border-brand-border">
+                      <AlertTriangle className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-slate-800 dark:text-slate-200 font-bold text-base">Titre Inconnu dans le Registre</h3>
-                      <p className="text-slate-500 dark:text-slate-450 text-xs mt-0.5 font-medium">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
+                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
+                      <p className="text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
                     </div>
                   </div>
                 ) : dbVerification.status === 'Falsifié' ? (
-                  <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm animate-pulse-slow">
-                    <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-500 shrink-0" />
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_30px_rgba(239,68,68,0.15)] animate-pulse-slow">
+                    <ShieldAlert className="w-10 h-10 text-red-500 shrink-0 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
                     <div>
-                      <h3 className="text-red-800 dark:text-red-300 font-bold text-base">Alerte : Titre Falsifié Répertorié</h3>
-                      <p className="text-red-600 dark:text-red-400 text-xs mt-0.5 font-medium">Ce titre foncier est officiellement enregistré comme ayant fait l&apos;objet de falsification dans le registre.</p>
+                      <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte : Falsifié Répertorié</h3>
+                      <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre foncier est officiellement enregistré comme ayant fait l&apos;objet de falsification dans le registre.</p>
                     </div>
                   </div>
                 ) : dbVerification.status === 'Litige' ? (
-                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                    <AlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-500 shrink-0" />
+                  <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                    <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
                     <div>
-                      <h3 className="text-amber-800 dark:text-amber-300 font-bold text-base">Titre en Litige</h3>
-                      <p className="text-amber-650 dark:text-amber-400 text-xs mt-0.5 font-medium">Attention, ce titre foncier fait l&apos;objet d&apos;un litige juridique en cours d&apos;après le registre central.</p>
+                      <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Titre en Litige</h3>
+                      <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Attention, ce titre foncier fait l&apos;objet d&apos;un litige juridique en cours d&apos;après le registre central.</p>
                     </div>
                   </div>
                 ) : !dbVerification.matches.nom || !dbVerification.matches.volume || !dbVerification.matches.folio || !dbVerification.matches.circonscription ? (
-                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                    <AlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-500 shrink-0" />
+                  <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                    <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
                     <div>
-                      <h3 className="text-amber-800 dark:text-amber-300 font-bold text-base">Divergences détectées avec le Registre</h3>
-                      <p className="text-amber-650 dark:text-amber-400 text-xs mt-0.5 font-medium">Ce titre existe mais ses informations ne correspondent pas exactement à la base centrale (risque d&apos;usurpation).</p>
+                      <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Divergences Base de Données</h3>
+                      <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre existe mais ses informations ne correspondent pas exactement à la base centrale (risque d&apos;usurpation).</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-650 dark:text-emerald-400 shrink-0" />
+                  <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                    <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                     <div>
-                      <h3 className="text-emerald-800 dark:text-emerald-300 font-bold text-base">Titre Authentique & Validé</h3>
-                      <p className="text-emerald-600 dark:text-emerald-450 text-xs mt-0.5 font-medium">Toutes les informations concordent parfaitement avec le registre central officiel de la RDC.</p>
+                      <h3 className="text-white font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
+                      <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Toutes les informations concordent parfaitement avec le registre central officiel de la RDC.</p>
                     </div>
                   </div>
                 )}
@@ -490,116 +499,116 @@ export default function SmartArchivePage() {
             )}
 
             {/* Extracted Fields Table */}
-            <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-850 rounded-3xl overflow-hidden shadow-sm">
-              <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/50 flex items-center gap-3">
-                <FileText className="w-5 h-5 text-[#007FFF]" />
-                <h2 className="text-base font-bold text-slate-800 dark:text-slate-200">Données Extraites</h2>
+            <div className="bg-brand-surface/60 backdrop-blur-xl border border-brand-border rounded-3xl overflow-hidden shadow-sm">
+              <div className="px-6 py-5 border-b border-brand-border bg-brand-bg/50 flex items-center gap-3">
+                <FileText className="w-5 h-5 text-brand-primary" />
+                <h2 className="text-base font-bold text-white tracking-wide">Données Extraites (IA)</h2>
               </div>
               <div className="p-6">
                 <table className="w-full text-left border-collapse">
                   <tbody>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3 font-semibold">Propriétaire (Nom)</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
+                      <td className="py-4 text-sm font-bold text-white">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.nom || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
                             dbVerification.matches.nom ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/30">
-                                <CheckCircle2 className="w-3 h-3" /> Conforme
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-650 bg-red-550/10 dark:text-red-400 dark:bg-red-950/20 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/30">
-                                <AlertTriangle className="w-3 h-3" /> Divergent (Registre: {dbVerification.dbRecord?.nom_proprietaire})
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
+                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.nom_proprietaire})
                               </span>
                             )
                           )}
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">N° d&apos;enregistrement</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
+                      <td className="py-4 text-sm font-bold text-white">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.numero_cadastral || 'Non détecté'}</span>
                           {dbVerification && (
                             dbVerification.found ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-650 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/30">
-                                <CheckCircle2 className="w-3 h-3" /> Répertorié
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Répertorié
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 dark:text-slate-400 dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-800">
-                                <AlertTriangle className="w-3 h-3" /> Inconnu
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-400 bg-brand-surface border border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
+                                <AlertTriangle className="w-3.5 h-3.5" /> Inconnu
                               </span>
                             )
                           )}
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">Volume</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Volume</th>
+                      <td className="py-4 text-sm font-bold text-white">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.volume || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
                             dbVerification.matches.volume ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-655 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/30">
-                                <CheckCircle2 className="w-3 h-3" /> Conforme
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-650 bg-red-550/10 dark:text-red-400 dark:bg-red-950/20 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/30">
-                                <AlertTriangle className="w-3 h-3" /> Divergent (Registre: {dbVerification.dbRecord?.volume})
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
+                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.volume})
                               </span>
                             )
                           )}
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">Folio</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Folio</th>
+                      <td className="py-4 text-sm font-bold text-white">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.folio || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
                             dbVerification.matches.folio ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-655 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/30">
-                                <CheckCircle2 className="w-3 h-3" /> Conforme
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-650 bg-red-550/10 dark:text-red-400 dark:bg-red-950/20 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/30">
-                                <AlertTriangle className="w-3 h-3" /> Divergent (Registre: {dbVerification.dbRecord?.folio})
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
+                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.folio})
                               </span>
                             )
                           )}
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-450 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">Circonscription</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Circonscription</th>
+                      <td className="py-4 text-sm font-bold text-white">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span>{result.circonscription || 'Non détecté'}</span>
                           {dbVerification && dbVerification.found && (
                             dbVerification.matches.circonscription ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-655 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/30">
-                                <CheckCircle2 className="w-3 h-3" /> Conforme
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-650 bg-red-550/10 dark:text-red-400 dark:bg-red-950/20 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/30">
-                                <AlertTriangle className="w-3 h-3" /> Divergent (Registre: {dbVerification.dbRecord?.circonscription})
+                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
+                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.circonscription})
                               </span>
                             )
                           )}
                         </div>
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-100 dark:border-slate-850/50">
-                      <th className="py-4 text-slate-455 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">Superficie</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">{result.superficie || 'Non détecté'}</td>
+                    <tr className="border-b border-brand-border/50">
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Superficie</th>
+                      <td className="py-4 text-sm font-bold text-white">{result.superficie || 'Non détecté'}</td>
                     </tr>
                     <tr>
-                      <th className="py-4 text-slate-455 dark:text-slate-500 font-bold text-xs uppercase tracking-wider font-semibold">Date d&apos;établissement</th>
-                      <td className="py-4 text-sm font-bold text-slate-800 dark:text-white">{result.date_etablissement || 'Non détecté'}</td>
+                      <th className="py-4 text-slate-500 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
+                      <td className="py-4 text-sm font-bold text-white">{result.date_etablissement || 'Non détecté'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -614,7 +623,7 @@ export default function SmartArchivePage() {
                     setStatus('idle');
                     setFile(null);
                   }}
-                  className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-355 text-xs font-bold underline underline-offset-4"
+                  className="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
                >
                  Analyser un autre document
                </button>
@@ -623,29 +632,29 @@ export default function SmartArchivePage() {
         )}
         
         <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
-          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              <Sparkles className="w-6 h-6 text-[#007FFF]" /> La Numérisation Intelligente et l&apos;Audit de Sécurité
+          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
+              <Sparkles className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Intelligence Artificielle & Audit
             </h2>
-            <div className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed space-y-4">
+            <div className="text-slate-400 text-sm leading-relaxed space-y-4">
               <p>
                 Les archives foncières congolaises ont longtemps souffert de conditions de conservation précaires. De nombreux certificats sont froissés, partiellement effacés ou falsifiés manuellement (utilisation de blanc correcteur pour modifier une superficie ou un nom).
               </p>
-              <div>
-                <strong className="text-slate-800 dark:text-slate-200">Le rôle de l&apos;IA (Vision AI) :</strong>
-                <ul className="mt-2 space-y-1.5 ml-1">
-                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées (nom, volume, folio, superficie, circonscription) depuis n&apos;importe quel scan PDF ou photo.</li>
-                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</li>
-                  <li>🔹 <strong className="text-slate-700 dark:text-slate-300">Validation Croisée :</strong> Les données extraites sont instantanément confrontées à la base de données historique de l&apos;État pour assurer une correspondance parfaite.</li>
+              <div className="bg-brand-bg/50 p-5 rounded-xl border border-brand-border/50">
+                <strong className="text-white block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées depuis n&apos;importe quel scan PDF ou photo.</span></li>
+                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</span></li>
+                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Validation Croisée :</strong> Les données extraites sont instantanément confrontées à la base de données historique de l&apos;État.</span></li>
                 </ul>
               </div>
             </div>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              <ShieldAlert className="w-6 h-6 text-[#007FFF]" /> Bases Légales (Numérisation)
+          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-3">
+              <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-400 text-sm leading-relaxed">
               Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
             </p>
           </div>
@@ -655,11 +664,11 @@ export default function SmartArchivePage() {
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes pulse-slow {
-          0%, 100% { opacity: 1; border-color: rgba(220, 38, 38, 0.4); }
-          50% { opacity: 0.9; border-color: rgba(220, 38, 38, 0.8); box-shadow: 0 0 50px rgba(220, 38, 38, 0.15); }
+          0%, 100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 40px rgba(239, 68, 68, 0.1); }
+          50% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 60px rgba(239, 68, 68, 0.2); }
         }
         .animate-pulse-slow {
-          animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
       `}} />
     </div>

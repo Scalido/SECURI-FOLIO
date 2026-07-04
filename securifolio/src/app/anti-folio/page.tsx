@@ -46,25 +46,29 @@ export default function AntiFolioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans selection:bg-[#007FFF]/20 transition-colors duration-200">
-      <main className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
+    <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+      
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <main className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center relative z-10">
         {/* En-tête */}
-        <div className="text-center mb-12 space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-white dark:bg-slate-900 text-slate-850 dark:text-white rounded-2xl mb-3 shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-880">
-            <ShieldCheck className="w-8 h-8 text-[#F7D618]" />
+        <div className="text-center mb-12 space-y-4">
+          <div className="inline-flex items-center justify-center p-3 bg-brand-surface border border-brand-border rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.15)] mb-2">
+            <ShieldCheck className="w-8 h-8 text-brand-primary" />
           </div>
-          <h1 className="font-display text-4xl font-black text-[#0a192f] dark:text-white tracking-tight leading-tight">
-            Vérification Anti-Folio
+          <h1 className="font-display text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            Vérification <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Anti-Folio</span>
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xl mx-auto font-medium">
+          <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
             Portail institutionnel de validation de conformité des titres fonciers de la RDC. Détectez instantanément les faux et les superpositions d&apos;enregistrement.
           </p>
         </div>
 
         {/* Barre de recherche */}
         <div className="w-full max-w-2xl relative">
-          <form onSubmit={handleSearch} className="relative bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-slate-850 rounded-3xl p-2.5 shadow-sm flex flex-col sm:flex-row items-center transition-all focus-within:border-[#007FFF]/50 focus-within:ring-4 focus-within:ring-[#007FFF]/5">
-            <div className="pl-4 text-slate-400 dark:text-slate-500 hidden sm:block">
+          <form onSubmit={handleSearch} className="relative bg-brand-surface/50 backdrop-blur-xl border border-brand-border rounded-3xl p-2.5 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row items-center transition-all focus-within:border-brand-primary/50 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+            <div className="pl-4 text-brand-primary hidden sm:block">
               <Search className="w-5 h-5" />
             </div>
             <input
@@ -72,12 +76,12 @@ export default function AntiFolioPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="N° d'enregistrement (ex: SU/GOM/1023)"
-              className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
+              className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
             />
             <button
               type="submit"
               disabled={status === 'loading' || !query.trim()}
-              className="w-full sm:w-auto bg-[#007FFF] hover:bg-[#006bd6] text-white font-bold py-3.5 px-8 rounded-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 sm:mt-0 text-xs uppercase tracking-wider"
+              className="w-full sm:w-auto bg-brand-primary hover:bg-emerald-400 text-brand-bg font-bold py-3.5 px-8 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 sm:mt-0 text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]"
             >
               {status === 'loading' ? (
                 <>
@@ -92,40 +96,40 @@ export default function AntiFolioPage() {
         </div>
 
         {/* Zone de résultats */}
-        <div className="w-full max-w-2xl mt-10 transition-all duration-500 ease-in-out">
+        <div className="w-full max-w-2xl mt-12 transition-all duration-500 ease-in-out">
           {status === 'valid' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-8 shadow-sm">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-brand-surface/80 backdrop-blur-md border border-brand-primary/30 p-8 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
               <div className="absolute top-0 right-0 p-8 opacity-5">
-                <ShieldCheck className="w-48 h-48 text-emerald-500" />
+                <ShieldCheck className="w-48 h-48 text-brand-primary" />
               </div>
-              <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-full border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-sm">
-                  <ShieldCheck className="w-10 h-10" />
+              <div className="relative z-10 flex flex-col items-center text-center space-y-5">
+                <div className="p-4 bg-brand-primary/10 rounded-full border border-brand-primary/30 text-brand-primary shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                  <ShieldCheck className="w-12 h-12" />
                 </div>
-                <h2 className="text-2xl font-black text-emerald-700 dark:text-emerald-300 tracking-tight">
+                <h2 className="text-2xl font-black text-white tracking-tight">
                   CERTIFICAT AUTHENTIQUE
                 </h2>
-                <p className="text-sm font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-900/40">
+                <p className="text-sm font-bold text-brand-primary bg-brand-primary/10 px-5 py-2 rounded-full border border-brand-primary/20 tracking-wide uppercase">
                   Enregistrement Conforme & Valide
                 </p>
                 {details.length > 0 && (
-                  <div className="w-full mt-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-850 shadow-sm text-left">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-xs">
+                  <div className="w-full mt-8 bg-brand-bg/50 rounded-2xl p-6 border border-brand-border text-left">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">Propriétaire enregistré</span>
-                        <p className="font-bold text-slate-800 dark:text-slate-100 text-base">{details[0].nom_proprietaire}</p>
+                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Propriétaire enregistré</span>
+                        <p className="font-bold text-white text-base">{details[0].nom_proprietaire}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">Circonscription</span>
-                        <p className="font-bold text-slate-800 dark:text-slate-100 text-base">{details[0].circonscription}</p>
+                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Circonscription</span>
+                        <p className="font-bold text-white text-base">{details[0].circonscription}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">Volume / Folio</span>
-                        <p className="font-bold text-slate-800 dark:text-slate-100 text-base">{details[0].volume} / {details[0].folio}</p>
+                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Volume / Folio</span>
+                        <p className="font-bold text-white text-base">{details[0].volume} / {details[0].folio}</p>
                       </div>
                       <div>
-                        <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1">N° d&apos;enregistrement</span>
-                        <p className="font-bold text-emerald-600 dark:text-emerald-400 text-base">{details[0].numero_cadastral}</p>
+                        <span className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">N° d&apos;enregistrement</span>
+                        <p className="font-bold text-brand-primary text-base">{details[0].numero_cadastral}</p>
                       </div>
                     </div>
                   </div>
@@ -135,40 +139,36 @@ export default function AntiFolioPage() {
           )}
 
           {status === 'fraud' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 p-8 shadow-sm animate-pulse-slow">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-brand-surface/80 backdrop-blur-md border border-red-500/30 p-8 shadow-[0_0_40px_rgba(239,68,68,0.1)] animate-pulse-slow">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <ShieldAlert className="w-48 h-48 text-red-500" />
               </div>
-              <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                <div className="p-3 bg-red-105 dark:bg-red-900/30 rounded-full border border-red-200 dark:border-red-800 text-red-650 dark:text-red-400 shadow-sm">
-                  <ShieldAlert className="w-10 h-10" />
+              <div className="relative z-10 flex flex-col items-center text-center space-y-5">
+                <div className="p-4 bg-red-500/10 rounded-full border border-red-500/30 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                  <ShieldAlert className="w-12 h-12" />
                 </div>
-                <h2 className="text-2xl font-black text-red-700 dark:text-red-300 tracking-tight uppercase">
-                  Alerte : Anomalie Majeure Détectée
+                <h2 className="text-2xl font-black text-white tracking-tight uppercase">
+                  Alerte : Anomalie Majeure
                 </h2>
-                <p className="text-sm font-bold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 px-4 py-1.5 rounded-full border border-red-200 dark:border-red-900/40">
-                  Risque de phénomène Folio ou faux certificat
+                <p className="text-sm font-bold text-red-400 bg-red-500/10 px-5 py-2 rounded-full border border-red-500/20 tracking-wide uppercase">
+                  Risque de Phénomène Folio ou Faux
                 </p>
-                <div className="text-red-650 dark:text-red-400 text-xs max-w-lg mt-2 leading-relaxed font-semibold">
-                 Attention : Ce numéro d&apos;enregistrement n&apos;est pas enregistré dans le registre central ou présente des contradictions graves avec les livres fonciers (ex: superposition de propriétaires).
+                <div className="text-slate-300 text-sm max-w-lg mt-4 leading-relaxed">
+                 <strong className="text-red-400 block mb-2">Attention :</strong> Ce numéro d&apos;enregistrement n&apos;est pas validé par le registre central ou présente des contradictions graves avec les livres fonciers (ex: superposition de propriétaires).
                 </div>
-                
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mt-4">
-                  Si votre titre foncier est signalé en rouge (Phénomène Folio détecté ou Faux), nous vous recommandons d&apos;utiliser notre assistant virtuel <b>Foncier-Édu</b> ou de consulter la conservation des titres immobiliers la plus proche.
-                </p>
                 
                 {/* Affichage des conflits si plusieurs certificats trouvés */}
                 {details.length > 1 && (
-                  <div className="w-full mt-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-850 shadow-sm text-left">
-                    <p className="text-red-650 dark:text-red-400 text-xs font-bold mb-3 flex items-center gap-1.5 uppercase tracking-wide">
-                      <ShieldAlert className="w-4.5 h-4.5" /> 
+                  <div className="w-full mt-6 bg-brand-bg/50 rounded-2xl p-6 border border-red-500/20 text-left">
+                    <p className="text-red-400 text-xs font-bold mb-4 flex items-center gap-2 uppercase tracking-widest">
+                      <ShieldAlert className="w-4 h-4" /> 
                       {details.length} Titres en conflit sur cette parcelle :
                     </p>
                     <div className="space-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
                       {details.map((titre, idx) => (
-                        <div key={idx} className="bg-white dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-slate-850 text-xs">
-                          <p className="text-slate-800 dark:text-slate-100 font-bold text-sm">{titre.nom_proprietaire}</p>
-                          <p className="text-slate-500 dark:text-slate-450 mt-1 font-medium">Vol: {titre.volume} / Folio: {titre.folio} — Statut: <span className={titre.statut === 'Valide' ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-red-600 dark:text-red-400 font-bold'}>{titre.statut}</span></p>
+                        <div key={idx} className="bg-brand-surface p-4 rounded-xl border border-brand-border text-xs flex flex-col gap-2">
+                          <p className="text-white font-bold text-sm">{titre.nom_proprietaire}</p>
+                          <p className="text-slate-400 font-medium">Vol: {titre.volume} / Folio: {titre.folio} — Statut: <span className={titre.statut === 'Valide' ? 'text-brand-primary font-bold' : 'text-red-400 font-bold'}>{titre.statut}</span></p>
                         </div>
                       ))}
                     </div>
@@ -178,71 +178,68 @@ export default function AntiFolioPage() {
             </div>
           )}
         </div>
-        <section className="max-w-4xl mx-auto my-12 space-y-6">
+
+        <section className="max-w-4xl mx-auto my-16 space-y-6 w-full">
           {/* Qu’est‑ce que le phénomène Folio ? */}
-          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              <BookOpen className="w-6 h-6 text-[#007FFF]" /> Qu’est‑ce que le phénomène Folio ?
+          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
+              <BookOpen className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Qu’est‑ce que le phénomène Folio ?
             </h2>
-            <div className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed space-y-4">
+            <div className="text-slate-400 text-sm leading-relaxed space-y-4">
               <p>
                 Le phénomène « Folio » survient lorsque l&apos;administration émet par erreur (ou suite à des fraudes) plusieurs certificats d&apos;enregistrement authentiques pour une seule et même concession. Cela crée des conflits interminables entre propriétaires légitimes de bonne foi.
               </p>
-              <div>
-                <strong className="text-slate-800 dark:text-slate-200">Notre système de classification exclusif :</strong><br/>
-                L&apos;outil Anti-Folio utilise le Numéro d&apos;enregistrement unique pour auditer votre titre et lui attribuer un statut clair :
-                <ul className="mt-2 space-y-1.5 ml-1">
-                  <li>✅ <strong className="text-slate-700 dark:text-slate-300">Valide :</strong> Certificat unique, conforme et sans contestation.</li>
-                  <li>⚠️ <strong className="text-slate-700 dark:text-slate-300">Litige :</strong> Titre gelé administrativement ou judiciairement.</li>
-                  <li>🚨 <strong className="text-slate-700 dark:text-slate-300">Falsifié :</strong> Incohérence majeure entre le document physique et le registre numérique.</li>
-                  <li>❌ <strong className="text-slate-700 dark:text-slate-300">Inconnu :</strong> Numéro introuvable, indiquant une contrefaçon intégrale.</li>
+              <div className="bg-brand-bg/50 p-5 rounded-xl border border-brand-border/50">
+                <strong className="text-white mb-2 block">Notre système de classification :</strong>
+                <ul className="space-y-2 mt-3">
+                  <li className="flex items-center gap-2"><span className="text-brand-primary">■</span> <strong className="text-slate-200 w-24">Valide</strong> Certificat unique, conforme et sans contestation.</li>
+                  <li className="flex items-center gap-2"><span className="text-brand-accent">■</span> <strong className="text-slate-200 w-24">Litige</strong> Titre gelé administrativement ou judiciairement.</li>
+                  <li className="flex items-center gap-2"><span className="text-red-500">■</span> <strong className="text-slate-200 w-24">Falsifié</strong> Incohérence majeure avec le registre.</li>
+                  <li className="flex items-center gap-2"><span className="text-slate-500">■</span> <strong className="text-slate-200 w-24">Inconnu</strong> Numéro introuvable, contrefaçon intégrale.</li>
                 </ul>
               </div>
             </div>
           </div>
+
           {/* Comment fonctionne la validation ? */}
-          <div className="bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              <Code className="w-6 h-6 text-[#007FFF]" /> Comment fonctionne la validation ?
+          <div className="group bg-brand-surface/40 backdrop-blur-sm border border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+            <h2 className="flex items-center gap-3 text-xl font-bold text-white mb-4">
+              <Code className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Comment fonctionne la validation ?
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-400 text-sm leading-relaxed">
               Notre moteur analyse le certificat visuellement, compare le numéro d&apos;enregistrement avec le registre central et détecte les incohérences. Le résultat indique si le document est authentique, falsifié ou en litige, et signale les ratures ou superpositions suspectes.
             </p>
-            <svg viewBox="0 0 200 80" className="mt-4 mx-auto w-full max-w-xs" aria-hidden="true">
-              <path d="M10 40 L60 20 L110 40 L160 20" stroke="#007FFF" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-              <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#007FFF" /></marker></defs>
-            </svg>
           </div>
+          
           {/* Rappels légaux */}
-          <div className="flex flex-wrap gap-2">
-            <span className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 text-xs font-medium px-3 py-1 rounded-full border border-amber-300 dark:border-amber-700">Loi n° 25/062 (Loi N&apos;Sele)</span>
-            <span className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-700">Décret 1990/0012 – Foncier</span>
-            <span className="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs font-medium px-3 py-1 rounded-full border border-indigo-300 dark:border-indigo-700">Loi n° 2015‑002 – Baux à loyer</span>
+          <div className="flex flex-wrap gap-3 pt-4">
+            <span className="bg-brand-primary/10 text-brand-primary text-[10px] uppercase tracking-wider font-bold px-4 py-2 rounded-full border border-brand-primary/20">Loi n° 25/062 (Loi N&apos;Sele)</span>
+            <span className="bg-brand-accent/10 text-brand-accent text-[10px] uppercase tracking-wider font-bold px-4 py-2 rounded-full border border-brand-accent/20">Décret 1990/0012 – Foncier</span>
           </div>
         </section>
       </main>
 
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes pulse-slow {
-          0%, 100% { opacity: 1; border-color: rgba(239, 68, 68, 0.4); }
-          50% { opacity: 0.9; border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 50px rgba(239, 68, 68, 0.15); }
+          0%, 100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 40px rgba(239, 68, 68, 0.1); }
+          50% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 60px rgba(239, 68, 68, 0.2); }
         }
         .animate-pulse-slow {
-          animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
         .custom-scrollbar::-webkit-scrollbar {
-          width: 5px;
+          width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(0,0,0,0.01);
+          background: rgba(255,255,255,0.02);
           border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(0,0,0,0.1);
+          background: rgba(16, 185, 129, 0.2);
           border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(0,0,0,0.2);
+          background: rgba(16, 185, 129, 0.5);
         }
       `}} />
     </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
@@ -8,14 +8,14 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
-  title: "SÉCURIFOLIO RDC | Ministère des Affaires Foncières",
-  description: "Système d&apos;authentification et de numérisation du Ministère des Affaires Foncières de la RDC",
+  title: "Sécurifolio RDC | Ministère des Affaires Foncières",
+  description: "Système d'authentification et de numérisation du Ministère des Affaires Foncières de la RDC",
 };
 
 export default function RootLayout({
@@ -25,9 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="dark">
-      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col h-screen overflow-hidden`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
         <Navbar />
-        <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
+        <main className="flex-1 overflow-y-auto bg-[#0B0F19]">
           {children}
         </main>
       </body>
