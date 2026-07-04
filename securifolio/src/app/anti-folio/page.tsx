@@ -65,9 +65,24 @@ export default function AntiFolioPage() {
           </p>
         </div>
 
-        {/* Barre de recherche */}
-        <div className="w-full max-w-2xl relative">
+        {/* Barre de recherche et Filtres */}
+        <div className="w-full max-w-2xl relative space-y-3">
           <form onSubmit={handleSearch} className="relative bg-white dark:bg-brand-surface/50 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl p-2.5 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row items-center transition-all focus-within:border-brand-primary/50 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+            
+            {/* Selecteur de Circonscription */}
+            <div className="w-full sm:w-1/3 border-b sm:border-b-0 sm:border-r border-slate-200 dark:border-brand-border/50 p-1">
+              <select 
+                className="w-full bg-transparent border-none py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-0 text-xs font-bold uppercase tracking-wider appearance-none cursor-pointer"
+                defaultValue="all"
+              >
+                <option value="all" className="text-slate-900">National (Toutes zones)</option>
+                <option value="kin-gombe" className="text-slate-900">Kinshasa - Gombe (Numérisé)</option>
+                <option value="kin-ngaliema" className="text-slate-900">Kinshasa - Ngaliema (Numérisé)</option>
+                <option value="goma" className="text-slate-900">Nord-Kivu - Goma (En cours)</option>
+                <option value="lushi" className="text-slate-900">Katanga - Lubumbashi (Non numérisé)</option>
+              </select>
+            </div>
+
             <div className="pl-4 text-brand-primary hidden sm:block">
               <Search className="w-5 h-5" />
             </div>
@@ -93,6 +108,14 @@ export default function AntiFolioPage() {
               )}
             </button>
           </form>
+
+          {/* Disclaimer d'Intégrité */}
+          <div className="flex items-start gap-2 px-4">
+             <ShieldAlert size={14} className="text-brand-accent mt-0.5 shrink-0" />
+             <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+               <strong className="text-slate-400">Transparence des Données (Phase 1) :</strong> Seules les circonscriptions numérisées et validées par le Conservateur des Titres Immobiliers sont interrogeables en temps réel. Un titre "Inconnu" dans une zone non numérisée nécessite une vérification manuelle aux archives physiques.
+             </p>
+          </div>
         </div>
 
         {/* Zone de résultats */}

@@ -1,13 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, Shield, Map } from "lucide-react";
+import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, Shield, Map, User, ZapOff, Zap } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [ecoMode, setEcoMode] = useState(false);
+
+  // Gérer l'activation du Mode Éco / Terrain
+  useEffect(() => {
+    if (ecoMode) {
+      document.body.classList.add("eco-mode");
+    } else {
+      document.body.classList.remove("eco-mode");
+    }
+  }, [ecoMode]);
 
   const navItems = [
     { name: "Accueil", href: "/", icon: Home },
@@ -65,17 +75,45 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Side: Secure Badge */}
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-            <Lock size={12} />
-            L4 Clearance
+        {/* Right Side: Secure Badge, Agent Identity & Controls */}
+        <div className="flex items-center gap-4">
+          
+          {/* Agent Identity (Mock) */}
+          <div className="hidden lg:flex flex-col items-end mr-2">
+            <div className="flex items-center gap-2 text-brand-text">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Matricule:</span>
+              <span className="text-xs font-mono font-bold text-brand-accent">AF-7892</span>
+            </div>
+            <div className="text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-1">
+              <User size={10} /> Zone: Gombe
+            </div>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-2 border-l border-brand-border pl-4">
+            {/* Mode Terrain / Éco Toggle */}
+            <button
+              onClick={() => setEcoMode(!ecoMode)}
+              title={ecoMode ? "Désactiver le Mode Terrain" : "Activer le Mode Terrain (Basse Connexion)"}
+              className={`p-2 rounded-lg border transition-all duration-200 ${
+                ecoMode 
+                  ? "bg-amber-500/20 border-amber-500/50 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.2)]" 
+                  : "bg-brand-surface border-brand-border text-slate-400 hover:text-white"
+              }`}
+            >
+              {ecoMode ? <ZapOff size={16} /> : <Zap size={16} />}
+            </button>
+
+            {/* Clearance Badge */}
+            <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+              <Lock size={12} />
+              L4 Clearance
+            </div>
           </div>
 
           {/* Mobile menu button */}
           <button 
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-brand-surface rounded-xl transition-all"
+            className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-brand-surface rounded-xl transition-all border border-transparent hover:border-brand-border"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

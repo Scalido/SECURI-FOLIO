@@ -285,3 +285,59 @@ FetchError: request to https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_n
  GET /icon?97d7eb22eab5ba69 200 in 28ms
  ✓ Compiled in 1746ms (614 modules)
  ✓ Compiled in 1150ms (611 modules)
+ GET / 200 in 510ms
+ ✓ Compiled /_not-found in 455ms (600 modules)
+ GET /_next/static/chunks/main-app.js?v=1783205040997 404 in 775ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 772ms
+ GET /icon?97d7eb22eab5ba69 200 in 639ms
+ ✓ Compiled in 2.8s (611 modules)
+ ✓ Compiled in 1798ms (617 modules)
+ ✓ Compiled in 279ms (288 modules)
+ ✓ Compiled in 420ms (288 modules)
+ ○ Compiling /anti-folio ...
+ ✓ Compiled /anti-folio in 1480ms (688 modules)
+ GET /anti-folio 200 in 1927ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 744ms (691 modules)
+ GET /_next/static/chunks/main-app.js?v=1783207048063 404 in 1022ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 1014ms
+ ⨯ ./src/app/smart-archive/page.tsx
+Error: 
+  [31mx[0m Unexpected token `div`. Expected jsx identifier
+     ,-[[36;1;4m/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/src/app/smart-archive/page.tsx[0m:286:1]
+ [2m286[0m |   };
+ [2m287[0m | 
+ [2m288[0m |   return (
+ [2m289[0m |     <div className="min-h-screen bg-brand-bg text-slate-900 dark:text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+     : [31;1m     ^^^[0m
+ [2m290[0m |       
+ [2m291[0m |       {/* Background Gradients */}
+ [2m292[0m |       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/smart-archive/page.tsx
+ ○ Compiling /smart-archive ...
+ ⨯ ./src/app/smart-archive/page.tsx
+Error: 
+  [31mx[0m Unexpected token `div`. Expected jsx identifier
+     ,-[[36;1;4m/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/src/app/smart-archive/page.tsx[0m:286:1]
+ [2m286[0m |   };
+ [2m287[0m | 
+ [2m288[0m |   return (
+ [2m289[0m |     <div className="min-h-screen bg-brand-bg text-slate-900 dark:text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
+     : [31;1m     ^^^[0m
+ [2m290[0m |       
+ [2m291[0m |       {/* Background Gradients */}
+ [2m292[0m |       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/smart-archive/page.tsx
+ GET /smart-archive 500 in 5377ms

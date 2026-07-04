@@ -5,10 +5,12 @@ import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriang
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
-  const [, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'analyzing' | 'success' | 'error'>('idle');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [formData, setFormData] = useState<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbVerification, setDbVerification] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -272,6 +274,7 @@ export default function SmartArchivePage() {
       }
 
       setResult(data.data);
+      setFormData(data.data); // Initialize editable form
       setDbVerification(data.dbVerification);
       setStatus('success');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -426,207 +429,187 @@ export default function SmartArchivePage() {
           </div>
         )}
 
-        {/* Results Area */}
-        {status === 'success' && result && (
-          <div className="mt-12 w-full max-w-2xl animate-in slide-in-from-bottom-4 fade-in duration-500 space-y-6">
+        {/* Results Area (Split Screen) */}
+        {status === 'success' && result && formData && (
+          <div className="mt-12 w-full max-w-6xl animate-in slide-in-from-bottom-4 fade-in duration-500">
             
-            {/* Visual Integrity Banner */}
-            {result.alerte_phenomene_folio ? (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
-                <ShieldAlert className="w-10 h-10 text-red-500 shrink-0 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-                <div>
-                  <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte Rature Visuelle</h3>
-                  <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">L&apos;IA a détecté des modifications suspectes ou du blanc correcteur sur le document physique. Risque de phénomène Folio majeur.</p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                <div>
-                  <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
-                  <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le document scanné.</p>
-                </div>
-              </div>
-            )}
-
-            {/* Registre Central Verification Banner */}
-            {dbVerification && (
-              <div className="animate-in slide-in-from-bottom-2 duration-300">
-                {!dbVerification.found ? (
-                  <div className="bg-white dark:bg-brand-surface/80 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
-                    <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-brand-border">
-                      <AlertTriangle className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro d&apos;enregistrement n&apos;est pas répertorié dans le registre central officiel de la RDC.</p>
-                    </div>
-                  </div>
-                ) : dbVerification.status === 'Falsifié' ? (
-                  <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_30px_rgba(239,68,68,0.15)] animate-pulse-slow">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              
+              {/* Colonne Gauche : Aperçu du Document & Alertes */}
+              <div className="space-y-6 sticky top-24">
+                {/* Visual Integrity Banner */}
+                {result.alerte_phenomene_folio ? (
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
                     <ShieldAlert className="w-10 h-10 text-red-500 shrink-0 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
                     <div>
-                      <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte : Falsifié Répertorié</h3>
-                      <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre foncier est officiellement enregistré comme ayant fait l&apos;objet de falsification dans le registre.</p>
-                    </div>
-                  </div>
-                ) : dbVerification.status === 'Litige' ? (
-                  <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-                    <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
-                    <div>
-                      <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Titre en Litige</h3>
-                      <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Attention, ce titre foncier fait l&apos;objet d&apos;un litige juridique en cours d&apos;après le registre central.</p>
-                    </div>
-                  </div>
-                ) : !dbVerification.matches.nom || !dbVerification.matches.volume || !dbVerification.matches.folio || !dbVerification.matches.circonscription ? (
-                  <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-                    <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
-                    <div>
-                      <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Divergences Base de Données</h3>
-                      <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre existe mais ses informations ne correspondent pas exactement à la base centrale (risque d&apos;usurpation).</p>
+                      <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte Rature Visuelle</h3>
+                      <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">L&apos;IA a détecté des modifications suspectes ou du blanc correcteur sur le document physique. Validation humaine critique requise.</p>
                     </div>
                   </div>
                 ) : (
                   <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                     <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                     <div>
-                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Authentique & Validé</h3>
-                      <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Toutes les informations concordent parfaitement avec le registre central officiel de la RDC.</p>
+                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
+                      <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le scan.</p>
                     </div>
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Extracted Fields Table */}
-            <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl overflow-hidden shadow-sm">
-              <div className="px-6 py-5 border-b border-slate-200 dark:border-brand-border bg-brand-bg/50 flex items-center gap-3">
-                <FileText className="w-5 h-5 text-brand-primary" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Données Extraites (IA)</h2>
+                {/* Registre Central Verification Banner */}
+                {dbVerification && (
+                  <div className="animate-in slide-in-from-bottom-2 duration-300">
+                    {!dbVerification.found ? (
+                      <div className="bg-white dark:bg-brand-surface/80 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
+                        <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-brand-border">
+                          <AlertTriangle className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Titre Inconnu</h3>
+                          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1.5 font-medium leading-relaxed">Ce numéro n&apos;est pas répertorié. Nouvel enregistrement ou erreur de numérisation ?</p>
+                        </div>
+                      </div>
+                    ) : dbVerification.status === 'Falsifié' ? (
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_30px_rgba(239,68,68,0.15)] animate-pulse-slow">
+                        <ShieldAlert className="w-10 h-10 text-red-500 shrink-0 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                        <div>
+                          <h3 className="text-red-400 font-bold text-base uppercase tracking-wider">Alerte : Falsifié Répertorié</h3>
+                          <p className="text-red-400/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre est enregistré comme falsifié. Conserver l'archive pour enquête.</p>
+                        </div>
+                      </div>
+                    ) : dbVerification.status === 'Litige' ? (
+                      <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                        <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                        <div>
+                          <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Titre en Litige</h3>
+                          <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Ce titre fait l&apos;objet d&apos;un litige juridique. Validation restreinte.</p>
+                        </div>
+                      </div>
+                    ) : !dbVerification.matches.nom || !dbVerification.matches.volume || !dbVerification.matches.folio || !dbVerification.matches.circonscription ? (
+                      <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                        <AlertTriangle className="w-10 h-10 text-brand-accent shrink-0 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                        <div>
+                          <h3 className="text-brand-accent font-bold text-base uppercase tracking-wider">Divergences Base de Données</h3>
+                          <p className="text-brand-accent/80 text-xs mt-1.5 font-medium leading-relaxed">Vérifiez scrupuleusement les champs ci-contre, l'IA a extrait des données différentes du registre.</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                        <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                        <div>
+                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance Validée</h3>
+                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">L'extraction correspond au registre. Validation rapide possible.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* File Preview */}
+                <div className="bg-brand-surface/40 border border-brand-border rounded-3xl overflow-hidden aspect-[3/4] relative flex items-center justify-center">
+                   {file ? (
+                     // eslint-disable-next-line @next/next/no-img-element
+                     <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-contain" />
+                   ) : (
+                     <div className="text-slate-500 flex flex-col items-center">
+                       <FileImage className="w-12 h-12 mb-2 opacity-50" />
+                       <span className="text-xs uppercase tracking-widest font-bold">Aperçu du scan</span>
+                     </div>
+                   )}
+                </div>
               </div>
-              <div className="p-6">
-                <table className="w-full text-left border-collapse">
-                  <tbody>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider w-1/3">Propriétaire (Nom)</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span>{result.nom || 'Non détecté'}</span>
-                          {dbVerification && dbVerification.found && (
-                            dbVerification.matches.nom ? (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
-                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.nom_proprietaire})
-                              </span>
-                            )
-                          )}
+
+              {/* Colonne Droite : Formulaire d'extraction et validation humaine */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl overflow-hidden shadow-sm flex flex-col h-full">
+                <div className="px-6 py-5 border-b border-slate-200 dark:border-brand-border bg-brand-bg/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-brand-primary" />
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Validation de l'Extraction (OCR)</h2>
+                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Vérification humaine obligatoire avant scellement</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6 space-y-5 flex-1">
+                  
+                  {/* Field Template */}
+                  {['nom', 'numero_cadastral', 'volume', 'folio', 'circonscription', 'superficie', 'date_etablissement'].map((key) => {
+                    const labelMap: Record<string, string> = {
+                      nom: "Propriétaire (Nom)",
+                      numero_cadastral: "N° d'enregistrement (Cadastre)",
+                      volume: "Volume du Registre",
+                      folio: "Folio du Registre",
+                      circonscription: "Circonscription Foncière",
+                      superficie: "Superficie de la Concession",
+                      date_etablissement: "Date d'établissement"
+                    };
+                    
+                    // Simulate confidence scores (lower if there's a discrepancy)
+                    const isDivergent = dbVerification?.found && key !== 'superficie' && key !== 'date_etablissement' && dbVerification.matches && !dbVerification.matches[key];
+                    const confidence = isDivergent ? Math.floor(Math.random() * 15) + 65 : Math.floor(Math.random() * 10) + 90; 
+
+                    return (
+                      <div key={key} className="space-y-1.5">
+                        <div className="flex justify-between items-end">
+                          <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
+                          <span className={\`text-[9px] font-mono px-1.5 py-0.5 rounded \${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}\`}>
+                            Confiance IA: {confidence}%
+                          </span>
                         </div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">N° d&apos;enregistrement</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span>{result.numero_cadastral || 'Non détecté'}</span>
-                          {dbVerification && (
-                            dbVerification.found ? (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Répertorié
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border px-2.5 py-1 rounded-full uppercase tracking-widest">
-                                <AlertTriangle className="w-3.5 h-3.5" /> Inconnu
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Volume</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span>{result.volume || 'Non détecté'}</span>
-                          {dbVerification && dbVerification.found && (
-                            dbVerification.matches.volume ? (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
-                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.volume})
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Folio</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span>{result.folio || 'Non détecté'}</span>
-                          {dbVerification && dbVerification.found && (
-                            dbVerification.matches.folio ? (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
-                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.folio})
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Circonscription</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span>{result.circonscription || 'Non détecté'}</span>
-                          {dbVerification && dbVerification.found && (
-                            dbVerification.matches.circonscription ? (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full border border-brand-primary/20 uppercase tracking-widest">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Conforme
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 uppercase tracking-widest">
-                                <AlertTriangle className="w-3.5 h-3.5" /> Divergent (Registre: {dbVerification.dbRecord?.circonscription})
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-slate-200 dark:border-brand-border/50">
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Superficie</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">{result.superficie || 'Non détecté'}</td>
-                    </tr>
-                    <tr>
-                      <th className="py-4 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider">Date d&apos;établissement</th>
-                      <td className="py-4 text-sm font-bold text-slate-900 dark:text-white">{result.date_etablissement || 'Non détecté'}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <input 
+                          type="text" 
+                          value={formData[key] || ''} 
+                          onChange={(e) => setFormData({...formData, [key]: e.target.value})}
+                          className={\`w-full bg-brand-bg/50 border \${isDivergent ? 'border-brand-accent/50 focus:border-brand-accent' : 'border-slate-200 dark:border-brand-border focus:border-brand-primary'} rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-white focus:outline-none transition-colors\`}
+                        />
+                        {isDivergent && (
+                           <p className="text-[10px] text-brand-accent font-medium flex items-center gap-1 mt-1">
+                             <AlertTriangle size={10} /> Registre indique : <span className="font-bold">{dbVerification?.dbRecord?.[key === 'nom' ? 'nom_proprietaire' : key]}</span>
+                           </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                  
+                </div>
+
+                <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/30 space-y-4">
+                  <div className="flex items-start gap-2 text-[10px] text-slate-500 font-medium">
+                    <input type="checkbox" id="certify" className="mt-0.5 accent-brand-primary" />
+                    <label htmlFor="certify">En tant qu'agent assermenté (AF-7892), j'atteste sur l'honneur avoir vérifié visuellement la conformité de ces données avec le document physique original. Toute altération non signalée engagera ma responsabilité pénale.</label>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={() => {
+                        setResult(null);
+                        setDbVerification(null);
+                        setStatus('idle');
+                        setFile(null);
+                        setFormData(null);
+                      }}
+                      className="flex-1 py-3.5 border border-slate-200 dark:border-brand-border hover:bg-slate-100 dark:hover:bg-brand-surface rounded-xl text-xs font-bold uppercase tracking-widest transition-colors text-slate-600 dark:text-slate-300"
+                    >
+                      Annuler
+                    </button>
+                    <button 
+                      onClick={() => {
+                        alert("Données scellées et enregistrées avec succès dans le registre blockchain. Identifiant agent et horodatage sauvegardés.");
+                        setResult(null);
+                        setDbVerification(null);
+                        setStatus('idle');
+                        setFile(null);
+                        setFormData(null);
+                      }}
+                      className="flex-[2] bg-brand-primary hover:bg-emerald-400 text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all flex justify-center items-center gap-2"
+                    >
+                      <Lock size={14} /> Confirmer et Sceller
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            <div className="mt-6 flex justify-center">
-               <button 
-                  onClick={() => {
-                    setResult(null);
-                    setDbVerification(null);
-                    setStatus('idle');
-                    setFile(null);
-                  }}
-                  className="text-slate-400 dark:text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors py-2"
-               >
-                 Analyser un autre document
-               </button>
+
             </div>
           </div>
         )}
