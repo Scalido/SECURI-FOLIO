@@ -181,7 +181,7 @@ export default function AntiFolioPage() {
               <BookOpen className="w-6 h-6 text-[#007FFF]" /> Qu’est‑ce que le phénomène Folio ?
             </h2>
             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              Le phénomène « Folio » désigne la présence de plusieurs certificats d’enregistrement pour la même parcelle cadastrale, souvent indiquant des superpositions de propriété ou des falsifications. Cela peut résulter d’erreurs d’enregistrement, de fraudes volontaires ou de conflits de succession.
+              Le phénomène « Folio » désigne la présence de plusieurs certificats d’enregistrement pour la même parcelle, souvent indiquant des superpositions de propriété ou des falsifications. Cela peut résulter d’erreurs d’enregistrement, de fraudes volontaires ou de conflits de succession.
             </p>
           </div>
           {/* Comment fonctionne la validation ? */}

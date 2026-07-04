@@ -35,7 +35,7 @@ export default function Home() {
 
           {/* Main Title */}
           <h1 className="font-display font-black text-[#0f172a] dark:text-white text-5xl md:text-7.5xl leading-tight tracking-tight">
-            Sécurité Foncière &<br/>Analyse Cadastrale
+            Sécurité Foncière &<br/>Analyse Foncière
           </h1>
 
           {/* Subtitle */}
@@ -213,7 +213,7 @@ export default function Home() {
             SÉCURIFOLIO RDC — Système de numérisation et de conformité foncière.
           </p>
           <p className="text-[10px] text-slate-400 dark:text-slate-600">
-            Conçu pour le traitement des archives et la conformité cadastrale. © 2026 Tous droits réservés.
+            Conçu pour le traitement des archives et la conformité foncière. © 2026 Tous droits réservés.
           </p>
         </footer>
 

@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 3. Prompt
-    const prompt = "Analyse ce certificat d'enregistrement foncier congolais ou document. Extrais le nom, le numéro cadastral, le volume, le folio, la circonscription foncière, la superficie de la concession et la date d'établissement. Cherche visuellement toute trace de rature ou de blanc correcteur sur les chiffres. Si tu as un doute visuel, ajoute 'alerte_phenomene_folio: true'.";
+    const prompt = "Analyse ce certificat d'enregistrement foncier congolais ou document. Extrais le nom, le numéro d'enregistrement, le volume, le folio, la circonscription foncière, la superficie de la concession et la date d'établissement. Cherche visuellement toute trace de rature ou de blanc correcteur sur les chiffres. Si tu as un doute visuel, ajoute 'alerte_phenomene_folio: true'.";
 
     // 4. Appel à l'IA
     const result = await model.generateContent([
