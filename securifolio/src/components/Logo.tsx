@@ -16,7 +16,7 @@ export function Logo({ className = "", size = 32 }: { className?: string; size?:
           <rect width="100%" height="100%" fill="white" />
           
           {/* Le livre en noir découpe l'intérieur du bouclier */}
-          <g fill="black" transform="matrix(0.6, 0, 0, 0.6, 4.8, 5.8)">
+          <g fill="black" transform="matrix(0.7, 0, 0, 0.7, 3.6, 4.8)">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </g>

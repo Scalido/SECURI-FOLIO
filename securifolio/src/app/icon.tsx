@@ -31,7 +31,7 @@ export default function Icon() {
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#10B981" />
           
           {/* Livre dessiné par-dessus avec la couleur du fond (pour simuler l'espace négatif) */}
-          <g fill="#111827" transform="matrix(0.6, 0, 0, 0.6, 4.8, 5.8)">
+          <g fill="#111827" transform="matrix(0.7, 0, 0, 0.7, 3.6, 4.8)">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </g>
