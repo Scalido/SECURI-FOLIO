@@ -106,7 +106,7 @@ export default function Navbar() {
           
           {/* Agent Identity */}
           {user ? (
-            <div className="hidden lg:flex flex-col items-end mr-2">
+            <div className="hidden md:flex flex-col items-end mr-2">
               <div className="flex items-center gap-2 text-brand-text">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Agent:</span>
                 <span className="text-xs font-mono font-bold text-brand-accent truncate max-w-[150px]">{user.email}</span>
@@ -116,12 +116,12 @@ export default function Navbar() {
               </div>
             </div>
           ) : (
-            <Link href="/login" className="hidden lg:flex text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/50 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-2 rounded-xl transition-all">
+            <Link href="/login" className="hidden md:flex text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/50 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-2 rounded-xl transition-all">
               Connexion Agent
             </Link>
           )}
 
-          <div className="hidden lg:flex items-center gap-2 border-l border-brand-border pl-4">
+          <div className="hidden md:flex items-center gap-2 border-l border-brand-border pl-4">
             {/* Mode Terrain / Éco Toggle */}
             <button
               onClick={() => setEcoMode(!ecoMode)}
