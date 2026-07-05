@@ -73,7 +73,9 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
   }
 
   // 5. NOUVEAU TITRE : On l'insère avec le statut "En attente d'audit"
-  const { error: insertError } = await supabaseServer
+  // IMPORTANT: On utilise le client ADMIN car la table titres_fonciers n'a pas de politique RLS pour l'INSERT
+  const supabaseAdmin = createAdminClient()
+  const { error: insertError } = await supabaseAdmin
     .from('titres_fonciers')
     .insert([{
       numero_cadastral: numeroCadastral,
