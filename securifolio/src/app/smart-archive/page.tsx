@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock } from 'lucide-react';
 import { saveCertificate } from './actions';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/client';
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -626,6 +626,7 @@ export default function SmartArchivePage() {
                         }
                         setIsSaving(true);
                         try {
+                          const supabase = createClient();
                           // 1. Upload du fichier vers Supabase Storage
                           const fileExt = file.name.split('.').pop() || 'png';
                           const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
