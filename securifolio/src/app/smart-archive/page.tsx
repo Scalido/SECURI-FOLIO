@@ -33,10 +33,14 @@ export default function SmartArchivePage() {
         .order('created_at', { ascending: false })
         .limit(10);
       
-      if (error) throw error;
+      if (error) {
+        setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `ERR: ${error.message}`, created_at: new Date().toISOString() }]);
+        return;
+      }
       setHistory(data || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erreur chargement historique:", err);
+      setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `CATCH: ${err.message}`, created_at: new Date().toISOString() }]);
     } finally {
       setIsLoadingHistory(false);
     }
