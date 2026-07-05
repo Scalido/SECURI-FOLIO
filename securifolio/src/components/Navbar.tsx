@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, BookOpen, User, ZapOff, Zap, LogOut } from "lucide-react";
+import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, User, ZapOff, Zap, LogOut } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
@@ -66,7 +67,7 @@ export default function Navbar() {
         {/* Left Side: Logo & Title */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative flex items-center justify-center w-8 h-8 group-hover:scale-105 transition-transform duration-200">
-            <BookOpen size={30} className="text-brand-primary" strokeWidth={2} />
+            <Logo size={30} className="text-brand-primary" />
           </div>
           <div>
             <h1 className="font-display font-black text-sm md:text-base text-white tracking-tight">
