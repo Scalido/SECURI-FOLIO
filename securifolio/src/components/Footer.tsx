@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield, Map, Mail, MapPin } from "lucide-react";
+import { BookOpen, Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -11,8 +11,7 @@ export default function Footer() {
           <div className="md:col-span-1 space-y-4">
             <Link href="/" className="flex items-center gap-3 group inline-flex">
               <div className="relative flex items-center justify-center w-8 h-8 group-hover:scale-105 transition-transform duration-200">
-                <Shield size={32} className="text-brand-accent absolute" strokeWidth={1.5} />
-                <Map size={14} className="text-brand-primary absolute mt-1" strokeWidth={2.5} />
+                <BookOpen size={30} className="text-brand-primary" strokeWidth={2} />
               </div>
               <div>
                 <h1 className="font-display font-black text-sm text-brand-text tracking-tight">
