@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock } from 'lucide-react';
 import { saveCertificate } from './actions';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -619,9 +620,35 @@ export default function SmartArchivePage() {
                     <button 
                       disabled={isSaving}
                       onClick={async () => {
+                        if (!file) {
+                          alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
+                          return;
+                        }
                         setIsSaving(true);
                         try {
-                          const res = await saveCertificate(formData);
+                          // 1. Upload du fichier vers Supabase Storage
+                          const fileExt = file.name.split('.').pop() || 'png';
+                          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                          
+                          const { error: uploadError } = await supabase.storage
+                            .from('scans_certificats')
+                            .upload(fileName, file);
+
+                          if (uploadError) {
+                            console.error("Erreur d'upload:", uploadError);
+                            alert("Erreur lors de la sauvegarde du fichier scan. Vérifiez que le bucket existe et est configuré.");
+                            setIsSaving(false);
+                            return;
+                          }
+
+                          // 2. Récupérer l'URL publique
+                          const { data: { publicUrl } } = supabase.storage
+                            .from('scans_certificats')
+                            .getPublicUrl(fileName);
+
+                          // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
+                          const res = await saveCertificate(formData, publicUrl);
+                          
                           if (!res.success) {
                             if (res.error === 'TITRE_DEJA_NUMERISE') {
                               alert(`🚨 ALERTE DOUBLON : ${res.message}`);
@@ -629,7 +656,7 @@ export default function SmartArchivePage() {
                               alert(`Erreur : ${res.error}`);
                             }
                           } else {
-                            alert("Données scellées et enregistrées avec succès dans le registre blockchain. Identifiant agent et horodatage sauvegardés.");
+                            alert("Données scellées ! Le scan a été sauvegardé de manière sécurisée et le titre est 'En attente d'audit'.");
                             setResult(null);
                             setDbVerification(null);
                             setStatus('idle');

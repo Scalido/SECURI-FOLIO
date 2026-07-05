@@ -2,21 +2,38 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { createAdminClient } from '@/utils/supabase/admin'
+import { certificateSchema } from '@/lib/validations'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function saveCertificate(formData: any) {
+export async function saveCertificate(formData: any, scanUrl?: string) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 
   if (!user) return { success: false, error: 'Non autorisé. Veuillez vous connecter.' }
 
-  const numeroCadastral = formData.numero_cadastral?.trim()
+  // 1. RBAC : Vérifier si l'utilisateur est un agent
+  const { data: profile } = await supabaseServer
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
 
-  if (!numeroCadastral) {
-    return { success: false, error: 'Le numéro cadastral est obligatoire.' }
+  if (!profile || profile.role !== 'agent') {
+    return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent sceller un document.' }
   }
 
-  // 1. Vérifier si le titre existe déjà
+  // 2. Validation Zod stricte
+  const validationResult = certificateSchema.safeParse(formData)
+  
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.issues.map(issue => issue.message).join(' ')
+    return { success: false, error: `Données invalides : ${errorMessages}` }
+  }
+
+  const validData = validationResult.data
+  const numeroCadastral = validData.numero_cadastral.trim()
+
+  // 3. Vérifier si le titre existe déjà
   const { data: existingTitle, error: searchError } = await supabaseServer
     .from('titres_fonciers')
     .select('id, statut')
@@ -24,16 +41,12 @@ export async function saveCertificate(formData: any) {
     .single()
 
   if (searchError && searchError.code !== 'PGRST116') {
-    // Une vraie erreur (pas juste "not found")
     console.error('Erreur recherche titre:', searchError)
     return { success: false, error: 'Erreur lors de la vérification de la base de données.' }
   }
 
   if (existingTitle) {
-    // 2. DOUBLON DÉTECTÉ !
-    
-    // a. On passe le statut du titre existant en "Litige"
-    // IMPORTANT: On utilise le client ADMIN car le RLS interdit les UPDATE aux agents standards
+    // 4. DOUBLON DÉTECTÉ !
     const supabaseAdmin = createAdminClient()
     const { error: updateError } = await supabaseAdmin
       .from('titres_fonciers')
@@ -44,7 +57,6 @@ export async function saveCertificate(formData: any) {
       console.error('Erreur mise à jour statut Litige:', updateError)
     }
 
-    // b. On enregistre la tentative dans l'historique
     await supabaseServer
       .from('smart_archive_history')
       .insert([{
@@ -60,18 +72,19 @@ export async function saveCertificate(formData: any) {
     }
   }
 
-  // 3. NOUVEAU TITRE : On l'insère
+  // 5. NOUVEAU TITRE : On l'insère avec le statut "En attente d'audit"
   const { error: insertError } = await supabaseServer
     .from('titres_fonciers')
     .insert([{
       numero_cadastral: numeroCadastral,
-      nom_proprietaire: formData.nom || '',
-      volume: formData.volume || '',
-      folio: formData.folio || '',
-      circonscription: formData.circonscription || '',
-      superficie: formData.superficie || '',
-      date_enregistrement: formData.date_etablissement || new Date().toISOString(),
-      statut: 'Valide'
+      nom_proprietaire: validData.nom,
+      volume: validData.volume || '',
+      folio: validData.folio || '',
+      circonscription: validData.circonscription || '',
+      superficie: validData.superficie || '',
+      date_enregistrement: validData.date_etablissement || new Date().toISOString(),
+      statut: "En attente d'audit", // Changement majeur ici
+      scan_url: scanUrl || null // Lien vers l'image stockée
     }])
 
   if (insertError) {
@@ -79,7 +92,7 @@ export async function saveCertificate(formData: any) {
     return { success: false, error: 'Erreur lors de l\'enregistrement du certificat.' }
   }
 
-  // 4. Historique de l'insertion
+  // 6. Historique de l'insertion
   await supabaseServer
     .from('smart_archive_history')
     .insert([{
