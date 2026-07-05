@@ -2,9 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock } from 'lucide-react';
+import { saveCertificate } from './actions';
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'analyzing' | 'success' | 'error'>('idle');
@@ -615,17 +617,36 @@ export default function SmartArchivePage() {
                       Annuler
                     </button>
                     <button 
-                      onClick={() => {
-                        alert("Données scellées et enregistrées avec succès dans le registre blockchain. Identifiant agent et horodatage sauvegardés.");
-                        setResult(null);
-                        setDbVerification(null);
-                        setStatus('idle');
-                        setFile(null);
-                        setFormData(null);
+                      disabled={isSaving}
+                      onClick={async () => {
+                        setIsSaving(true);
+                        try {
+                          const res = await saveCertificate(formData);
+                          if (!res.success) {
+                            if (res.error === 'TITRE_DEJA_NUMERISE') {
+                              alert(`🚨 ALERTE DOUBLON : ${res.message}`);
+                            } else {
+                              alert(`Erreur : ${res.error}`);
+                            }
+                          } else {
+                            alert("Données scellées et enregistrées avec succès dans le registre blockchain. Identifiant agent et horodatage sauvegardés.");
+                            setResult(null);
+                            setDbVerification(null);
+                            setStatus('idle');
+                            setFile(null);
+                            setFormData(null);
+                          }
+                        } catch (err) {
+                          alert("Une erreur inattendue est survenue.");
+                          console.error(err);
+                        } finally {
+                          setIsSaving(false);
+                        }
                       }}
-                      className="flex-[2] bg-brand-primary hover:bg-emerald-400 text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all flex justify-center items-center gap-2"
+                      className="flex-[2] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex justify-center items-center gap-2"
                     >
-                      <Lock size={14} /> Confirmer et Sceller
+                      {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />} 
+                      {isSaving ? "Enregistrement..." : "Confirmer et Sceller"}
                     </button>
                   </div>
                 </div>
