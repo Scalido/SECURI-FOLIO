@@ -27,16 +27,14 @@ export default function Icon() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Forme pleine du Livre (Solid Book) */}
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" fill="#10B981" />
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" fill="#10B981" />
+          {/* Forme pleine du Bouclier */}
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#10B981" />
           
-          {/* Bouclier dessiné par-dessus avec la couleur du fond (pour simuler l'espace négatif) */}
-          <path
-            d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-            fill="#111827"
-            transform="matrix(0.42, 0, 0, 0.42, 6.96, 7.5)"
-          />
+          {/* Livre dessiné par-dessus avec la couleur du fond (pour simuler l'espace négatif) */}
+          <g fill="#111827" transform="matrix(0.6, 0, 0, 0.6, 4.8, 5.8)">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </g>
         </svg>
       </div>
     ),
