@@ -56,13 +56,21 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
       console.error('Erreur mise à jour statut Litige:', updateError)
     }
 
-    await supabaseServer
+    const { error: historyError } = await supabaseServer
       .from('smart_archive_history')
       .insert([{
         agent_id: user.id,
         numero_cadastral: numeroCadastral,
         action_type: 'rejected_duplicate'
       }])
+
+    if (historyError) {
+      console.error("Erreur insertion historique (doublon):", historyError)
+      return { 
+        success: false, 
+        error: `Erreur Historique: ${historyError.message}` 
+      }
+    }
 
     return { 
       success: false, 
@@ -92,13 +100,21 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
   }
 
   // 6. Historique de l'insertion
-  await supabaseServer
-    .from('smart_archive_history')
-    .insert([{
-      agent_id: user.id,
-      numero_cadastral: numeroCadastral,
-      action_type: 'insert'
-    }])
+    const { error: historyError } = await supabaseServer
+      .from('smart_archive_history')
+      .insert([{
+        agent_id: user.id,
+        numero_cadastral: numeroCadastral,
+        action_type: 'insert'
+      }])
 
-  return { success: true }
+    if (historyError) {
+      console.error("Erreur insertion historique (succès):", historyError)
+      return { 
+        success: false, 
+        error: `Erreur Historique: ${historyError.message}` 
+      }
+    }
+
+    return { success: true }
 }
