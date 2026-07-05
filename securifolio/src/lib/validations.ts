@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const certificateSchema = z.object({
   nom: z.string().min(2, "Le nom du propriétaire doit contenir au moins 2 caractères."),
-  numero_cadastral: z.string().min(5, "Le numéro cadastral est invalide."),
+  numero_cadastral: z.string().min(2, "Le numéro cadastral est invalide. Minimum 2 caractères."),
   volume: z.string().optional(),
   folio: z.string().optional(),
   circonscription: z.string().optional(),
