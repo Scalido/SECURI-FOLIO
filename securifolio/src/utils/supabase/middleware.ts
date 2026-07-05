@@ -60,11 +60,22 @@ export async function updateSession(request: NextRequest) {
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login')
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/smart-archive') || request.nextUrl.pathname.startsWith('/anti-folio')
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
 
-  if (isProtectedRoute && !user) {
+  if ((isProtectedRoute || isAdminRoute) && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  if (isAdminRoute && user) {
+    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase())
+    if (!adminEmails.includes(user.email?.toLowerCase() || "")) {
+      // Redirection si l'agent n'est pas L5
+      const url = request.nextUrl.clone()
+      url.pathname = '/smart-archive'
+      return NextResponse.redirect(url)
+    }
   }
 
   if (isAuthRoute && user) {
