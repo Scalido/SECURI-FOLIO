@@ -54,7 +54,7 @@ export default function AssistantPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-brand-bg border-x border-slate-200 dark:border-brand-border shadow-[0_0_50px_rgba(16,185,129,0.03)] relative overflow-hidden transition-colors duration-200">
+    <div className="flex flex-col h-[calc(100dvh-4rem)] max-w-4xl mx-auto bg-brand-bg border-x border-slate-200 dark:border-brand-border shadow-[0_0_50px_rgba(16,185,129,0.03)] relative overflow-hidden transition-colors duration-200">
       
       {/* Glow Effect */}
       <div className="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/10 rounded-full blur-[120px] pointer-events-none" />

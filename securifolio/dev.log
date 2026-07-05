@@ -341,3 +341,2431 @@ Caused by:
 Import trace for requested module:
 ./src/app/smart-archive/page.tsx
  GET /smart-archive 500 in 5377ms
+ ✓ Compiled /_not-found in 4.4s (857 modules)
+ GET /_next/static/webpack/aa68f219070545d1.webpack.hot-update.json 404 in 3613ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ○ Compiling /smart-archive ...
+ ✓ Compiled /smart-archive in 2.3s (866 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /_next/static/webpack/aa68f219070545d1.webpack.hot-update.json 404 in 1429ms
+ GET /smart-archive 200 in 4345ms
+ GET /_next/static/chunks/main-app.js?v=1783207281803 404 in 306ms
+ GET /_next/static/css/app/layout.css?v=1783207281803 404 in 321ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 301ms
+ ✓ Compiled in 1912ms (880 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/client-development/1.pack.gz_' -> '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/client-development/1.pack.gz'
+ ✓ Compiled in 5.4s (863 modules)
+ ✓ Compiled in 1889ms (849 modules)
+ ✓ Compiled in 859ms (494 modules)
+ ✓ Compiled in 564ms (494 modules)
+ ✓ Compiled in 1556ms (863 modules)
+ ✓ Compiled in 5.1s (980 modules)
+[Error: ENOSPC: no space left on device, open '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'
+}
+ ⨯ unhandledRejection: [Error: ENOSPC: no space left on device, open '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'
+}
+ ⨯ unhandledRejection: [Error: ENOSPC: no space left on device, open '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/2.pack.gz_'
+}
+[Error: ENOSPC: no space left on device, open '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/10.pack.gz_'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/10.pack.gz_'
+}
+[Error: ENOSPC: no space left on device, open '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/11.pack.gz_'] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/.next/cache/webpack/server-development/11.pack.gz_'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at DevBundlerService.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/dev-bundler-service.js:21:39)
+    at DevServer.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/dev/next-dev-server.js:393:35)
+    at process.<anonymous> (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/dev/next-dev-server.js:232:18)
+    at process.emit (node:events:530:35) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at prefixedLog (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:80:31)
+    at Object.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/build/output/log.js:90:5)
+    at Object.logErrorWithOriginalStack (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js:751:22)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runNextTicks (node:internal/process/task_queues:69:3)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ ⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at writeSync (node:fs:924:3)
+    at SyncWriteStream._write (node:internal/fs/sync_write_stream:27:5)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at console.value (node:internal/console/constructor:298:16)
+    at console.error (node:internal/console/constructor:412:26)
+    at console.error (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:67:14)
+    at process.exception (/Users/pascalntwali/Documents/FONCIER MABELE IA/securifolio/node_modules/next/dist/server/lib/start-server.js:234:29)
+    at process.emit (node:events:530:35)
+    at process._fatalException (node:internal/process/execution:154:25) {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+
+<--- Last few GCs --->
+
+[70348:0x7fa1a9c00000]  9891640 ms: Mark-Compact 4027.2 (4138.8) -> 4017.2 (4142.3) MB, pooled: 8 MB, 18076.21 / 0.00 ms  (average mu = 0.051, current mu = 0.007) allocation failure; scavenge might not succeed
+[70348:0x7fa1a9c00000]  9907254 ms: Mark-Compact 4033.0 (4142.3) -> 4023.0 (4148.1) MB, pooled: 2 MB, 15521.06 / 0.00 ms  (average mu = 0.032, current mu = 0.006) allocation failure; scavenge might not succeed
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x103e906d4 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/usr/local/bin/node]
+ 2: 0x104087998 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/usr/local/bin/node]
+ 3: 0x1042ad3b7 v8::internal::Heap::FatalProcessOutOfMemory(char const*) [/usr/local/bin/node]
+ 4: 0x1042c6f05 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags)::$_1::operator()() const [/usr/local/bin/node]
+ 5: 0x1042c6715 void heap::base::Stack::SetMarkerAndCallbackImpl<v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags)::$_1>(heap::base::Stack*, void*, void const*) [/usr/local/bin/node]
+ 6: 0x104b39188 PushAllRegistersAndIterateStack [/usr/local/bin/node]
+ 7: 0x1042ab33a v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/usr/local/bin/node]
+ 8: 0x10429e135 v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/usr/local/bin/node]
+ 9: 0x10429ea44 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/usr/local/bin/node]
+10: 0x10426e63d v8::internal::FactoryBase<v8::internal::Factory>::NewFixedArrayWithMap(v8::internal::Handle<v8::internal::Map>, int, v8::internal::AllocationType) [/usr/local/bin/node]
+11: 0x1045e0438 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::HashTable<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::EnsureCapacity<v8::internal::Isolate>(v8::internal::Isolate*, v8::internal::Handle<v8::internal::NameDictionary>, int, v8::internal::AllocationType) [/usr/local/bin/node]
+12: 0x1045e14ea v8::internal::Handle<v8::internal::NameDictionary> v8::internal::Dictionary<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::Add<v8::internal::Isolate, (v8::internal::AllocationType)0>(v8::internal::Isolate*, v8::internal::Handle<v8::internal::NameDictionary>, v8::internal::Handle<v8::internal::Name>, v8::internal::Handle<v8::internal::Object>, v8::internal::PropertyDetails, v8::internal::InternalIndex*) [/usr/local/bin/node]
+13: 0x1045e10a7 v8::internal::BaseNameDictionary<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::Add(v8::internal::Isolate*, v8::internal::Handle<v8::internal::NameDictionary>, v8::internal::Handle<v8::internal::Name>, v8::internal::Handle<v8::internal::Object>, v8::internal::PropertyDetails, v8::internal::InternalIndex*) [/usr/local/bin/node]
+14: 0x1047243c7 v8::internal::Runtime_AddDictionaryProperty(int, unsigned long*, v8::internal::Isolate*) [/usr/local/bin/node]
+15: 0x104c29e36 Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/usr/local/bin/node]

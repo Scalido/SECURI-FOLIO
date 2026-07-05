@@ -159,7 +159,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Navigation */}
       {isOpen && (
-        <div className="md:hidden border-t border-brand-border bg-brand-bg/95 backdrop-blur-lg animate-in slide-in-from-top duration-200">
+        <div className="md:hidden border-t border-brand-border bg-brand-bg/95 backdrop-blur-lg animate-in slide-in-from-top duration-200 shadow-2xl">
           <nav className="px-4 py-4 space-y-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -181,6 +181,49 @@ export default function Navbar() {
               );
             })}
           </nav>
+
+          {/* Mobile Identity & Controls */}
+          <div className="px-4 pb-6 pt-2 border-t border-brand-border/50">
+            {user ? (
+              <div className="flex items-center justify-between bg-brand-surface p-3 rounded-xl border border-brand-border shadow-inner">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-slate-400">
+                    <User size={12} />
+                    Agent Connecté
+                  </div>
+                  <span className="text-xs font-mono font-bold text-brand-accent mt-0.5 max-w-[150px] truncate">{user.email}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 text-[9px] font-bold text-brand-primary uppercase bg-brand-primary/10 border border-brand-primary/20 px-2 py-1 rounded-md">
+                    <Lock size={10} /> L4
+                  </div>
+                  <button onClick={() => { handleSignOut(); setIsOpen(false); }} className="text-slate-400 hover:text-red-400 transition-colors p-1">
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link 
+                href="/login" 
+                onClick={() => setIsOpen(false)}
+                className="w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/30 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-3 rounded-xl transition-all"
+              >
+                <Lock size={14} /> Connexion Agent
+              </Link>
+            )}
+
+            <button
+              onClick={() => { setEcoMode(!ecoMode); setIsOpen(false); }}
+              className={`w-full mt-3 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all duration-200 ${
+                ecoMode 
+                  ? "bg-amber-500/20 border-amber-500/50 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.2)]" 
+                  : "bg-brand-surface border-brand-border text-slate-400"
+              }`}
+            >
+              {ecoMode ? <ZapOff size={16} /> : <Zap size={16} />}
+              {ecoMode ? "Désactiver Mode Terrain" : "Activer Mode Terrain"}
+            </button>
+          </div>
         </div>
       )}
     </header>

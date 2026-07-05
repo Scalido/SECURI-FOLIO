@@ -70,7 +70,7 @@ export default function AntiFolioPage() {
           <form onSubmit={handleSearch} className="relative bg-white dark:bg-brand-surface/50 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl p-2.5 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row items-center transition-all focus-within:border-brand-primary/50 focus-within:shadow-[0_0_30px_rgba(16,185,129,0.2)]">
             
             {/* Selecteur de Circonscription */}
-            <div className="w-full sm:w-1/3 border-b sm:border-b-0 sm:border-r border-slate-200 dark:border-brand-border/50 p-1">
+            <div className="w-full sm:w-1/3 border-b sm:border-b-0 sm:border-r border-slate-200 dark:border-brand-border/50 p-1 mb-2 sm:mb-0">
               <select 
                 className="w-full bg-transparent border-none py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-0 text-xs font-bold uppercase tracking-wider appearance-none cursor-pointer"
                 defaultValue="all"

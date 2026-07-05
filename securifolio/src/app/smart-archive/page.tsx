@@ -453,7 +453,7 @@ export default function SmartArchivePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               
               {/* Colonne Gauche : Aperçu du Document & Alertes */}
-              <div className="space-y-6 sticky top-24">
+              <div className="space-y-6 lg:sticky lg:top-24">
                 {/* Visual Integrity Banner */}
                 {result.alerte_phenomene_folio ? (
                   <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
@@ -525,8 +525,12 @@ export default function SmartArchivePage() {
                 {/* File Preview */}
                 <div className="bg-brand-surface/40 border border-brand-border rounded-3xl overflow-hidden aspect-[3/4] relative flex items-center justify-center">
                    {previewUrl ? (
-                     // eslint-disable-next-line @next/next/no-img-element
-                     <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
+                     file?.type === 'application/pdf' ? (
+                       <iframe src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`} className="w-full h-full border-none rounded-3xl bg-white" title="Aperçu PDF" />
+                     ) : (
+                       // eslint-disable-next-line @next/next/no-img-element
+                       <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
+                     )
                    ) : (
                      <div className="text-slate-500 flex flex-col items-center">
                        <FileImage className="w-12 h-12 mb-2 opacity-50" />
