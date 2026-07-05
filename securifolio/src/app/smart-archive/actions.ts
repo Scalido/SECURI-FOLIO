@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { createAdminClient } from '@/utils/supabase/admin'
 import { certificateSchema } from '@/lib/validations'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,8 +46,8 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
 
   if (existingTitle) {
     // 4. DOUBLON DÉTECTÉ !
-    const supabaseAdmin = createAdminClient()
-    const { error: updateError } = await supabaseAdmin
+    // IMPORTANT: On utilise le client standard maintenant que le RLS va être bien configuré
+    const { error: updateError } = await supabaseServer
       .from('titres_fonciers')
       .update({ statut: 'Litige' })
       .eq('id', existingTitle.id)
@@ -73,9 +72,7 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
   }
 
   // 5. NOUVEAU TITRE : On l'insère avec le statut "En attente d'audit"
-  // IMPORTANT: On utilise le client ADMIN car la table titres_fonciers n'a pas de politique RLS pour l'INSERT
-  const supabaseAdmin = createAdminClient()
-  const { error: insertError } = await supabaseAdmin
+  const { error: insertError } = await supabaseServer
     .from('titres_fonciers')
     .insert([{
       numero_cadastral: numeroCadastral,
