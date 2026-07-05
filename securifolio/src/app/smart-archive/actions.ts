@@ -121,9 +121,14 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
 
 export async function getHistoryServer() {
   const supabaseServer = createClient()
+  
+  const { data: { user } } = await supabaseServer.auth.getUser()
+  if (!user) return { data: null, error: 'Non authentifié' }
+
   const { data, error } = await supabaseServer
     .from('smart_archive_history')
     .select('*')
+    .eq('agent_id', user.id)
     .order('created_at', { ascending: false })
     .limit(10)
   
