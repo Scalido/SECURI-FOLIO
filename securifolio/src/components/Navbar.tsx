@@ -102,31 +102,14 @@ export default function Navbar() {
         </nav>
 
         {/* Right Side: Secure Badge, Agent Identity & Controls */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           
-          {/* Agent Identity */}
-          {user ? (
-            <div className="hidden lg:flex flex-col items-end mr-2">
-              <div className="flex items-center gap-2 text-brand-text">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Agent:</span>
-                <span className="text-xs font-mono font-bold text-brand-accent truncate max-w-[150px]">{user.email}</span>
-              </div>
-              <div className="text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                <User size={10} /> Connecté
-              </div>
-            </div>
-          ) : (
-            <Link href="/login" className="hidden lg:flex text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/50 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-2 rounded-xl transition-all">
-              Connexion Agent
-            </Link>
-          )}
-
-          <div className="hidden lg:flex items-center gap-2 border-l border-brand-border pl-4">
+          <div className="hidden lg:flex items-center gap-2">
             {/* Mode Terrain / Éco Toggle */}
             <button
               onClick={() => setEcoMode(!ecoMode)}
               title={ecoMode ? "Désactiver le Mode Terrain" : "Activer le Mode Terrain (Basse Connexion)"}
-              className={`p-2 rounded-lg border transition-all duration-200 ${
+              className={`p-2 rounded-xl border transition-all duration-200 ${
                 ecoMode 
                   ? "bg-amber-500/20 border-amber-500/50 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.2)]" 
                   : "bg-brand-surface border-brand-border text-slate-400 hover:text-white"
@@ -135,15 +118,29 @@ export default function Navbar() {
               {ecoMode ? <ZapOff size={16} /> : <Zap size={16} />}
             </button>
 
-            {/* Clearance Badge & SignOut */}
-            {user && (
-              <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                <Lock size={12} />
-                L4 Clearance
-                <button onClick={handleSignOut} title="Déconnexion" className="ml-2 pl-2 border-l border-brand-primary/30 text-slate-400 hover:text-red-400 transition-colors">
-                  <LogOut size={12} />
-                </button>
+            {/* Agent Unified Profile Badge */}
+            {user ? (
+              <div className="flex items-center bg-brand-surface border border-brand-border rounded-xl px-3 py-1.5 shadow-sm">
+                <div className="flex flex-col items-end pr-3 border-r border-brand-border/50">
+                  <span className="text-xs font-mono font-bold text-brand-accent max-w-[150px] truncate leading-tight">{user.email}</span>
+                  <div className="text-[9px] text-slate-500 uppercase tracking-widest flex items-center gap-1 mt-0.5">
+                    <User size={9} /> Agent Connecté
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 pl-3">
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 px-2 py-0.5 rounded border border-brand-primary/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                    <Lock size={10} />
+                    L4 Clearance
+                  </div>
+                  <button onClick={handleSignOut} title="Déconnexion" className="text-slate-400 hover:text-red-400 transition-colors">
+                    <LogOut size={14} />
+                  </button>
+                </div>
               </div>
+            ) : (
+              <Link href="/login" className="text-xs font-bold uppercase tracking-widest text-brand-primary border border-brand-primary/50 bg-brand-primary/10 hover:bg-brand-primary/20 px-4 py-2 rounded-xl transition-all">
+                Connexion Agent
+              </Link>
             )}
           </div>
 
