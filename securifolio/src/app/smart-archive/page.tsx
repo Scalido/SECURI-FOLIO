@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity } from 'lucide-react';
 import { saveCertificate } from './actions';
 import { createClient } from '@/utils/supabase/client';
 
@@ -18,7 +18,33 @@ export default function SmartArchivePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbVerification, setDbVerification] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [history, setHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const supabase = createClient();
+      // On récupère les 10 dernières actions de l'agent connecté
+      const { data, error } = await supabase
+        .from('smart_archive_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (error) throw error;
+      setHistory(data || []);
+    } catch (err) {
+      console.error("Erreur chargement historique:", err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   const generateMockCertificate = (scenario: string, hasRatures: boolean) => {
     const canvas = document.createElement('canvas');
@@ -664,6 +690,8 @@ export default function SmartArchivePage() {
                             setFile(null);
                             setFormData(null);
                           }
+                          // Mettre à jour l'historique après l'action !
+                          await fetchHistory();
                         } catch (err) {
                           alert("Une erreur inattendue est survenue.");
                           console.error(err);
@@ -710,6 +738,83 @@ export default function SmartArchivePage() {
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
               Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
             </p>
+          </div>
+        </section>
+
+        {/* Section Historique d'Audit */}
+        <section className="max-w-4xl w-full mx-auto mb-16 animate-in fade-in duration-500 delay-200">
+          <div className="bg-white dark:bg-brand-surface/40 backdrop-blur-xl border border-slate-200 dark:border-brand-border rounded-3xl overflow-hidden shadow-sm">
+            <div className="px-6 py-5 border-b border-slate-200 dark:border-brand-border bg-brand-bg/50 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-slate-100 dark:bg-brand-surface rounded-lg">
+                  <Activity className="w-5 h-5 text-brand-primary" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Historique d'Audit de mes Actions</h2>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-0.5">Traçabilité complète des insertions et rejets</p>
+                </div>
+              </div>
+              <button 
+                onClick={fetchHistory}
+                disabled={isLoadingHistory}
+                className="text-xs text-slate-500 hover:text-brand-primary flex items-center gap-2 transition-colors"
+              >
+                <Clock className={`w-4 h-4 ${isLoadingHistory ? 'animate-spin' : ''}`} />
+                Rafraîchir
+              </button>
+            </div>
+            
+            <div className="p-0">
+              {isLoadingHistory && history.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 flex flex-col items-center gap-3">
+                  <Loader2 className="w-6 h-6 animate-spin text-brand-primary/50" />
+                  <span className="text-sm font-medium">Chargement de l'historique...</span>
+                </div>
+              ) : history.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm font-medium">
+                  Aucune action enregistrée pour le moment.
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 dark:divide-brand-border/50">
+                  {history.map((item) => (
+                    <div key={item.id} className="p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-brand-surface/20 transition-colors">
+                      <div className="flex items-center gap-4">
+                        {item.action_type === 'insert' ? (
+                          <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0">
+                            <CheckCircle2 className="w-5 h-5 text-brand-primary" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0">
+                            <AlertTriangle className="w-5 h-5 text-brand-accent" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-slate-900 dark:text-white">
+                              {item.action_type === 'insert' ? 'Titre Scellé' : 'Doublon Bloqué'}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-brand-surface text-slate-600 dark:text-slate-300 font-mono font-medium">
+                              {item.numero_cadastral}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {item.action_type === 'insert' 
+                              ? 'Le certificat a été numérisé avec succès.' 
+                              : 'Une tentative de création a été bloquée pour cause de doublon cadastral.'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap">
+                        {new Date(item.created_at).toLocaleString('fr-FR', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                          hour: '2-digit', minute: '2-digit', second: '2-digit'
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
