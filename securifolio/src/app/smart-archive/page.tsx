@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity } from 'lucide-react';
-import { saveCertificate } from './actions';
+import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 
 export default function SmartArchivePage() {
@@ -25,22 +25,16 @@ export default function SmartArchivePage() {
   const fetchHistory = async () => {
     setIsLoadingHistory(true);
     try {
-      const supabase = createClient();
-      // On récupère les 10 dernières actions de l'agent connecté
-      const { data, error } = await supabase
-        .from('smart_archive_history')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
+      const { data, error } = await getHistoryServer();
       
       if (error) {
-        setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `ERR: ${error.message}`, created_at: new Date().toISOString() }]);
+        setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `ERR SERVER: ${error}`, created_at: new Date().toISOString() }]);
         return;
       }
       setHistory(data || []);
     } catch (err: any) {
-      console.error("Erreur chargement historique:", err);
-      setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `CATCH: ${err.message}`, created_at: new Date().toISOString() }]);
+      console.error("Erreur chargement historique (Server Action):", err);
+      setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `CATCH SERVER: ${err.message}`, created_at: new Date().toISOString() }]);
     } finally {
       setIsLoadingHistory(false);
     }

@@ -118,3 +118,18 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
 
     return { success: true }
 }
+
+export async function getHistoryServer() {
+  const supabaseServer = createClient()
+  const { data, error } = await supabaseServer
+    .from('smart_archive_history')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(10)
+  
+  if (error) {
+    console.error("Erreur getHistoryServer:", error)
+    return { data: null, error: error.message }
+  }
+  return { data, error: null }
+}
