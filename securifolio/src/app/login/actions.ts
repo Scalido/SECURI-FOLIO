@@ -17,7 +17,7 @@ export async function login(formData: FormData) {
   })
 
   if (error) {
-    return { error: 'Identifiants invalides ou compte non autorisé.' }
+    return { error: `[DEBUG] Erreur Supabase : ${error.message}` }
   }
 
   revalidatePath('/smart-archive')
