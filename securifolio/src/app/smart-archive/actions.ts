@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function saveCertificate(formData: any) {
@@ -32,7 +33,9 @@ export async function saveCertificate(formData: any) {
     // 2. DOUBLON DÉTECTÉ !
     
     // a. On passe le statut du titre existant en "Litige"
-    const { error: updateError } = await supabaseServer
+    // IMPORTANT: On utilise le client ADMIN car le RLS interdit les UPDATE aux agents standards
+    const supabaseAdmin = createAdminClient()
+    const { error: updateError } = await supabaseAdmin
       .from('titres_fonciers')
       .update({ statut: 'Litige' })
       .eq('id', existingTitle.id)
