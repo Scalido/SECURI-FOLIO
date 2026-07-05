@@ -89,7 +89,7 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
 
   if (insertError) {
     console.error('Erreur insertion nouveau titre:', insertError)
-    return { success: false, error: 'Erreur lors de l\'enregistrement du certificat.' }
+    return { success: false, error: `Erreur DB: ${insertError.message}` }
   }
 
   // 6. Historique de l'insertion
