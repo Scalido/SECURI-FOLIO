@@ -18,7 +18,14 @@ export default function SmartArchivePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbVerification, setDbVerification] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const [history, setHistory] = useState<any[]>([]);
+  
+  interface HistoryItem {
+    id: string;
+    action_type: string;
+    numero_cadastral: string;
+    created_at: string;
+  }
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,9 +39,9 @@ export default function SmartArchivePage() {
         return;
       }
       setHistory(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Erreur chargement historique (Server Action):", err);
-      setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `CATCH SERVER: ${err.message}`, created_at: new Date().toISOString() }]);
+      setHistory([{ id: 'error', action_type: 'error', numero_cadastral: `CATCH SERVER: ${(err as Error).message}`, created_at: new Date().toISOString() }]);
     } finally {
       setIsLoadingHistory(false);
     }
