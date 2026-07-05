@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { login } from './actions';
-import { ShieldCheck, Loader2, Lock } from 'lucide-react';
+import { ShieldCheck, Loader2, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,13 +68,22 @@ export default function LoginPage() {
             <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">
               Mot de Passe (L4 Clearance)
             </label>
-            <input
-              name="password"
-              type="password"
-              required
-              placeholder="••••••••••••"
-              className="w-full bg-brand-bg/50 border border-slate-200 dark:border-brand-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary transition-colors font-mono"
-            />
+            <div className="relative">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="••••••••••••"
+                className="w-full bg-brand-bg/50 border border-slate-200 dark:border-brand-border rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-primary transition-colors font-mono pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-brand-primary transition-colors focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           <button
