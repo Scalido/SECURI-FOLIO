@@ -1,14 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { checkCadastralNumber } from './actions';
-import { Search, ShieldAlert, ShieldCheck, Loader2, BookOpen, Code } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { checkCadastralNumber, saveScanHistory, getScanHistory } from './actions';
+import { Search, ShieldAlert, ShieldCheck, Loader2, BookOpen, Code, History, Clock } from 'lucide-react';
 
 export default function AntiFolioPage() {
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'valid' | 'fraud'>('idle');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [details, setDetails] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [history, setHistory] = useState<any[]>([]);
+
+  // Charger l'historique au démarrage
+  useEffect(() => {
+    const fetchHistory = async () => {
+      const data = await getScanHistory();
+      setHistory(data || []);
+    };
+    fetchHistory();
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,28 +31,37 @@ export default function AntiFolioPage() {
     try {
       const results = await checkCadastralNumber(query.trim());
       
+      let currentStatus: 'valid' | 'fraud' = 'fraud';
+
       if (!results || results.length === 0) {
-        setStatus('fraud');
-        return;
-      }
-
-      setDetails(results);
-
-      // Le phénomène "Folio" est détecté si :
-      // 1. Un des titres a explicitement le statut "Falsifié" ou "Litige"
-      // 2. Il y a plusieurs certificats pour un même numéro d'enregistrement (superposition)
-      const isFraud = results.some(r => r.statut === 'Falsifié' || r.statut === 'Litige') || results.length > 1;
-
-      if (isFraud) {
-        setStatus('fraud');
-      } else if (results.some(r => r.statut === 'Valide')) {
-        setStatus('valid');
+        currentStatus = 'fraud';
       } else {
-        setStatus('fraud');
+        setDetails(results);
+
+        const isFraud = results.some(r => r.statut === 'Falsifié' || r.statut === 'Litige') || results.length > 1;
+
+        if (isFraud) {
+          currentStatus = 'fraud';
+        } else if (results.some(r => r.statut === 'Valide')) {
+          currentStatus = 'valid';
+        } else {
+          currentStatus = 'fraud';
+        }
       }
+
+      setStatus(currentStatus);
+
+      // Sauvegarder l'historique
+      await saveScanHistory(query.trim(), currentStatus);
+      
+      // Rafraîchir l'historique
+      const newHistory = await getScanHistory();
+      setHistory(newHistory || []);
+
     } catch (err) {
       console.error(err);
       setStatus('fraud');
+      // En cas d'erreur de requête, on considère que le scan n'est pas abouti
     }
   };
 
@@ -116,6 +136,35 @@ export default function AntiFolioPage() {
                <strong className="text-slate-400">Transparence des Données (Phase 1) :</strong> Seules les circonscriptions numérisées et validées par le Conservateur des Titres Immobiliers sont interrogeables en temps réel. Un titre "Inconnu" dans une zone non numérisée nécessite une vérification manuelle aux archives physiques.
              </p>
           </div>
+
+          {/* Historique Rapide */}
+          {history.length > 0 && (
+            <div className="px-4 pt-4 mt-4 border-t border-slate-200/10 dark:border-brand-border/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Clock size={12} className="text-slate-500" />
+                <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Dernières vérifications</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {history.map((item, idx) => (
+                  <button 
+                    key={item.id || idx}
+                    onClick={() => {
+                      setQuery(item.numero_cadastral);
+                      // On pourrait déclencher handleSearch ici, mais on laisse l'utilisateur valider
+                    }}
+                    className={`flex items-center gap-2 text-[10px] font-mono font-bold px-3 py-1.5 rounded-lg border transition-colors hover:opacity-80 ${
+                      item.resultat === 'valid' 
+                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
+                        : 'bg-red-500/10 border-red-500/20 text-red-500'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+                    {item.numero_cadastral}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Zone de résultats */}
