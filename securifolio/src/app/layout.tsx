@@ -26,9 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="dark">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-screen overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-[#0B0F19] text-slate-300 flex flex-col h-[100dvh] w-full overflow-hidden selection:bg-brand-secondary/30 selection:text-brand-secondary`}>
         <Navbar />
-        <main className="flex-1 overflow-y-auto bg-[#0B0F19] flex flex-col">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#0B0F19] flex flex-col">
           <div className="flex-1 flex flex-col">
             {children}
           </div>

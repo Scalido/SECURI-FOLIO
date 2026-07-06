@@ -2,7 +2,7 @@ import { Shield } from "lucide-react";
 
 export default function TermsOfUse() {
   return (
-    <div className="min-h-screen pt-24 pb-16 px-6">
+    <div className="w-full flex-1 pt-24 pb-16 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-12">
           <div className="bg-brand-surface p-3 rounded-xl border border-brand-border">

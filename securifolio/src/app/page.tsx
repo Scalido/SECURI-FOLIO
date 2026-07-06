@@ -12,7 +12,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-brand-bg text-slate-600 dark:text-slate-300 font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-x-hidden">
+    <div className="w-full flex-1 bg-brand-bg text-slate-600 dark:text-slate-300 font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-x-hidden">
       
       {/* Background glow effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
