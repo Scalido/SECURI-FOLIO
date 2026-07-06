@@ -12,10 +12,10 @@ import {
 
 export default function Home() {
   return (
-    <div className="w-full flex-1 bg-brand-bg text-slate-600 dark:text-slate-300 font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-x-hidden">
+    <div className="relative w-full flex-1 bg-brand-bg text-slate-600 dark:text-slate-300 font-sans selection:bg-brand-primary/30 selection:text-brand-primary overflow-hidden">
       
       {/* Background glow effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* HEADER SECTION */}
       <header className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6">
