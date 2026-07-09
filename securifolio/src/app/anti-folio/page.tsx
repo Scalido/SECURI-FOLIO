@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { checkCadastralNumber, saveScanHistory, getScanHistory } from './actions';
-import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCircle, XCircle, Database } from 'lucide-react';
+import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCircle, XCircle, Database, BookOpen } from 'lucide-react';
 
 export default function AntiFolioPage() {
   const [query, setQuery] = useState('');
@@ -343,7 +343,53 @@ export default function AntiFolioPage() {
           )}
         </div>
 
-        <section className="max-w-4xl mx-auto my-16 space-y-6 w-full">
+        <section className="max-w-4xl mx-auto my-16 space-y-12 w-full">
+          {/* Section: Comment ça fonctionne */}
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center flex items-center justify-center gap-3">
+              <BookOpen className="w-6 h-6 text-brand-primary" />
+              Comment fonctionne le moteur Anti-Folio ?
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-6 relative">
+              {/* Ligne de connexion visuelle (desktop) */}
+              <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent -translate-y-1/2 z-0" />
+              
+              {/* Etape 1 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Search className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Interrogation</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  L'agent ou l'usager saisit un numéro cadastral (Vol/Folio). Le système interroge instantanément la base de données sécurisée des <strong>Jumeaux Numériques</strong> (certificats physiques préalablement scellés et analysés par l'IA).
+                </p>
+              </div>
+
+              {/* Etape 2 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Brain className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Audit Sémantique</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Le moteur d'Intelligence Artificielle vérifie les métadonnées (dates, noms, signatures). Il croise ces données pour s'assurer qu'il n'y a aucune trace de fraude documentaire ou de falsification (blanco, ratures, anachronismes).
+                </p>
+              </div>
+
+              {/* Etape 3 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-6 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Map className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Résolution Spatiale</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Ultime rempart : le moteur <strong>PostGIS</strong> charge les coordonnées géographiques du terrain et calcule mathématiquement si un <em>autre</em> titre revendique déjà la même parcelle (Détection du "Phénomène Folio").
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* L'Architecture Hybride : Défense en Profondeur */}
           <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)] relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
