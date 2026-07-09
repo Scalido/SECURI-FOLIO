@@ -69,7 +69,7 @@ export default function Home() {
               Face aux défis historiques liés aux erreurs d&apos;archivage, à la perte de documents physiques et au phénomène ravageur des superpositions de titres, notre écosystème apporte une réponse technologique radicale.
             </p>
             <p>
-              Notre mission est d&apos;éradiquer l&apos;insécurité juridique et la falsification documentaire en fournissant aux citoyens, ainsi qu&apos;à l&apos;État, des outils d&apos;audit fiables, instantanés et infalsifiables.
+              Notre mission est d&apos;éradiquer l&apos;insécurité juridique et la fraude foncière grâce à une architecture hybride inédite : l&apos;Intelligence Artificielle pour les documents, et les technologies géospatiales pour la réalité physique du terrain.
             </p>
           </div>
         </div>
@@ -99,7 +99,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Anti-Folio</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Détection algorithmique des superpositions. Vérifiez l&apos;unicité d&apos;un certificat foncier pour garantir qu&apos;aucune autre personne ne revendique la même parcelle.
+                  Le moteur d'audit hybride (Sémantique + Spatial). Il détecte les documents falsifiés et bloque instantanément les superpositions de polygones pour empêcher le vol de terrain.
                 </p>
               </div>
             </Link>
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Smart-Archive</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Numérisation et extraction OCR des livrets cadastraux. Remplacez la fouille manuelle par une recherche instantanée sur des archives infalsifiables.
+                  La plateforme de création des Jumeaux Numériques. Numérisation OCR, extraction par IA et ancrage spatial pour créer des archives infalsifiables.
                 </p>
               </div>
             </Link>
