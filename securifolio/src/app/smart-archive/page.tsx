@@ -359,8 +359,22 @@ export default function SmartArchivePage() {
             Smart <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Archive</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
-            Numérisez et extrayez instantanément les données clés de vos certificats d&apos;enregistrement et plans scannés.
+            Interface Opérateur / Géomètre (Niveau 1) : Numérisation des certificats et capture des données spatiales.
           </p>
+        </div>
+
+        {/* Instructions d'utilisation */}
+        <div className="w-full max-w-3xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
+          <BookOpen className="w-6 h-6 text-blue-500 shrink-0" />
+          <div>
+            <h3 className="text-blue-600 dark:text-blue-400 font-bold text-sm uppercase tracking-wide">Instructions (Phase 1)</h3>
+            <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
+              <li>Uploadez le document physique (Certificat ou Plan).</li>
+              <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
+              <li>Tracez <strong>obligatoirement</strong> les limites de la parcelle sur la carte (ou cochez "Localisation inconnue").</li>
+              <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
+            </ul>
+          </div>
         </div>
 
         {/* Drag & Drop Area */}
@@ -748,7 +762,7 @@ export default function SmartArchivePage() {
                               alert(`Erreur : ${res.error}`);
                             }
                           } else {
-                            alert("Données scellées ! Le scan a été sauvegardé de manière sécurisée et le titre est 'En attente d'audit'.");
+                            alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
                             setResult(null);
                             setDbVerification(null);
                             setStatus('idle');

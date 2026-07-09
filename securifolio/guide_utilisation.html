@@ -1,0 +1,116 @@
+<hr>
+<p>title: &quot;Guide d&#39;Utilisation - Sécurifolio&quot;
+author: &quot;Foncier Mabele IA&quot;
+pdf_options:
+  format: A4
+  margin: 20mm
+css: |
+  body {
+    font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    background-color: #ffffff;
+    line-height: 1.6;
+  }
+  h1 {
+    color: #0f4c81;
+    font-size: 24pt;
+    text-align: center;
+    border-bottom: 2px solid #0f4c81;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+  h2 {
+    color: #0f4c81;
+    font-size: 16pt;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+  }
+  h3 {
+    color: #10b981;
+    font-size: 14pt;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  p, ul, li {
+    font-size: 11pt;
+  }
+  .warning {
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 10px;
+    margin: 15px 0;</p>
+<h2>}</h2>
+<h1>Guide d'Utilisation Officiel : Sécurifolio</h1><p><strong>Sécurifolio</strong> est la plateforme intelligente d&#39;assainissement et de sécurisation des titres fonciers. Ce guide détaille les procédures pour les trois niveaux de responsabilité au sein de la Conservation Foncière (Agents, Cadastre, Conservateurs) ainsi que pour les utilisateurs publics (Notaires, Banques, Citoyens).</p>
+<h2>1. Accès au Système (Agents Uniquement)</h2>
+<p>L&#39;accès en écriture au système est strictement réservé aux agents disposant d&#39;une habilitation officielle.</p>
+<ol>
+<li>Allez sur la page de connexion : <code>https://[votre-domaine]/login</code></li>
+<li>Saisissez votre <strong>Email Officiel</strong> (ex: <code>agent@foncier.gouv.cd</code>) et votre <strong>Mot de passe</strong>.</li>
+<li>Cliquez sur <strong>Ouvrir la session</strong>.</li>
+<li>En cas de succès, le système vous redirigera automatiquement vers le tableau de bord correspondant à votre rôle (Agent, Chef de Cadastre, ou Conservateur).</li>
+</ol>
+<div class="warning">
+<strong>Attention :</strong> Toute tentative de connexion non autorisée est enregistrée dans l'historique d'audit du système.
+</div><h2>2. Niveau 1 : Numérisation et Saisie (Smart Archive - Agents)</h2>
+<p>C&#39;est ici que les agents transforment les archives papier en brouillons de certificats numériques.</p>
+<h3>Étape 2.1 : Upload du Document</h3>
+<ol>
+<li>Dans le tableau de bord <strong>Smart Archive</strong>, cliquez sur la zone d&#39;upload ou glissez-déposez la photo / le scan du <strong>Certificat d&#39;Enregistrement</strong>.</li>
+<li>Notre intelligence artificielle (Gemini Vision) va analyser le document en quelques secondes pour extraire les données textuelles et les entités nommées.</li>
+</ol>
+<h3>Étape 2.2 : Vérification des Données Extraites</h3>
+<p>Une fois l&#39;analyse terminée, le formulaire se remplit automatiquement. L&#39;Agent doit <strong>vérifier</strong> et corriger les informations suivantes si nécessaire :</p>
+<ul>
+<li>Numéro Cadastral (ex: SU/GOM/1023)</li>
+<li>Nom du Propriétaire</li>
+<li>Volume &amp; Folio</li>
+<li>Superficie et Circonscription</li>
+<li>Date d&#39;établissement</li>
+</ul>
+<h3>Étape 2.3 : Topographie et Numérisation Spatiale</h3>
+<ol>
+<li>L&#39;Agent utilise la carte interactive présente sur la page pour dessiner le polygone de la parcelle, s&#39;il est capable de l&#39;identifier avec précision.</li>
+<li>Si les coordonnées ne sont pas disponibles, cochez la case <em>Topographie Requise</em>.</li>
+</ol>
+<h3>Étape 2.4 : Scellement Initial et Mise en Attente Cadastrale</h3>
+<ol>
+<li>Cliquez sur le bouton de soumission.</li>
+<li>Le document est enregistré avec le statut initial <strong>&quot;En attente de validation cadastrale&quot;</strong>. <em>Le document est ainsi transmis au niveau 2 (Cadastre) pour contrôle.</em></li>
+</ol>
+<h2>3. Niveau 2 : Vérification Technique (Dashboard Cadastre - Chef du Cadastre)</h2>
+<p>Le Chef du Cadastre (Rôle: <code>chef_cadastre</code>) est responsable de valider techniquement et spatialement les brouillons saisis par les Agents.</p>
+<ol>
+<li>Allez sur le tableau de bord : <code>https://[votre-domaine]/cadastre-dashboard</code> (redirection automatique après login).</li>
+<li>Vérifiez l&#39;exactitude des informations techniques (Superficie, Mesurage) des dossiers &quot;En attente&quot;.</li>
+<li>Assurez-vous qu&#39;il n&#39;y a <strong>aucune superposition</strong> spatiale avec des parcelles voisines en consultant le plan cadastral numérique.</li>
+<li><strong>Valider Techniquement</strong> : Le dossier passe au statut &quot;Validé techniquement&quot; et est envoyé au Conservateur.</li>
+<li><strong>Rejeter (Falsifié / Litige)</strong> : Le dossier est rejeté s&#39;il comporte des erreurs fatales ou de fausses informations techniques.</li>
+</ol>
+<h2>4. Niveau 3 : Validation Juridique et Scellement (Dashboard Conservateur)</h2>
+<p>Le Conservateur des Titres Immobiliers (Rôle: <code>conservateur</code>) possède la compétence juridique exclusive pour sceller un titre. Il n&#39;évalue que les titres ayant déjà été techniquement validés par le Cadastre.</p>
+<ol>
+<li>Allez sur le tableau de bord : <code>https://[votre-domaine]/conservateur-dashboard</code> (redirection automatique après login).</li>
+<li>Vous y verrez la file d&#39;attente des titres ayant le statut <strong>&quot;Validé techniquement&quot;</strong>.</li>
+<li>Vérifiez l&#39;historique juridique, l&#39;authenticité des signatures originelles, et l&#39;identité des propriétaires.</li>
+<li><strong>Approuver</strong> : Le Conservateur appose sa signature numérique. Le titre est cryptographiquement scellé et obtient le statut définitif <strong>&quot;Valide&quot;</strong>.</li>
+<li><strong>Rejeter</strong> : Marque le titre comme &quot;Falsifié&quot; ou en &quot;Litige&quot; si une irrégularité juridique est découverte in extremis.</li>
+</ol>
+<h2>5. Portail Public de Due Diligence (Anti-Folio)</h2>
+<p>Ce portail permet aux acheteurs, notaires et banques de vérifier instantanément l&#39;état et la légitimité d&#39;un titre avant de s&#39;engager dans une transaction.</p>
+<ol>
+<li>Rendez-vous sur la page publique : <code>https://[votre-domaine]/anti-folio</code></li>
+<li>Dans la barre de recherche, saisissez le <strong>Numéro Cadastral exact</strong> (ex: <code>SU/GOM/1023</code>).</li>
+<li>Cliquez sur <strong>Scanner le Titre</strong>.</li>
+</ol>
+<h3>Interprétation des Résultats Visuels</h3>
+<ul>
+<li>🟢 <strong>Titre Authentique &amp; Valide (Bouclier Vert) :</strong> Le terrain est &quot;clean&quot;. Le titre a passé toutes les étapes de validation jusqu&#39;au Conservateur. L&#39;empreinte est sécurisée et l&#39;historique est limpide.</li>
+<li>🟠 <strong>En attente de validation (Horloge Orange) :</strong> Le document a été saisi par un agent, et est en cours de traitement soit au niveau du Cadastre (vérification technique), soit chez le Conservateur (signature juridique). Il n&#39;est pas encore garanti par l&#39;État.</li>
+<li>🔴 <strong>En Litige (Alerte Rouge - Conflit Spatial) :</strong> Le terrain fait l&#39;objet d&#39;un conflit de superposition ou de double-titre (&quot;Phénomène Folio&quot;). La transaction est fortement déconseillée.</li>
+<li>🔴 <strong>Falsifié / Inconnu (Alerte Rouge - Faux Titre) :</strong> Ce titre n&#39;est pas reconnu par le registre numérique de l&#39;État ou a été formellement rejeté par les instances de validation. C&#39;est potentiellement une escroquerie.</li>
+</ul>
+<hr>
+<p><em>Fin du guide. Pour tout problème technique, veuillez contacter l&#39;administrateur système.</em></p>
+

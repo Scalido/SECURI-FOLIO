@@ -6,7 +6,7 @@ import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCirc
 
 export default function AntiFolioPage() {
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'valid' | 'fraud'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'valid' | 'fraud' | 'pending'>('idle');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [details, setDetails] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +31,7 @@ export default function AntiFolioPage() {
     try {
       const results = await checkCadastralNumber(query.trim());
       
-      let currentStatus: 'valid' | 'fraud' = 'fraud';
+      let currentStatus: 'valid' | 'fraud' | 'pending' = 'fraud';
 
       if (!results || results.length === 0) {
         currentStatus = 'fraud';
@@ -44,6 +44,8 @@ export default function AntiFolioPage() {
           currentStatus = 'fraud';
         } else if (results.some(r => r.statut === 'Valide')) {
           currentStatus = 'valid';
+        } else if (results.some(r => r.statut?.startsWith("En attente") || r.statut === "Validé techniquement")) {
+          currentStatus = 'pending';
         } else {
           currentStatus = 'fraud';
         }
@@ -245,6 +247,91 @@ export default function AntiFolioPage() {
                     <div>
                       <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">N° d'enregistrement</span>
                       <p className="font-bold text-brand-primary text-sm">{details[0].numero_cadastral}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {status === 'pending' && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-white dark:bg-brand-surface/80 backdrop-blur-md border border-amber-500/40 p-8 shadow-[0_0_40px_rgba(245,158,11,0.15)] animate-pulse-slow">
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <ShieldAlert className="w-64 h-64 text-amber-500" />
+              </div>
+              
+              <div className="relative z-10 flex flex-col items-center text-center space-y-4 mb-8">
+                <div className="p-4 bg-amber-500/10 rounded-full border border-amber-500/30 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                  <Clock className="w-10 h-10" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
+                    EN ATTENTE DE VALIDATION
+                  </h2>
+                  <p className="text-xs font-bold text-amber-500 bg-amber-500/10 px-4 py-1.5 mt-2 inline-block rounded-full border border-amber-500/20 tracking-wide uppercase">
+                    Vérification par le Conservateur requise
+                  </p>
+                </div>
+              </div>
+
+              {/* Double Vérification Cards (Pending) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 mb-8">
+                {/* Couche 1 : IA */}
+                <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5 flex flex-col">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-amber-500/20 text-amber-500 rounded-lg border border-amber-500/30">
+                      <Brain size={18} />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Sémantique (IA)</h3>
+                      <p className="text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 text-amber-500">
+                        <Clock size={10} className="text-amber-500" /> Numérisé par un agent
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Le document a été scanné et extrait par l'IA. Il est actuellement dans la file d'attente pour être approuvé par le Conservateur des Titres Immobiliers.
+                  </p>
+                </div>
+
+                {/* Couche 2 : Spatial */}
+                <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5 flex flex-col">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-amber-500/20 text-amber-500 rounded-lg border border-amber-500/30">
+                      <Map size={18} />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Topographique</h3>
+                      <p className="text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 text-amber-500">
+                        <Clock size={10} className="text-amber-500" /> En cours de traitement
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Les coordonnées spatiales seront définitivement validées lors de l'approbation du Conservateur. Veuillez réessayer plus tard.
+                  </p>
+                </div>
+              </div>
+                
+              {/* Détails du Titre */}
+              {details.length > 0 && (
+                <div className="w-full relative z-10 bg-brand-bg/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20 text-left shadow-inner">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                    <div>
+                      <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Propriétaire</span>
+                      <p className="font-bold text-slate-900 dark:text-white text-sm opacity-50">{details[0].nom_proprietaire} (Non validé)</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Circonscription</span>
+                      <p className="font-bold text-slate-900 dark:text-white text-sm">{details[0].circonscription}</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">Vol / Folio</span>
+                      <p className="font-bold text-slate-900 dark:text-white text-sm">{details[0].volume} / {details[0].folio}</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 dark:text-slate-500 uppercase tracking-wider text-[10px] font-bold block mb-1.5">N° d'enregistrement</span>
+                      <p className="font-bold text-amber-500 text-sm">{details[0].numero_cadastral}</p>
                     </div>
                   </div>
                 </div>

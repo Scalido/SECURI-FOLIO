@@ -20,6 +20,26 @@ export async function login(formData: FormData) {
     return { error: 'Identifiants invalides ou compte non autorisé.' }
   }
 
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile) {
+      if (profile.role === 'chef_cadastre') {
+        revalidatePath('/cadastre-dashboard')
+        redirect('/cadastre-dashboard')
+      } else if (profile.role === 'conservateur') {
+        revalidatePath('/conservateur-dashboard')
+        redirect('/conservateur-dashboard')
+      }
+    }
+  }
+
   revalidatePath('/smart-archive')
   redirect('/smart-archive')
 }

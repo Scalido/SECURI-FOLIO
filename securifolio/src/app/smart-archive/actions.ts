@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { certificateSchema } from '@/lib/validations'
+import crypto from 'crypto'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, requiresTopography: boolean = false) {
@@ -80,6 +81,10 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
   }
 
   // 5. NOUVEAU TITRE : On l'insère avec le statut "En attente d'audit"
+  // Générer la signature cryptographique (Hash SHA-256)
+  const dataToHash = `${numeroCadastral}-${validData.nom}-${validData.date_etablissement}-${coordonneesSpatiales ? JSON.stringify(coordonneesSpatiales) : 'no-coords'}`;
+  const hashSignature = crypto.createHash('sha256').update(dataToHash).digest('hex');
+
   const { error: insertError } = await supabaseServer
     .from('titres_fonciers')
     .insert([{
@@ -90,9 +95,10 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
       circonscription: validData.circonscription || '',
       superficie: validData.superficie || '',
       date_enregistrement: validData.date_etablissement || new Date().toISOString(),
-      statut: requiresTopography ? "En attente d'audit - Topographie requise" : "En attente d'audit", // Changement pour gérer l'absence de coordonnées
+      statut: "En attente de validation cadastrale", // Statut initial pour le Chef du Cadastre
       scan_url: scanUrl || null, // Lien vers l'image stockée
-      coordonnees_spatiales: coordonneesSpatiales || null // Polygon spatial (Technique B)
+      coordonnees_spatiales: coordonneesSpatiales || null, // Polygon spatial (Technique B)
+      hash_signature: hashSignature // Empreinte cryptographique
     }])
 
   if (insertError) {
