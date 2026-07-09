@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { certificateSchema } from '@/lib/validations'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function saveCertificate(formData: any, scanUrl?: string) {
+export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, requiresTopography: boolean = false) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 
@@ -90,8 +90,9 @@ export async function saveCertificate(formData: any, scanUrl?: string) {
       circonscription: validData.circonscription || '',
       superficie: validData.superficie || '',
       date_enregistrement: validData.date_etablissement || new Date().toISOString(),
-      statut: "En attente d'audit", // Changement majeur ici
-      scan_url: scanUrl || null // Lien vers l'image stockée
+      statut: requiresTopography ? "En attente d'audit - Topographie requise" : "En attente d'audit", // Changement pour gérer l'absence de coordonnées
+      scan_url: scanUrl || null, // Lien vers l'image stockée
+      coordonnees_spatiales: coordonneesSpatiales || null // Polygon spatial (Technique B)
     }])
 
   if (insertError) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { checkCadastralNumber, saveScanHistory, getScanHistory } from './actions';
-import { Search, ShieldAlert, ShieldCheck, Loader2, BookOpen, Code, Clock, Brain, Map, CheckCircle, XCircle, Database } from 'lucide-react';
+import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCircle, XCircle, Database } from 'lucide-react';
 
 export default function AntiFolioPage() {
   const [query, setQuery] = useState('');

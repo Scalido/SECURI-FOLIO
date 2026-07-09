@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity } from 'lucide-react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff } from 'lucide-react';
 import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
+import dynamic from 'next/dynamic';
+
+const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
@@ -18,6 +21,10 @@ export default function SmartArchivePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbVerification, setDbVerification] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [geoData, setGeoData] = useState<any>(null);
+  const [geoAreaSqm, setGeoAreaSqm] = useState<number>(0);
+  const [isLocationUnknown, setIsLocationUnknown] = useState(false);
   
   interface HistoryItem {
     id: string;
@@ -629,6 +636,52 @@ export default function SmartArchivePage() {
                   
                 </div>
 
+                {/* Résolution Spatiale (Technique B) */}
+                <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/10">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-brand-primary" /> Résolution Spatiale
+                    </h3>
+                    {geoAreaSqm > 0 && !isLocationUnknown && (
+                      <span className={`text-xs font-bold px-2 py-1 rounded ${Math.abs(geoAreaSqm - parseFloat(formData?.superficie || '0')) > (parseFloat(formData?.superficie || '0') * 0.1) ? 'bg-red-500/10 text-red-500' : 'bg-brand-primary/10 text-brand-primary'}`}>
+                        Aire tracée: {geoAreaSqm.toFixed(2)} m²
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 mb-4 font-medium leading-relaxed">
+                    Si le document ne possède pas de coordonnées absolues, veuillez dessiner le polygone de la parcelle sur la carte (Technique B).
+                  </p>
+                  
+                  <div className={`transition-all duration-300 relative ${isLocationUnknown ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
+                    <MapDigitizer onPolygonDrawn={(geojson, area) => { setGeoData(geojson); setGeoAreaSqm(area); }} />
+                    {isLocationUnknown && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 backdrop-blur-[1px] z-10 rounded-2xl">
+                         <MapPinOff className="w-12 h-12 text-slate-500 mb-2 opacity-50" />
+                         <span className="text-sm font-bold text-slate-600 dark:text-slate-300">Saisie spatiale désactivée</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 rounded-xl flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="unknownLocation" 
+                      checked={isLocationUnknown}
+                      onChange={(e) => {
+                        setIsLocationUnknown(e.target.checked);
+                        if (e.target.checked) {
+                          setGeoData(null);
+                          setGeoAreaSqm(0);
+                        }
+                      }}
+                      className="mt-0.5 accent-amber-500" 
+                    />
+                    <label htmlFor="unknownLocation" className="text-xs text-amber-800 dark:text-amber-200/80 font-medium leading-relaxed cursor-pointer">
+                      <strong>Localisation spatiale inconnue :</strong> Je n'ai pas les moyens d'identifier la parcelle avec précision. (Le dossier sera marqué "Topographie requise" pour une descente sur le terrain).
+                    </label>
+                  </div>
+                </div>
+
                 <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/30 space-y-4">
                   <div className="flex items-start gap-2 text-[10px] text-slate-500 font-medium">
                     <input type="checkbox" id="certify" className="mt-0.5 accent-brand-primary" />
@@ -643,6 +696,9 @@ export default function SmartArchivePage() {
                         setStatus('idle');
                         setFile(null);
                         setFormData(null);
+                        setGeoData(null);
+                        setGeoAreaSqm(0);
+                        setIsLocationUnknown(false);
                       }}
                       className="flex-1 py-3.5 border border-slate-200 dark:border-brand-border hover:bg-slate-100 dark:hover:bg-brand-surface rounded-xl text-xs font-bold uppercase tracking-widest transition-colors text-slate-600 dark:text-slate-300"
                     >
@@ -653,6 +709,10 @@ export default function SmartArchivePage() {
                       onClick={async () => {
                         if (!file) {
                           alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
+                          return;
+                        }
+                        if (!geoData && !isLocationUnknown) {
+                          alert("Erreur : Veuillez dessiner la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
                           return;
                         }
                         setIsSaving(true);
@@ -679,7 +739,7 @@ export default function SmartArchivePage() {
                             .getPublicUrl(fileName);
 
                           // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
-                          const res = await saveCertificate(formData, publicUrl);
+                          const res = await saveCertificate(formData, publicUrl, geoData, isLocationUnknown);
                           
                           if (!res.success) {
                             if (res.error === 'TITRE_DEJA_NUMERISE') {
@@ -694,6 +754,9 @@ export default function SmartArchivePage() {
                             setStatus('idle');
                             setFile(null);
                             setFormData(null);
+                            setGeoData(null);
+                            setGeoAreaSqm(0);
+                            setIsLocationUnknown(false);
                           }
                           // Mettre à jour l'historique après l'action !
                           await fetchHistory();
