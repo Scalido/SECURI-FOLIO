@@ -65,8 +65,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
         {/* Left Side: Logo & Title */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative flex items-center justify-center w-10 h-10 group-hover:scale-105 transition-transform duration-200">
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <div className="relative flex items-center justify-center w-10 h-10 shrink-0 group-hover:scale-105 transition-transform duration-200">
             <Logo size={36} className="text-brand-primary" />
           </div>
           <div>
