@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff } from 'lucide-react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map } from 'lucide-react';
 import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
@@ -780,25 +780,64 @@ export default function SmartArchivePage() {
           </div>
         )}
         
-        <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-6 animate-in fade-in duration-500">
-          <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
-            <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-4">
-              <Sparkles className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Intelligence Artificielle & Audit
+        <section className="max-w-4xl w-full mx-auto mt-16 mb-8 space-y-12 animate-in fade-in duration-500">
+          {/* Section: Comment ça fonctionne */}
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center flex items-center justify-center gap-3">
+              <BookOpen className="w-6 h-6 text-brand-primary" />
+              Comment fonctionne l'Archivage Intelligent ?
             </h2>
-            <div className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed space-y-4">
-              <p>
-                Les archives foncières congolaises ont longtemps souffert de conditions de conservation précaires. De nombreux certificats sont froissés, partiellement effacés ou falsifiés manuellement (utilisation de blanc correcteur pour modifier une superficie ou un nom).
-              </p>
-              <div className="bg-brand-bg/50 p-5 rounded-xl border border-slate-200 dark:border-brand-border/50">
-                <strong className="text-slate-900 dark:text-white block mb-3">Le rôle de l&apos;IA (Vision AI) :</strong>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Extraction Haute Précision :</strong> Le module lit et structure instantanément les métadonnées depuis n&apos;importe quel scan PDF ou photo.</span></li>
-                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Audit Graphique :</strong> L&apos;algorithme traque visuellement la moindre altération, rature ou retouche suspecte sur le document physique.</span></li>
-                  <li className="flex items-start gap-3"><span className="text-brand-primary mt-0.5">■</span> <span><strong className="text-slate-200">Validation Croisée :</strong> Les données extraites sont instantanément confrontées à la base de données historique de l&apos;État.</span></li>
-                </ul>
+            
+            <div className="grid md:grid-cols-4 gap-4 relative">
+              {/* Ligne de connexion visuelle (desktop) */}
+              <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent -translate-y-1/2 z-0" />
+              
+              {/* Etape 1 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Scan className="w-5 h-5" />
+                </div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Numérisation</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  L'agent assermenté scanne le certificat d'enregistrement physique. Le document original est téléchargé de manière sécurisée vers les serveurs de l'État.
+                </p>
+              </div>
+
+              {/* Etape 2 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Brain className="w-5 h-5" />
+                </div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Extraction (IA)</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Notre Vision AI lit, comprend et extrait automatiquement toutes les métadonnées (Propriétaire, Superficie, Dates) tout en traquant la moindre falsification (rature, blanco).
+                </p>
+              </div>
+
+              {/* Etape 3 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Map className="w-5 h-5" />
+                </div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  L'agent dessine le polygone géospatial exact du terrain sur une carte satellite pour lier le document juridique à une réalité physique inviolable.
+                </p>
+              </div>
+
+              {/* Etape 4 */}
+              <div className="bg-white dark:bg-brand-surface/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 dark:border-brand-border shadow-lg relative z-10 hover:border-brand-primary/50 transition-colors group">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">4. Scellement</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Les métadonnées et les coordonnées sont "scellées" cryptographiquement dans la base de données. Le <strong>Jumeau Numérique</strong> est créé et prêt à être audité.
+                </p>
               </div>
             </div>
           </div>
+
           <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
             <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-3">
               <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
