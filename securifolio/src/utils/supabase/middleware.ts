@@ -60,6 +60,8 @@ export async function updateSession(request: NextRequest) {
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login')
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/smart-archive') || request.nextUrl.pathname.startsWith('/anti-folio')
+    || request.nextUrl.pathname.startsWith('/cadastre-dashboard')
+    || request.nextUrl.pathname.startsWith('/conservateur-dashboard')
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
 
   if ((isProtectedRoute || isAdminRoute) && !user) {

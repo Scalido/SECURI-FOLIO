@@ -2,11 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { getPendingTitles, updateTitleStatus } from './actions';
-import { ShieldCheck, ShieldAlert, CheckCircle2, XCircle, Clock, Search, ExternalLink, BookOpen } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, CheckCircle2, XCircle, Clock, Search, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
+type TitleRow = {
+  id: string;
+  numero_cadastral: string;
+  statut: string;
+  nom_proprietaire: string;
+  circonscription: string;
+  volume: string;
+  folio: string;
+  created_at: string;
+};
+
 export default function ConservateurDashboard() {
-  const [titles, setTitles] = useState<any[]>([]);
+  const [titles, setTitles] = useState<TitleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);

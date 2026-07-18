@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { requireMfaForSensitiveRole } from '@/lib/security/mfa'
 
 export async function getPendingTitles() {
   const supabaseServer = createClient()
@@ -17,6 +18,9 @@ export async function getPendingTitles() {
   if (!profile || profile.role !== 'chef_cadastre') {
     return { success: false, error: 'Accès réservé au Chef du Cadastre', data: [] }
   }
+
+  const mfaError = await requireMfaForSensitiveRole(supabaseServer, profile.role)
+  if (mfaError) return { success: false, error: mfaError, data: [] }
 
   const { data, error } = await supabaseServer
     .from('titres_fonciers')
@@ -48,33 +52,19 @@ export async function updateTitleStatus(titleId: string, newStatus: 'Validé tec
     return { success: false, error: 'Accès réservé au Chef du Cadastre' }
   }
 
-  // Mettre à jour le statut
+  const mfaError = await requireMfaForSensitiveRole(supabaseServer, profile.role)
+  if (mfaError) return { success: false, error: mfaError }
+
   const { error: updateError } = await supabaseServer
-    .from('titres_fonciers')
-    .update({ statut: newStatus })
-    .eq('id', titleId)
+    .rpc('update_title_status_with_history', {
+      p_title_id: titleId,
+      p_new_status: newStatus,
+      p_notes: notes || null
+    })
 
   if (updateError) {
     console.error('Erreur updateTitleStatus:', updateError)
     return { success: false, error: updateError.message }
-  }
-
-  // On récupère le numéro cadastral pour l'historique
-  const { data: title } = await supabaseServer
-    .from('titres_fonciers')
-    .select('numero_cadastral')
-    .eq('id', titleId)
-    .single()
-
-  if (title) {
-    await supabaseServer
-      .from('smart_archive_history')
-      .insert([{
-        agent_id: user.id,
-        numero_cadastral: title.numero_cadastral,
-        action_type: newStatus === 'Validé techniquement' ? 'approved_by_cadastre' : 'rejected_by_cadastre',
-        notes: notes || null
-      }])
   }
 
   return { success: true }

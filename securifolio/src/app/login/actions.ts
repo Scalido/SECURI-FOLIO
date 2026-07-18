@@ -23,6 +23,12 @@ export async function login(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   
   if (user) {
+    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase())
+    if (adminEmails.includes(user.email?.toLowerCase() || "")) {
+      revalidatePath('/mfa')
+      redirect('/mfa')
+    }
+
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -31,11 +37,11 @@ export async function login(formData: FormData) {
 
     if (profile) {
       if (profile.role === 'chef_cadastre') {
-        revalidatePath('/cadastre-dashboard')
-        redirect('/cadastre-dashboard')
+        revalidatePath('/mfa')
+        redirect('/mfa')
       } else if (profile.role === 'conservateur') {
-        revalidatePath('/conservateur-dashboard')
-        redirect('/conservateur-dashboard')
+        revalidatePath('/mfa')
+        redirect('/mfa')
       }
     }
   }

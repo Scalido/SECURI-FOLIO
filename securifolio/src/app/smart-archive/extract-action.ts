@@ -17,7 +17,7 @@ export async function extractTitleData(formData: FormData) {
       return { success: false, error: 'Clé API Gemini non configurée.' }
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
     // Convert the File object to base64
     const arrayBuffer = await file.arrayBuffer()

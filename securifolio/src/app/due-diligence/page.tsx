@@ -2,15 +2,19 @@
 
 import { useState } from 'react';
 import { Search, ShieldCheck, AlertTriangle, XCircle, FileText, CheckCircle2 } from 'lucide-react';
-import { createClient } from '@/utils/supabase/client';
+
+type DueDiligenceResult = {
+  numero_cadastral: string;
+  circonscription: string | null;
+  statut: string;
+  date_enregistrement: string | null;
+};
 
 export default function DueDiligencePage() {
   const [numeroCadastral, setNumeroCadastral] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<DueDiligenceResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const supabase = createClient();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,22 +25,23 @@ export default function DueDiligencePage() {
     setResult(null);
 
     try {
-      const { data, error } = await supabase
-        .from('titres_fonciers')
-        .select('numero_cadastral, nom_proprietaire, circonscription, statut, hash_signature, date_enregistrement')
-        .eq('numero_cadastral', numeroCadastral.trim())
-        .single();
+      const response = await fetch('/api/due-diligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numeroCadastral: numeroCadastral.trim() }),
+      });
+      const payload = await response.json();
 
-      if (error) {
-        if (error.code === 'PGRST116') {
+      if (!response.ok) {
+        if (response.status === 404) {
           setError('Aucun titre foncier trouvé pour ce numéro cadastral.');
         } else {
-          setError('Erreur lors de la recherche. Veuillez réessayer.');
+          setError(payload.error || 'Erreur lors de la recherche. Veuillez réessayer.');
         }
       } else {
-        setResult(data);
+        setResult(payload.data);
       }
-    } catch (err) {
+    } catch {
       setError('Erreur de connexion au serveur.');
     } finally {
       setLoading(false);
@@ -132,8 +137,8 @@ export default function DueDiligencePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Propriétaire Enregistré</p>
-                <p className="text-lg font-medium text-slate-900 dark:text-white">{result.nom_proprietaire}</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Identité Propriétaire</p>
+                <p className="text-lg font-medium text-slate-900 dark:text-white">Masquée — consultation administrative requise</p>
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Circonscription</p>
@@ -141,10 +146,10 @@ export default function DueDiligencePage() {
               </div>
               <div className="space-y-1 md:col-span-2">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileText className="w-3 h-3" /> Empreinte Cryptographique (SHA-256)
+                  <FileText className="w-3 h-3" /> Date d'enregistrement
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 font-mono bg-slate-50 dark:bg-brand-bg/50 p-3 rounded-xl break-all border border-slate-100 dark:border-brand-border/50">
-                  {result.hash_signature || "Non générée (Titre ancien)"}
+                  {result.date_enregistrement ? new Date(result.date_enregistrement).toLocaleDateString('fr-FR') : "Non publiée"}
                 </p>
               </div>
             </div>

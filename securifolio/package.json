@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:security": "node scripts/security-checks.mjs",
+    "test:api": "node tests/api-smoke-tests.mjs",
+    "test": "npm run test:security && npm run test:api",
+    "audit:deps": "npm audit --audit-level=moderate"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

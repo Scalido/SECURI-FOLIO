@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+
+const schema = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8')
+const smartArchiveActions = readFileSync(new URL('../src/app/smart-archive/actions.ts', import.meta.url), 'utf8')
+const cadastreActions = readFileSync(new URL('../src/app/cadastre-dashboard/actions.ts', import.meta.url), 'utf8')
+const conservateurActions = readFileSync(new URL('../src/app/conservateur-dashboard/actions.ts', import.meta.url), 'utf8')
+const adminActions = readFileSync(new URL('../src/app/admin/actions.ts', import.meta.url), 'utf8')
+const mfaHelper = readFileSync(new URL('../src/lib/security/mfa.ts', import.meta.url), 'utf8')
+const mfaPage = readFileSync(new URL('../src/app/mfa/page.tsx', import.meta.url), 'utf8')
+const migration = readFileSync(new URL('../supabase/migrations/20260718111000_security_hardening.sql', import.meta.url), 'utf8')
+
+assert.match(schema, /CREATE OR REPLACE FUNCTION prevent_history_mutation/, 'Append-only trigger function is missing')
+assert.match(schema, /BEFORE UPDATE OR DELETE ON smart_archive_history/, 'smart_archive_history append-only trigger is missing')
+assert.match(schema, /BEFORE UPDATE OR DELETE ON anti_folio_history/, 'anti_folio_history append-only trigger is missing')
+assert.match(schema, /CREATE OR REPLACE FUNCTION create_title_with_history/, 'Transactional title creation RPC is missing')
+assert.match(schema, /CREATE OR REPLACE FUNCTION update_title_status_with_history/, 'Transactional status update RPC is missing')
+assert.match(schema, /profiles\.circonscription = titres_fonciers\.circonscription/, 'RLS circonscription scoping is missing')
+assert.match(smartArchiveActions, /\.rpc\('create_title_with_history'/, 'Smart Archive must use create_title_with_history RPC')
+assert.match(cadastreActions, /\.rpc\('update_title_status_with_history'/, 'Cadastre must use update_title_status_with_history RPC')
+assert.match(conservateurActions, /\.rpc\('update_title_status_with_history'/, 'Conservateur must use update_title_status_with_history RPC')
+assert.match(adminActions, /requireMfaForSensitiveRole/, 'Admin account creation must enforce MFA')
+assert.match(cadastreActions, /requireMfaForSensitiveRole/, 'Cadastre workflow must enforce MFA')
+assert.match(conservateurActions, /requireMfaForSensitiveRole/, 'Conservateur workflow must enforce MFA')
+assert.match(mfaHelper, /currentLevel !== 'aal2'/, 'MFA helper must require aal2')
+assert.match(mfaPage, /auth\.mfa\.enroll/, 'MFA page must support factor enrollment')
+assert.match(mfaPage, /auth\.mfa\.challenge/, 'MFA page must create MFA challenges')
+assert.match(mfaPage, /auth\.mfa\.verify/, 'MFA page must verify MFA challenges')
+assert.match(migration, /create_title_with_history/, 'Security hardening migration must contain RPC definitions')
+
+console.log('Security checks passed')

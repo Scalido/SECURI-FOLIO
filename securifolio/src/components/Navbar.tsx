@@ -14,9 +14,9 @@ export default function Navbar() {
   const [ecoMode, setEcoMode] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
-  const supabase = createClient();
 
   useEffect(() => {
+    const supabase = createClient();
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
@@ -30,9 +30,10 @@ export default function Navbar() {
     );
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, []);
 
   const handleSignOut = async () => {
+    const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/login");
   };

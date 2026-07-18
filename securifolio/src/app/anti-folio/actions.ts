@@ -1,12 +1,16 @@
 'use server'
 
-import { supabase } from '@/lib/supabaseClient'
 import { createClient } from '@/utils/supabase/server'
 
 export async function checkCadastralNumber(cadastralNumber: string) {
   if (!cadastralNumber) return null
 
-  const { data, error } = await supabase
+  const supabaseServer = createClient()
+  const { data: { user } } = await supabaseServer.auth.getUser()
+
+  if (!user) return null
+
+  const { data, error } = await supabaseServer
     .from('titres_fonciers')
     .select('*')
     .eq('numero_cadastral', cadastralNumber)
@@ -19,7 +23,7 @@ export async function checkCadastralNumber(cadastralNumber: string) {
   return data
 }
 
-export async function saveScanHistory(numeroCadastral: string, resultat: 'valid' | 'fraud') {
+export async function saveScanHistory(numeroCadastral: string, resultat: 'valid' | 'fraud' | 'pending') {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 

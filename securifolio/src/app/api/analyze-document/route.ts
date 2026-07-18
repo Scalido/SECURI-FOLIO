@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/utils/supabase/server';
+import { checkRateLimit, getClientIp } from '@/lib/security/rateLimit';
 
 // Initialize the Google Generative AI SDK
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const MAX_BASE64_BYTES = 8 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Authentification requise.' }, { status: 401 });
+    }
+
+    const rate = checkRateLimit(`analyze-document:${user.id}:${getClientIp(req.headers)}`, 8, 60_000);
+    if (!rate.allowed) {
+      return NextResponse.json({ error: 'Trop de requêtes. Réessayez dans quelques instants.' }, { status: 429 });
+    }
+
     const { imageUrl, base64Data, mimeType } = await req.json();
 
     if (!imageUrl && !base64Data) {
@@ -20,13 +34,33 @@ export async function POST(req: NextRequest) {
     let finalBase64 = base64Data;
     let finalMimeType = mimeType;
 
+    if (finalBase64 && typeof finalBase64 !== 'string') {
+      return NextResponse.json({ error: 'Format base64 invalide.' }, { status: 400 });
+    }
+
+    if (finalBase64 && Buffer.byteLength(finalBase64, 'base64') > MAX_BASE64_BYTES) {
+      return NextResponse.json({ error: 'Document trop volumineux. Taille maximale: 8 Mo.' }, { status: 413 });
+    }
+
+    if (finalMimeType && typeof finalMimeType === 'string' && !/^image\/(png|jpe?g|webp)$|^application\/pdf$/.test(finalMimeType)) {
+      return NextResponse.json({ error: 'Type de fichier non autorisé.' }, { status: 415 });
+    }
+
     // 1. Si une URL est passée (rétrocompatibilité), récupérer l'image
     if (imageUrl) {
+      const url = new URL(imageUrl);
+      if (url.protocol !== 'https:') {
+        return NextResponse.json({ error: 'Seules les URL HTTPS sont acceptées.' }, { status: 400 });
+      }
+
       const imageResp = await fetch(imageUrl);
       if (!imageResp.ok) {
         throw new Error('Impossible de télécharger l\'image depuis l\'URL fournie.');
       }
       const arrayBuffer = await imageResp.arrayBuffer();
+      if (arrayBuffer.byteLength > MAX_BASE64_BYTES) {
+        return NextResponse.json({ error: 'Document trop volumineux. Taille maximale: 8 Mo.' }, { status: 413 });
+      }
       finalBase64 = Buffer.from(arrayBuffer).toString('base64');
       finalMimeType = imageResp.headers.get('content-type') || 'image/jpeg';
     }
@@ -105,7 +139,7 @@ export async function POST(req: NextRequest) {
       try {
         const { data: dbData, error: dbError } = await supabase
           .from('titres_fonciers')
-          .select('*')
+          .select('numero_cadastral, nom_proprietaire, volume, folio, circonscription, statut')
           .eq('numero_cadastral', parsedJson.numero_cadastral.trim());
 
         if (!dbError && dbData && dbData.length > 0) {
@@ -121,7 +155,11 @@ export async function POST(req: NextRequest) {
           }
 
           dbVerification.found = true;
-          dbVerification.dbRecord = matchRecord;
+          dbVerification.dbRecord = {
+            numero_cadastral: matchRecord.numero_cadastral,
+            circonscription: matchRecord.circonscription,
+            statut: matchRecord.statut
+          };
           dbVerification.status = matchRecord.statut;
 
           // Comparaison insensible à la casse et aux espaces

@@ -22,6 +22,10 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent sceller un document.' }
   }
 
+  if (requiresTopography && !coordonneesSpatiales) {
+    return { success: false, error: 'Coordonnées topographiques requises pour ce dossier.' }
+  }
+
   // 2. Validation Zod stricte
   const validationResult = certificateSchema.safeParse(formData)
   
@@ -46,17 +50,7 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
   }
 
   if (existingTitle) {
-    // 4. DOUBLON DÉTECTÉ !
-    // IMPORTANT: On utilise le client standard maintenant que le RLS va être bien configuré
-    const { error: updateError } = await supabaseServer
-      .from('titres_fonciers')
-      .update({ statut: 'Litige' })
-      .eq('id', existingTitle.id)
-      
-    if (updateError) {
-      console.error('Erreur mise à jour statut Litige:', updateError)
-    }
-
+    // 4. DOUBLON DÉTECTÉ : on journalise l'alerte sans muter automatiquement le titre existant.
     const { error: historyError } = await supabaseServer
       .from('smart_archive_history')
       .insert([{
@@ -76,54 +70,47 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     return { 
       success: false, 
       error: 'TITRE_DEJA_NUMERISE', 
-      message: 'Ce numéro cadastral est déjà enregistré dans le système. Le statut du titre existant a été automatiquement passé en "Litige".'
+      message: 'Ce numéro cadastral est déjà enregistré dans le système. Une alerte de doublon a été journalisée pour revue administrative.'
     }
   }
 
   // 5. NOUVEAU TITRE : On l'insère avec le statut "En attente d'audit"
   // Générer la signature cryptographique (Hash SHA-256)
-  const dataToHash = `${numeroCadastral}-${validData.nom}-${validData.date_etablissement}-${coordonneesSpatiales ? JSON.stringify(coordonneesSpatiales) : 'no-coords'}`;
-  const hashSignature = crypto.createHash('sha256').update(dataToHash).digest('hex');
+  const dataToSign = JSON.stringify({
+    numero_cadastral: numeroCadastral,
+    nom: validData.nom,
+    date_etablissement: validData.date_etablissement || null,
+    coordonnees_spatiales: coordonneesSpatiales || null,
+    agent_id: user.id
+  });
+  const signatureSecret = process.env.CERTIFICATE_HMAC_SECRET;
+
+  if (!signatureSecret) {
+    return { success: false, error: 'Secret de signature CERTIFICATE_HMAC_SECRET manquant.' }
+  }
+
+  const hashSignature = crypto.createHmac('sha256', signatureSecret).update(dataToSign).digest('hex');
 
   const { error: insertError } = await supabaseServer
-    .from('titres_fonciers')
-    .insert([{
-      numero_cadastral: numeroCadastral,
-      nom_proprietaire: validData.nom,
-      volume: validData.volume || '',
-      folio: validData.folio || '',
-      circonscription: validData.circonscription || '',
-      superficie: validData.superficie || '',
-      date_enregistrement: validData.date_etablissement || new Date().toISOString(),
-      statut: "En attente de validation cadastrale", // Statut initial pour le Chef du Cadastre
-      scan_url: scanUrl || null, // Lien vers l'image stockée
-      coordonnees_spatiales: coordonneesSpatiales || null, // Polygon spatial (Technique B)
-      hash_signature: hashSignature // Empreinte cryptographique
-    }])
+    .rpc('create_title_with_history', {
+      p_numero_cadastral: numeroCadastral,
+      p_nom_proprietaire: validData.nom,
+      p_volume: validData.volume || '',
+      p_folio: validData.folio || '',
+      p_circonscription: validData.circonscription || '',
+      p_superficie: validData.superficie || '',
+      p_date_enregistrement: validData.date_etablissement || new Date().toISOString(),
+      p_scan_url: scanUrl || null,
+      p_coordonnees_spatiales: coordonneesSpatiales || null,
+      p_hash_signature: hashSignature
+    })
 
   if (insertError) {
     console.error('Erreur insertion nouveau titre:', insertError)
     return { success: false, error: `Erreur DB: ${insertError.message}` }
   }
 
-  // 6. Historique de l'insertion
-    const { error: historyError } = await supabaseServer
-      .from('smart_archive_history')
-      .insert([{
-        agent_id: user.id,
-        numero_cadastral: numeroCadastral,
-        action_type: 'insert'
-      }])
-
-    if (historyError) {
-      console.error("Erreur insertion historique (succès):", historyError)
-      return { 
-        success: false, 
-        error: `Erreur Historique: ${historyError.message}` 
-      }
-    }
-
-    return { success: true }
+  return { success: true }
 }
 
 export async function getHistoryServer() {

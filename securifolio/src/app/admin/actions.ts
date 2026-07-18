@@ -3,6 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
+import { requireMfaForSensitiveRole } from '@/lib/security/mfa';
 
 export async function createAgentAccount(formData: FormData) {
   const email = formData.get('email') as string;
@@ -26,6 +27,11 @@ export async function createAgentAccount(formData: FormData) {
     return { error: "Accès refusé. Niveau d'accréditation L5 requis." };
   }
 
+  const mfaError = await requireMfaForSensitiveRole(supabase, 'admin');
+  if (mfaError) {
+    return { error: mfaError };
+  }
+
   // 2. Créer l'utilisateur via l'API Admin
   try {
     const adminAuthClient = createAdminClient();
@@ -42,6 +48,20 @@ export async function createAgentAccount(formData: FormData) {
     if (error) {
       console.error("Erreur création utilisateur:", error);
       return { error: error.message };
+    }
+
+    const { error: profileError } = await adminAuthClient
+      .from('profiles')
+      .upsert({
+        id: data.user.id,
+        email: data.user.email || email,
+        role: 'agent',
+      });
+
+    if (profileError) {
+      console.error("Erreur création profil agent:", profileError);
+      await adminAuthClient.auth.admin.deleteUser(data.user.id);
+      return { error: "Compte annulé : impossible de créer le profil agent associé." };
     }
 
     revalidatePath('/admin');
