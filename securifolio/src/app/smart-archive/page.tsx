@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map } from 'lucide-react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera } from 'lucide-react';
 import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
@@ -433,8 +433,9 @@ export default function SmartArchivePage() {
                   fileInputRef.current?.click();
                 }}
                 disabled={status === 'uploading' || status === 'analyzing'}
-                className="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+                className="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center gap-2"
               >
+                <UploadCloud className="w-4 h-4" />
                 Sélectionner un fichier
               </button>
               
@@ -444,8 +445,9 @@ export default function SmartArchivePage() {
                   cameraInputRef.current?.click();
                 }}
                 disabled={status === 'uploading' || status === 'analyzing'}
-                className="bg-brand-primary/10 border border-brand-primary/30 hover:border-brand-primary hover:bg-brand-primary text-brand-primary hover:text-white text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+                className="bg-brand-primary/10 border border-brand-primary/30 hover:border-brand-primary hover:bg-brand-primary text-brand-primary hover:text-white text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center gap-2"
               >
+                <Camera className="w-4 h-4" />
                 Prendre une photo
               </button>
             </div>
