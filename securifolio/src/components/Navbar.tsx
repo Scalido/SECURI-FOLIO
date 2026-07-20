@@ -88,7 +88,7 @@ export default function Navbar() {
         <div className="h-full bg-[#CE1126] flex-1"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 xl:px-6 h-16 flex items-center justify-between gap-4 xl:gap-8">
         
         {/* Left Side: Logo & Title */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">
@@ -147,13 +147,13 @@ export default function Navbar() {
             {/* Agent Unified Profile Badge */}
             {user ? (
               <div className="flex items-center bg-brand-surface border border-brand-border rounded-xl px-3 py-1.5 shadow-sm">
-                <div className="flex flex-col items-end pr-3 border-r border-brand-border/50">
+                <div className="hidden xl:flex flex-col items-end pr-3 border-r border-brand-border/50">
                   <span className="text-xs font-mono font-bold text-brand-accent max-w-[150px] truncate leading-tight">{user.email}</span>
                   <div className="text-[9px] text-slate-500 uppercase tracking-widest flex items-center gap-1 mt-0.5">
                     <User size={9} /> Agent Connecté
                   </div>
                 </div>
-                <div className="flex items-center gap-3 pl-3">
+                <div className="flex items-center gap-3 xl:pl-3">
                   <div className="flex items-center gap-1 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 px-2 py-0.5 rounded border border-brand-primary/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                     <Lock size={10} />
                     {userRole}
