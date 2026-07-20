@@ -101,7 +101,7 @@ export default function MfaPage() {
 
     const { data, error } = await supabase.auth.mfa.enroll({ 
       factorType: 'totp',
-      friendlyName: 'Securifolio MFA'
+      friendlyName: `Securifolio MFA - ${Math.floor(Math.random() * 10000)}`
     });
     
     if (error) {
