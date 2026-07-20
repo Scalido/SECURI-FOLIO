@@ -66,7 +66,7 @@ export default function LoginPage() {
 
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">
-              Mot de Passe (L4 Clearance)
+              Mot de Passe (Accès Agent)
             </label>
             <div className="relative">
               <input

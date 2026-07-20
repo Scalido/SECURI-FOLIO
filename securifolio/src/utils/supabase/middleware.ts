@@ -73,7 +73,7 @@ export async function updateSession(request: NextRequest) {
   if (isAdminRoute && user) {
     const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase())
     if (!adminEmails.includes(user.email?.toLowerCase() || "")) {
-      // Redirection si l'agent n'est pas L5
+      // Redirection si l'agent n'est pas superviseur
       const url = request.nextUrl.clone()
       url.pathname = '/smart-archive'
       return NextResponse.redirect(url)

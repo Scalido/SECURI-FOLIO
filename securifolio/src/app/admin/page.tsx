@@ -42,10 +42,10 @@ export default function AdminPage() {
             <ShieldAlert className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-            Console <span className="text-red-500">L5</span>
+            Console <span className="text-red-500">Superviseur</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Création de comptes de niveau L4 (Agents Fonciers).
+            Création de comptes d'Agents Fonciers.
           </p>
         </div>
 

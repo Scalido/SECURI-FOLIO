@@ -131,7 +131,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3 pl-3">
                   <div className="flex items-center gap-1 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 px-2 py-0.5 rounded border border-brand-primary/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                     <Lock size={10} />
-                    L4 Clearance
+                    Agent Foncier
                   </div>
                   <button onClick={handleSignOut} title="Déconnexion" className="text-slate-400 hover:text-red-400 transition-colors">
                     <LogOut size={14} />
@@ -193,7 +193,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 text-[9px] font-bold text-brand-primary uppercase bg-brand-primary/10 border border-brand-primary/20 px-2 py-1 rounded-md">
-                    <Lock size={10} /> L4
+                    <Lock size={10} /> Agent
                   </div>
                   <button onClick={() => { handleSignOut(); setIsOpen(false); }} className="text-slate-400 hover:text-red-400 transition-colors p-1">
                     <LogOut size={16} />

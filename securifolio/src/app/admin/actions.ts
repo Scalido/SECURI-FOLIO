@@ -24,7 +24,7 @@ export async function createAgentAccount(formData: FormData) {
   const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
   
   if (!adminEmails.includes(user.email?.toLowerCase() || "")) {
-    return { error: "Accès refusé. Niveau d'accréditation L5 requis." };
+    return { error: "Accès refusé. Niveau d'accréditation Superviseur requis." };
   }
 
   const mfaError = await requireMfaForSensitiveRole(supabase, 'admin');
@@ -41,7 +41,7 @@ export async function createAgentAccount(formData: FormData) {
       password: password,
       email_confirm: true, // Auto-confirmé comme demandé
       user_metadata: {
-        clearance: 'L4' // Métadonnée optionnelle pour le futur
+        clearance: 'agent' // Métadonnée optionnelle pour le futur
       }
     });
 
