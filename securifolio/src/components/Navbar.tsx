@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, User, ZapOff, Zap, LogOut } from "lucide-react";
+import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, User, ZapOff, Zap, LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { createClient } from "@/utils/supabase/client";
 
@@ -69,6 +69,14 @@ export default function Navbar() {
     { name: "Smart-Archive", href: "/smart-archive", icon: FileSearch },
     { name: "Foncier-Édu", href: "/assistant", icon: GraduationCap },
   ];
+
+  if (userRole === "Chef Cadastre") {
+    navItems.push({ name: "Dashboard", href: "/cadastre-dashboard", icon: LayoutDashboard });
+  } else if (userRole === "Conservateur") {
+    navItems.push({ name: "Dashboard", href: "/conservateur-dashboard", icon: LayoutDashboard });
+  } else if (userRole === "Superviseur") {
+    navItems.push({ name: "Admin", href: "/admin", icon: Settings });
+  }
 
   return (
     <header className="bg-brand-bg/80 border-b border-brand-border/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-200">
