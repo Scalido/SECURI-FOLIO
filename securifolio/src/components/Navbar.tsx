@@ -106,7 +106,7 @@ export default function Navbar() {
         </Link>
 
         {/* Center: Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-2">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -114,7 +114,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`flex items-center gap-1.5 xl:gap-2 px-2.5 xl:px-4 py-2 rounded-xl text-[10px] xl:text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 ${
                   isActive 
                     ? "bg-brand-surface text-brand-primary shadow-[0_0_15px_rgba(16,185,129,0.15)] border border-brand-border" 
                     : "text-slate-400 hover:bg-brand-surface hover:text-white"
