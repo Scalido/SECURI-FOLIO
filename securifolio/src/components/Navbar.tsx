@@ -14,12 +14,28 @@ export default function Navbar() {
   const [ecoMode, setEcoMode] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string>("Agent");
 
   useEffect(() => {
     const supabase = createClient();
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+        if (profile) {
+          switch (profile.role) {
+            case 'chef_cadastre': setUserRole('Chef Cadastre'); break;
+            case 'conservateur': setUserRole('Conservateur'); break;
+            case 'notaire': setUserRole('Notaire'); break;
+            case 'citoyen': setUserRole('Citoyen'); break;
+            case 'agent': setUserRole('Agent Foncier'); break;
+            default: setUserRole(profile.role);
+          }
+        } else {
+          setUserRole('Superviseur'); // Si pas de profil, c'est l'admin
+        }
+      }
     };
     getUser();
 
@@ -131,7 +147,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3 pl-3">
                   <div className="flex items-center gap-1 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 px-2 py-0.5 rounded border border-brand-primary/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                     <Lock size={10} />
-                    Agent Foncier
+                    {userRole}
                   </div>
                   <button onClick={handleSignOut} title="Déconnexion" className="text-slate-400 hover:text-red-400 transition-colors">
                     <LogOut size={14} />
@@ -193,7 +209,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 text-[9px] font-bold text-brand-primary uppercase bg-brand-primary/10 border border-brand-primary/20 px-2 py-1 rounded-md">
-                    <Lock size={10} /> Agent
+                    <Lock size={10} /> {userRole}
                   </div>
                   <button onClick={() => { handleSignOut(); setIsOpen(false); }} className="text-slate-400 hover:text-red-400 transition-colors p-1">
                     <LogOut size={16} />
