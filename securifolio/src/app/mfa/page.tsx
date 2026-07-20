@@ -188,7 +188,7 @@ export default function MfaPage() {
               <div className="flex flex-col items-center gap-4 rounded-2xl bg-white p-5 border border-slate-200">
                 {/* QR SVG fourni par Supabase MFA ; next/image n'apporte rien pour cette data URL générée localement. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`} alt="QR code MFA" className="w-44 h-44" />
+                <img src={`data:image/svg+xml,${encodeURIComponent(qrCode)}`} alt="QR code MFA" className="w-44 h-44" />
                 {secret && <p className="text-[11px] text-slate-600 font-mono break-all text-center">Secret manuel : {secret}</p>}
               </div>
             )}
