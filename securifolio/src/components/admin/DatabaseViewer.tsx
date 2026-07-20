@@ -13,12 +13,13 @@ export function DatabaseViewer() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const fetchTableData = async (table: TableKey) => {
-    setLoading(true);
-    setError(null);
-    setData([]);
+  const fetchTableData = async (table: TableKey, isSilentRefresh = false) => {
+    if (!isSilentRefresh) {
+      setLoading(true);
+      setError(null);
+    }
+    
     let result;
-
     switch (table) {
       case 'profiles': result = await getProfilesData(); break;
       case 'titres_fonciers': result = await getTitresFonciersData(); break;
@@ -27,15 +28,25 @@ export function DatabaseViewer() {
     }
 
     if (result?.error) {
-      setError(result.error);
+      if (!isSilentRefresh) setError(result.error);
     } else if (result?.data) {
+      // Pour éviter les clignotements inutiles, on ne met à jour que si on a des données
       setData(result.data);
     }
-    setLoading(false);
+    
+    if (!isSilentRefresh) setLoading(false);
   };
 
   useEffect(() => {
-    fetchTableData(activeTable);
+    // Premier chargement avec indicateur de chargement
+    fetchTableData(activeTable, false);
+
+    // Mise en place du "Temps Réel" via polling (Toutes les 3 secondes)
+    const intervalId = setInterval(() => {
+      fetchTableData(activeTable, true);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
   }, [activeTable]);
 
   const filteredData = data.filter(row => {
