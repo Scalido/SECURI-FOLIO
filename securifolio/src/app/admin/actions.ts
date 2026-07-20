@@ -136,7 +136,7 @@ export async function getAntiFolioHistoryData() {
   const { data, error } = await supabase
     .from('anti_folio_history')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('date_scan', { ascending: false });
     
   if (error) return { error: error.message };
   return { data };
