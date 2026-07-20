@@ -203,11 +203,7 @@ export default function MfaPage() {
           <div className="space-y-6">
             {qrCode && (
               <div className="flex flex-col items-center gap-4 rounded-2xl bg-white p-5 border border-slate-200">
-                {/* SVG injecté directement pour éviter les problèmes d'encodage d'URI de données (data:) sur les navigateurs modernes */}
-                <div 
-                  dangerouslySetInnerHTML={{ __html: qrCode }} 
-                  className="w-44 h-44 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
-                />
+                <img src={qrCode} alt="QR code MFA" className="w-44 h-44" />
                 {secret && <p className="text-[11px] text-slate-600 font-mono break-all text-center">Secret manuel : {secret}</p>}
               </div>
             )}
