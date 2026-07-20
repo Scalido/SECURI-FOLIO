@@ -82,7 +82,7 @@ export default function Navbar() {
   return (
     <header className="bg-brand-bg/80 border-b border-brand-border/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-200">
       {/* DRC Flag line at the very top */}
-      <div className="absolute top-0 left-0 w-full h-[2px] flex">
+      <div className="absolute top-0 left-0 w-full h-[3.5px] flex">
         <div className="h-full bg-[#007FFF] flex-1"></div>
         <div className="h-full bg-[#F7D618] flex-1"></div>
         <div className="h-full bg-[#CE1126] flex-1"></div>
