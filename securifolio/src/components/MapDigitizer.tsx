@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet';
+import { MapContainer, TileLayer, FeatureGroup, useMap } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
+import { LocateFixed, Loader2 } from 'lucide-react';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -17,6 +18,51 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
+
+function LocateControl() {
+  const map = useMap();
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleLocate = () => {
+    setIsLocating(true);
+    map.locate({ setView: true, maxZoom: 22, enableHighAccuracy: true });
+  };
+
+  useEffect(() => {
+    map.on('locationfound', () => {
+      setIsLocating(false);
+    });
+    map.on('locationerror', () => {
+      setIsLocating(false);
+      alert('Impossible de vous localiser. Veuillez vérifier vos permissions GPS.');
+    });
+    
+    return () => {
+      map.off('locationfound');
+      map.off('locationerror');
+    };
+  }, [map]);
+
+  return (
+    <div className="absolute top-[80px] left-[10px] z-[1000]">
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleLocate();
+        }}
+        className="bg-white border-2 border-slate-200/50 w-[34px] h-[34px] rounded flex items-center justify-center hover:bg-slate-50 transition-colors shadow-sm"
+        title="Me localiser (GPS)"
+      >
+        {isLocating ? (
+          <Loader2 className="w-5 h-5 animate-spin text-brand-primary" />
+        ) : (
+          <LocateFixed className="w-5 h-5 text-slate-700 hover:text-brand-primary" />
+        )}
+      </button>
+    </div>
+  );
+}
 
 interface MapDigitizerProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,6 +131,7 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
           maxNativeZoom={19}
           maxZoom={24}
         />
+        <LocateControl />
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <FeatureGroup ref={featureGroupRef as any}>
           <EditControl
