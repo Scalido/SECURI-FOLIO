@@ -35,6 +35,7 @@ export default function SmartArchivePage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const fetchHistory = async () => {
     setIsLoadingHistory(true);
@@ -415,16 +416,39 @@ export default function SmartArchivePage() {
               </div>
             </div>
             
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                fileInputRef.current?.click();
-              }}
+            <input 
+              type="file" 
+              ref={cameraInputRef} 
+              onChange={handleFileInput} 
+              accept="image/*" 
+              capture="environment"
+              className="hidden" 
               disabled={status === 'uploading' || status === 'analyzing'}
-              className="mt-8 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
-            >
-              Sélectionner un fichier
-            </button>
+            />
+            
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+                disabled={status === 'uploading' || status === 'analyzing'}
+                className="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-900 dark:text-white hover:text-brand-primary text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+              >
+                Sélectionner un fichier
+              </button>
+              
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  cameraInputRef.current?.click();
+                }}
+                disabled={status === 'uploading' || status === 'analyzing'}
+                className="bg-brand-primary/10 border border-brand-primary/30 hover:border-brand-primary hover:bg-brand-primary text-brand-primary hover:text-white text-xs font-bold uppercase tracking-widest py-3.5 px-8 rounded-xl transition-all shadow-sm disabled:opacity-50"
+              >
+                Prendre une photo
+              </button>
+            </div>
           </div>
         )}
 
