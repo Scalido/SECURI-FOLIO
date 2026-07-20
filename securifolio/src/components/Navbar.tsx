@@ -30,6 +30,7 @@ export default function Navbar() {
             case 'notaire': setUserRole('Notaire'); break;
             case 'citoyen': setUserRole('Citoyen'); break;
             case 'agent': setUserRole('Agent Foncier'); break;
+            case 'superviseur': setUserRole('Superviseur'); break;
             default: setUserRole(profile.role);
           }
         } else {
