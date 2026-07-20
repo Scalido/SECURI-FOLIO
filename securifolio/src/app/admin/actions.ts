@@ -86,15 +86,34 @@ async function checkSuperviseurAccess() {
 
 export async function getProfilesData() {
   if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
+  const adminAuthClient = createAdminClient();
   const supabase = createClient();
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .order('created_at', { ascending: false });
-    
-  if (error) return { error: error.message };
-  return { data };
+  // 1. Récupérer la liste absolue de tous les comptes de connexion
+  const { data: usersData, error: usersError } = await adminAuthClient.auth.admin.listUsers();
+  if (usersError) return { error: usersError.message };
+
+  // 2. Récupérer les profils métiers
+  const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('*');
+  if (profilesError) return { error: profilesError.message };
+
+  // 3. Fusionner les deux listes pour un affichage complet
+  const mergedData = usersData.users.map(user => {
+    const profile = profilesData?.find(p => p.id === user.id);
+    return {
+      id: user.id,
+      email: user.email,
+      created_at: new Date(user.created_at).toLocaleString('fr-FR'),
+      last_sign_in: user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('fr-FR') : 'Jamais',
+      role: profile?.role || 'citoyen (défaut)',
+      circonscription: profile?.circonscription || '-'
+    };
+  });
+
+  // Trier par date de création décroissante
+  mergedData.sort((a, b) => new Date(usersData.users.find(u => u.id === b.id)?.created_at || 0).getTime() - new Date(usersData.users.find(u => u.id === a.id)?.created_at || 0).getTime());
+
+  return { data: mergedData };
 }
 
 export async function getTitresFonciersData() {
