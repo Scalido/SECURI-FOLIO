@@ -76,11 +76,14 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
       <MapContainer 
         center={[-4.32758, 15.31357]} // Kinshasa by default
         zoom={14} 
+        maxZoom={24}
         style={{ height: '100%', width: '100%', zIndex: 0 }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          maxNativeZoom={19}
+          maxZoom={24}
         />
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <FeatureGroup ref={featureGroupRef as any}>
