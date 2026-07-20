@@ -86,7 +86,24 @@ export default function MfaPage() {
     setLoading(true);
     setError(null);
 
-    const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' });
+    try {
+      // 1. Nettoyer les anciens facteurs non-vérifiés pour éviter l'erreur "already exists"
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      if (factors?.totp) {
+        const unverifiedFactors = factors.totp.filter((f: TotpFactor) => f.status === 'unverified');
+        for (const factor of unverifiedFactors) {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id });
+        }
+      }
+    } catch (e) {
+      console.error('Erreur lors du nettoyage des facteurs', e);
+    }
+
+    const { data, error } = await supabase.auth.mfa.enroll({ 
+      factorType: 'totp',
+      friendlyName: 'Securifolio MFA'
+    });
+    
     if (error) {
       setError(error.message);
       setLoading(false);
