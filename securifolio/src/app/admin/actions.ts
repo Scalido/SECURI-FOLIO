@@ -72,3 +72,66 @@ export async function createAgentAccount(formData: FormData) {
     return { error: "Une erreur interne est survenue. Vérifiez la clé SUPABASE_SERVICE_ROLE_KEY." };
   }
 }
+
+async function checkSuperviseurAccess() {
+  const supabase = createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) return false;
+  
+  const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
+  if (!adminEmails.includes(user.email?.toLowerCase() || "")) return false;
+
+  return true;
+}
+
+export async function getProfilesData() {
+  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) return { error: error.message };
+  return { data };
+}
+
+export async function getTitresFonciersData() {
+  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('titres_fonciers')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) return { error: error.message };
+  return { data };
+}
+
+export async function getAntiFolioHistoryData() {
+  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('anti_folio_history')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) return { error: error.message };
+  return { data };
+}
+
+export async function getSmartArchiveHistoryData() {
+  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from('smart_archive_history')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) return { error: error.message };
+  return { data };
+}
