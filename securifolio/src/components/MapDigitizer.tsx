@@ -319,6 +319,11 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
 
   return (
     <div className="w-full h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border relative z-0">
+      <style>{`
+        .leaflet-left .leaflet-control-layers {
+          margin-top: 50px !important;
+        }
+      `}</style>
       <MapContainer 
         center={[-4.32758, 15.31357]} // Kinshasa by default
         zoom={14} 
