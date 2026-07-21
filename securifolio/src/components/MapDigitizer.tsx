@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, FeatureGroup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, FeatureGroup, useMap, LayersControl } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
@@ -206,12 +206,24 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
         maxZoom={24}
         style={{ height: '100%', width: '100%', zIndex: 0 }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          maxNativeZoom={19}
-          maxZoom={24}
-        />
+        <LayersControl position="topleft">
+          <LayersControl.BaseLayer checked name="Satellite (Haute Précision)">
+            <TileLayer
+              attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              maxNativeZoom={19}
+              maxZoom={24}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Plan (Avenues & Rues)">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxNativeZoom={19}
+              maxZoom={24}
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
         <SearchControl />
         <LocateControl />
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -225,7 +237,6 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
               rectangle: false,
               circle: false,
               circlemarker: false,
-              marker: false,
               polyline: false,
               polygon: {
                 allowIntersection: false,
@@ -237,6 +248,9 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
                   color: '#10b981',
                   fillOpacity: 0.5
                 }
+              },
+              marker: {
+                icon: new L.Icon.Default()
               }
             }}
           />

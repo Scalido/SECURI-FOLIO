@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera } from 'lucide-react';
+import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
 import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
@@ -25,6 +25,7 @@ export default function SmartArchivePage() {
   const [geoData, setGeoData] = useState<any>(null);
   const [geoAreaSqm, setGeoAreaSqm] = useState<number>(0);
   const [isLocationUnknown, setIsLocationUnknown] = useState(false);
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   
   interface HistoryItem {
     id: string;
@@ -372,7 +373,7 @@ export default function SmartArchivePage() {
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
               <li>Uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Tracez <strong>obligatoirement</strong> les limites de la parcelle sur la carte (ou cochez "Localisation inconnue").</li>
+              <li>Utilisez le <strong>marqueur</strong> pour vous positionner et <strong>tracez obligatoirement les limites</strong> du polygone de la parcelle (ou cochez "Localisation inconnue").</li>
               <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
             </ul>
           </div>
@@ -529,7 +530,7 @@ export default function SmartArchivePage() {
 
         {/* Results Area (Split Screen) */}
         {status === 'success' && result && formData && (
-          <div className="mt-12 w-full max-w-6xl animate-in slide-in-from-bottom-4 fade-in duration-500">
+          <div className="mt-12 w-full max-w-6xl animate-in slide-in-from-bottom-4 fade-in duration-500" style={{ transform: isMapFullscreen ? 'none' : undefined, animation: isMapFullscreen ? 'none' : undefined }}>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               
@@ -682,18 +683,71 @@ export default function SmartArchivePage() {
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-brand-primary" /> Résolution Spatiale
                     </h3>
-                    {geoAreaSqm > 0 && !isLocationUnknown && (
-                      <span className={`text-xs font-bold px-2 py-1 rounded ${Math.abs(geoAreaSqm - parseFloat(formData?.superficie || '0')) > (parseFloat(formData?.superficie || '0') * 0.1) ? 'bg-red-500/10 text-red-500' : 'bg-brand-primary/10 text-brand-primary'}`}>
-                        Aire tracée: {geoAreaSqm.toFixed(2)} m²
-                      </span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {geoAreaSqm > 0 && !isLocationUnknown && (
+                        <span className={`text-xs font-bold px-2 py-1 rounded ${Math.abs(geoAreaSqm - parseFloat(formData?.superficie || '0')) > (parseFloat(formData?.superficie || '0') * 0.1) ? 'bg-red-500/10 text-red-500' : 'bg-brand-primary/10 text-brand-primary'}`}>
+                          Aire tracée: {geoAreaSqm.toFixed(2)} m²
+                        </span>
+                      )}
+                      <button onClick={() => { setIsMapFullscreen(true); setTimeout(() => window.dispatchEvent(new Event('resize')), 50); }} className="hidden md:flex p-1.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 tooltip" title="Agrandir la carte">
+                        <Maximize className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                   <p className="text-[10px] text-slate-500 mb-4 font-medium leading-relaxed">
-                    Si le document ne possède pas de coordonnées absolues, veuillez dessiner le polygone de la parcelle sur la carte (Technique B).
+                    Si le document ne possède pas de coordonnées absolues, veuillez dessiner le polygone de la parcelle sur la carte (Technique B). Vous pouvez utiliser le marqueur pour vous positionner.
                   </p>
                   
                   <div className={`transition-all duration-300 relative ${isLocationUnknown ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
-                    <MapDigitizer onPolygonDrawn={(geojson, area) => { setGeoData(geojson); setGeoAreaSqm(area); }} />
+                    {/* Conteneur principal (Plein écran ou intégré) */}
+                    <div className={
+                      isMapFullscreen 
+                        ? "fixed inset-0 z-[100] bg-white dark:bg-brand-bg flex flex-col p-4 md:p-6 animate-in fade-in zoom-in-95 duration-200"
+                        : "relative h-[400px] hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border"
+                    }>
+                      {isMapFullscreen && (
+                        <div className="flex items-center justify-between mb-4 shrink-0 bg-slate-50 dark:bg-brand-surface p-4 rounded-xl border border-slate-200 dark:border-brand-border shadow-sm">
+                          <div>
+                            <h3 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white flex items-center gap-2">
+                              <Map className="w-5 h-5 text-brand-primary" /> Numérisation de la parcelle
+                            </h3>
+                            <p className="text-xs text-slate-500 font-medium mt-1 md:hidden flex items-center gap-2">
+                              <Sparkles className="w-3 h-3 text-brand-primary" />
+                              Tournez votre appareil en paysage
+                            </p>
+                          </div>
+                          <button 
+                            onClick={() => {
+                               setIsMapFullscreen(false);
+                               setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+                            }} 
+                            className="px-4 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 flex items-center gap-2 font-bold text-sm transition-colors shadow-sm"
+                          >
+                            <X className="w-4 h-4" /> <span className="hidden sm:inline">Valider le tracé</span>
+                          </button>
+                        </div>
+                      )}
+                      
+                      <div className={isMapFullscreen ? "flex-1 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative shadow-xl" : "h-full w-full"}>
+                        <MapDigitizer onPolygonDrawn={(geojson, area) => { setGeoData(geojson); setGeoAreaSqm(area); }} />
+                      </div>
+                    </div>
+
+                    {/* Bouton d'ouverture (Mobile) */}
+                    {!isMapFullscreen && (
+                       <div className="md:hidden mt-2">
+                         <button onClick={() => {
+                             setIsMapFullscreen(true);
+                             setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+                           }} 
+                           className="w-full py-4 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold shadow-sm flex flex-col items-center justify-center gap-2 transition-colors group"
+                         >
+                           <Maximize className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" />
+                           Ouvrir la carte de numérisation
+                         </button>
+                       </div>
+                    )}
+
                     {isLocationUnknown && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 backdrop-blur-[1px] z-10 rounded-2xl">
                          <MapPinOff className="w-12 h-12 text-slate-500 mb-2 opacity-50" />
@@ -752,7 +806,7 @@ export default function SmartArchivePage() {
                           return;
                         }
                         if (!geoData && !isLocationUnknown) {
-                          alert("Erreur : Veuillez dessiner la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
+                          alert("Erreur : Veuillez tracer le polygone de la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
                           return;
                         }
                         setIsSaving(true);
