@@ -8,6 +8,15 @@ import dynamic from 'next/dynamic';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
+const loadingMessages = [
+  "Initialisation du modèle d'analyse...",
+  "Extraction du texte (OCR) en cours...",
+  "Analyse sémantique des clauses...",
+  "Croisement avec le registre central...",
+  "Vérification d'intégrité visuelle...",
+  "Finalisation du dossier..."
+];
+
 export default function SmartArchivePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -26,6 +35,34 @@ export default function SmartArchivePage() {
   const [geoAreaSqm, setGeoAreaSqm] = useState<number>(0);
   const [isLocationUnknown, setIsLocationUnknown] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+
+  const [loadingIndex, setLoadingIndex] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  useEffect(() => {
+    if (status === 'analyzing') {
+      setLoadingIndex(0);
+      setLoadingProgress(0);
+      
+      const startTime = Date.now();
+      const duration = 15000; // 15 seconds expected max
+      
+      const progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min((elapsed / duration) * 95, 95); // Stop at 95%
+        setLoadingProgress(progress);
+      }, 100);
+
+      const messageInterval = setInterval(() => {
+        setLoadingIndex((prev) => Math.min(prev + 1, loadingMessages.length - 1));
+      }, 2500);
+
+      return () => {
+        clearInterval(progressInterval);
+        clearInterval(messageInterval);
+      };
+    }
+  }, [status]);
   
   interface HistoryItem {
     id: string;
@@ -510,10 +547,36 @@ export default function SmartArchivePage() {
 
         {/* Status Indicators */}
         {(status === 'uploading' || status === 'analyzing') && (
-          <div className="mt-12 flex flex-col items-center space-y-4 animate-in fade-in duration-500">
-            <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
-            <p className="text-sm text-brand-primary font-bold uppercase tracking-widest drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
-              Analyse IA en cours...
+          <div className="mt-12 flex flex-col items-center max-w-md mx-auto space-y-6 animate-in fade-in duration-500 bg-white dark:bg-brand-surface/60 backdrop-blur-md p-8 rounded-3xl border border-slate-200 dark:border-brand-border shadow-xl">
+            <div className="relative">
+              <Loader2 className="w-12 h-12 text-brand-primary animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Brain className="w-5 h-5 text-brand-primary/50 animate-pulse" />
+              </div>
+            </div>
+            
+            <div className="w-full space-y-3">
+              <div className="flex justify-between items-end mb-2">
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-300 animate-pulse">
+                  {status === 'uploading' ? 'Chiffrement et envoi sécurisé...' : loadingMessages[loadingIndex]}
+                </p>
+                <span className="text-xs font-mono font-bold text-brand-primary">
+                  {status === 'uploading' ? '15%' : `${Math.round(loadingProgress)}%`}
+                </span>
+              </div>
+              
+              <div className="w-full h-2 bg-slate-100 dark:bg-slate-700/50 rounded-full overflow-hidden shadow-inner">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-500 to-brand-primary transition-all duration-300 ease-out relative"
+                  style={{ width: `${status === 'uploading' ? 15 : loadingProgress}%` }}
+                >
+                  <div className="absolute inset-0 bg-white/20"></div>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center mt-2 max-w-[280px] leading-relaxed">
+              Veuillez patienter pendant que nos algorithmes vérifient l'authenticité et extraient les données de ce document...
             </p>
           </div>
         )}
