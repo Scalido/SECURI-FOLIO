@@ -235,7 +235,7 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
   };
 
   return (
-    <div className="absolute top-[10px] left-1/2 -translate-x-1/2 z-[1000]">
+    <div className="absolute bottom-[20px] left-1/2 -translate-x-1/2 z-[1000]">
       <input 
         type="file" 
         accept=".csv,.txt"
