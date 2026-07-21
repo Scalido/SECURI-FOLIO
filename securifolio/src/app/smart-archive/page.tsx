@@ -338,30 +338,60 @@ export default function SmartArchivePage() {
     setDbVerification(null);
 
     try {
-      // 1. Lire le fichier localement en base64 via FileReader
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(fileToProcess);
-        reader.onload = () => {
-          const rawBase64 = (reader.result as string).split(',')[1];
-          resolve(rawBase64);
-        };
-        reader.onerror = (err) => reject(err);
-      });
-
-      const base64Data = await base64Promise;
+      let imageUrlToSend = null;
+      let base64DataToSend = null;
       const mimeType = fileToProcess.type;
 
-      // 2. Envoyer le base64 à la route API locale
+      // 1. Si le fichier fait plus de 1.5 Mo, on l'upload d'abord sur Supabase pour contourner la limite stricte de 4.5 Mo de Vercel
+      if (fileToProcess.size > 1.5 * 1024 * 1024) {
+        const supabase = createClient();
+        const fileExt = fileToProcess.name.split('.').pop() || 'pdf';
+        const tempFileName = `temp_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('scans_certificats')
+          .upload(tempFileName, fileToProcess);
+
+        if (uploadError) {
+          console.error("Erreur d'upload temporaire:", uploadError);
+          throw new Error("Erreur réseau lors de l'envoi du document lourd. Vérifiez votre connexion.");
+        }
+
+        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+          .from('scans_certificats')
+          .createSignedUrl(tempFileName, 300); // 5 minutes
+
+        if (signedUrlError || !signedUrlData) {
+          throw new Error("Impossible de générer le lien de sécurité pour l'analyse.");
+        }
+        
+        imageUrlToSend = signedUrlData.signedUrl;
+      } else {
+        // Lecture locale en base64 pour les petits fichiers
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(fileToProcess);
+          reader.onload = () => {
+            const rawBase64 = (reader.result as string).split(',')[1];
+            resolve(rawBase64);
+          };
+          reader.onerror = (err) => reject(err);
+        });
+        base64DataToSend = await base64Promise;
+      }
+
+      // 2. Envoyer les métadonnées à la route API locale
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const payload: any = { mimeType };
+      if (imageUrlToSend) payload.imageUrl = imageUrlToSend;
+      if (base64DataToSend) payload.base64Data = base64DataToSend;
+
       const response = await fetch('/api/analyze-document', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          base64Data,
-          mimeType,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
