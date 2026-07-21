@@ -224,7 +224,8 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
 
         map.fitBounds(featureGroupRef.current.getBounds(), { padding: [50, 50] });
 
-        const area = turf.area(geojson);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const area = turf.area(geojson as any);
         onPolygonDrawn(geojson, area);
       },
       error: (error) => {
