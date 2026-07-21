@@ -408,9 +408,9 @@ export default function SmartArchivePage() {
           <div>
             <h3 className="text-blue-600 dark:text-blue-400 font-bold text-sm uppercase tracking-wide">Instructions (Phase 1)</h3>
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
-              <li>Uploadez le document physique (Certificat ou Plan).</li>
+              <li>Prenez en photo ou uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Utilisez le <strong>marqueur</strong> pour vous positionner et <strong>tracez obligatoirement les limites</strong> du polygone de la parcelle (ou cochez "Localisation inconnue").</li>
+              <li>Utilisez les <strong>calques (Satellite/Plan)</strong> pour vous repérer et <strong>tracez obligatoirement le polygone</strong> géospatial exact (ou cochez "Localisation inconnue").</li>
               <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
             </ul>
           </div>
@@ -954,9 +954,9 @@ export default function SmartArchivePage() {
                 <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
                   <Scan className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Numérisation</h3>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Capture / Numérisation</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent assermenté scanne le certificat d'enregistrement physique. Le document original est téléchargé de manière sécurisée vers les serveurs de l'État.
+                  L'agent photographie ou scanne le certificat d'enregistrement physique. Le document original est téléchargé de manière sécurisée vers les serveurs de l'État.
                 </p>
               </div>
 
@@ -978,7 +978,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent dessine le polygone géospatial exact du terrain sur une carte satellite pour lier le document juridique à une réalité physique inviolable.
+                  L'agent s'appuie sur la carte (Satellite ou Plan) pour identifier le site et dessine le polygone géospatial exact du terrain pour sceller sa position.
                 </p>
               </div>
 
