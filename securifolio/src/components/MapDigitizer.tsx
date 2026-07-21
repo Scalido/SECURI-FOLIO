@@ -5,7 +5,8 @@ import { MapContainer, TileLayer, FeatureGroup, useMap, LayersControl } from 're
 import { EditControl } from 'react-leaflet-draw';
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
-import { LocateFixed, Loader2, Search } from 'lucide-react';
+import { LocateFixed, Loader2, Search, Upload } from 'lucide-react';
+import Papa from 'papaparse';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -145,6 +146,123 @@ function LocateControl() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupRef: any, onPolygonDrawn: any }) {
+  const map = useMap();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const processRtkFile = (file: File) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        if (results.data.length < 3) {
+          alert('Le fichier doit contenir au moins 3 points pour former un polygone.');
+          return;
+        }
+
+        const headers = results.meta.fields?.map(f => f.toLowerCase().trim()) || [];
+        
+        let latKey = headers.find(h => h.includes('lat') || h === 'y');
+        let lngKey = headers.find(h => h.includes('lon') || h.includes('lng') || h === 'x');
+
+        if (!latKey || !lngKey) {
+           // Fallback to first two columns if no clear headers
+           latKey = results.meta.fields?.[0];
+           lngKey = results.meta.fields?.[1];
+        }
+
+        if (!latKey || !lngKey) {
+           alert('Impossible de détecter les colonnes de coordonnées dans le fichier CSV.');
+           return;
+        }
+
+        const coordinates: [number, number][] = [];
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        for (const row of results.data as any[]) {
+           const lat = parseFloat(row[latKey]);
+           const lng = parseFloat(row[lngKey]);
+           if (!isNaN(lat) && !isNaN(lng)) {
+             coordinates.push([lng, lat]);
+           }
+        }
+
+        if (coordinates.length < 3) {
+          alert('Pas assez de coordonnées valides trouvées.');
+          return;
+        }
+
+        const first = coordinates[0];
+        const last = coordinates[coordinates.length - 1];
+        if (first[0] !== last[0] || first[1] !== last[1]) {
+           coordinates.push([...first]); 
+        }
+
+        const geojson = {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Polygon",
+            coordinates: [coordinates]
+          }
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const layer = L.geoJSON(geojson as any, {
+          style: {
+            color: '#10b981',
+            fillOpacity: 0.5,
+            weight: 3
+          }
+        });
+
+        featureGroupRef.current.clearLayers();
+        layer.eachLayer((l) => {
+          featureGroupRef.current.addLayer(l);
+        });
+
+        map.fitBounds(featureGroupRef.current.getBounds(), { padding: [50, 50] });
+
+        const area = turf.area(geojson);
+        onPolygonDrawn(geojson, area);
+      },
+      error: (error) => {
+        alert('Erreur lors de la lecture du fichier : ' + error.message);
+      }
+    });
+  };
+
+  return (
+    <div className="absolute top-[10px] left-1/2 -translate-x-1/2 z-[1000]">
+      <input 
+        type="file" 
+        accept=".csv,.txt"
+        ref={fileInputRef}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            processRtkFile(file);
+          }
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }}
+        className="hidden"
+      />
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          fileInputRef.current?.click();
+        }}
+        className="bg-brand-primary text-white font-bold text-xs uppercase px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2 hover:bg-emerald-400 transition-all border border-emerald-500"
+      >
+        <Upload className="w-4 h-4" />
+        Importer Levé RTK (CSV)
+      </button>
+    </div>
+  );
+}
+
 interface MapDigitizerProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onPolygonDrawn: (geojson: any, areaSqm: number) => void;
@@ -226,6 +344,7 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
         </LayersControl>
         <SearchControl />
         <LocateControl />
+        <RtkUploaderControl featureGroupRef={featureGroupRef} onPolygonDrawn={onPolygonDrawn} />
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <FeatureGroup ref={featureGroupRef as any}>
           <EditControl
@@ -238,17 +357,7 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
               circle: false,
               circlemarker: false,
               polyline: false,
-              polygon: {
-                allowIntersection: false,
-                drawError: {
-                  color: '#e1e100',
-                  message: '<strong>Erreur:</strong> Les arêtes ne peuvent pas se croiser!'
-                },
-                shapeOptions: {
-                  color: '#10b981',
-                  fillOpacity: 0.5
-                }
-              },
+              polygon: false,
               marker: {
                 icon: new L.Icon.Default()
               }
@@ -256,6 +365,10 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
           />
         </FeatureGroup>
       </MapContainer>
+      {mounted && featureGroupRef.current && (
+        // We render it outside MapContainer but it needs access to useMap? No, RtkUploaderControl uses useMap so it must be inside MapContainer
+        <div className="hidden"></div>
+      )}
     </div>
   );
 }

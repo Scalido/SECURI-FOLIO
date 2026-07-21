@@ -410,7 +410,7 @@ export default function SmartArchivePage() {
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
               <li>Prenez en photo ou uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Utilisez les <strong>calques (Satellite/Plan)</strong> pour vous repérer et <strong>tracez obligatoirement le polygone</strong> géospatial exact (ou cochez "Localisation inconnue").</li>
+              <li>Utilisez le bouton <strong>"Importer Levé RTK (CSV)"</strong> pour intégrer automatiquement les coordonnées exactes du terrain (ou cochez "Localisation inconnue").</li>
               <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
             </ul>
           </div>
@@ -978,7 +978,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent s'appuie sur la carte (Satellite ou Plan) pour identifier le site et dessine le polygone géospatial exact du terrain pour sceller sa position.
+                  Le géomètre téléverse les données brutes (CSV/KML) issues de son appareil RTK. L'outil génère automatiquement le tracé avec une précision centimétrique, scellant la position sans intervention humaine.
                 </p>
               </div>
 
