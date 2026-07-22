@@ -144,44 +144,44 @@ export default function SmartArchivePage() {
     ctx.fillText("D'une Concession Perpétuelle", canvas.width / 2, 240);
 
     // 5. Remplir les données selon le scénario
-    let nom = 'Jean-Claude Kalombo';
-    let numero_cadastral = 'SU/GOM/1023';
-    let volume = 'A120';
-    let folio = '45';
-    let circonscription = 'Gombe';
-    let superficie = '450 m²';
-    let date_etablissement = '12 Mars 2018';
+    let nom = 'Mosele Mombanga';
+    let numero_cadastral = '1178';
+    let volume = 'AMA 171';
+    let folio = '68';
+    let circonscription = 'Limete';
+    let superficie = '3049 m²';
+    let date_etablissement = '14 Septembre 2020';
 
     if (scenario === 'divergent') {
       nom = 'Augustin Mwamba (Acheteur Non Enregistré)';
-      numero_cadastral = 'SU/GOM/1023';
-      volume = 'A120';
-      folio = '45';
-      circonscription = 'Gombe';
-      superficie = '450 m²';
-      date_etablissement = '12 Mars 2018';
+      numero_cadastral = '1178';
+      volume = 'AMA 171';
+      folio = '68';
+      circonscription = 'Limete';
+      superficie = '3049 m²';
+      date_etablissement = '14 Septembre 2020';
     } else if (scenario === 'falsifie') {
-      nom = 'Faux Propriétaire 1';
-      numero_cadastral = 'SU/GOM/1023';
-      volume = 'X999';
-      folio = '45';
-      circonscription = 'Gombe';
-      superficie = '600 m²';
-      date_etablissement = '14 Mai 2024';
+      nom = 'Mosele Mombanga';
+      numero_cadastral = '1178';
+      volume = 'AMA 171';
+      folio = '68';
+      circonscription = 'Limete';
+      superficie = '6000 m²';
+      date_etablissement = '14 Septembre 2020';
     } else if (scenario === 'litige') {
       nom = 'Pierre Kasongo';
-      numero_cadastral = 'SU/KIM/871';
-      volume = 'K11';
-      folio = '03';
-      circonscription = 'Kisenso';
+      numero_cadastral = '2044';
+      volume = 'LUK 45';
+      folio = '12';
+      circonscription = 'Ngaliema';
       superficie = '320 m²';
       date_etablissement = '09 Septembre 2021';
     } else if (scenario === 'inconnu') {
       nom = 'Michel Kabasele';
-      numero_cadastral = 'SU/NGO/777';
-      volume = 'Z55';
-      folio = '09';
-      circonscription = 'Ngaliema';
+      numero_cadastral = '8888';
+      volume = 'XXX 99';
+      folio = '00';
+      circonscription = 'Gombe';
       superficie = '500 m²';
       date_etablissement = '22 Juillet 2023';
     }
@@ -541,7 +541,7 @@ export default function SmartArchivePage() {
                 >
                   <option value="conforme">Scénario 1 : Conforme (Jean-Claude K.)</option>
                   <option value="divergent">Scénario 2 : Usurpation (Divergent)</option>
-                  <option value="falsifie">Scénario 3 : Falsifié Répertorié</option>
+                  <option value="falsifie">Scénario 3 : Falsification Haute Volée (Subtile)</option>
                   <option value="litige">Scénario 4 : Parcelle en Litige</option>
                   <option value="inconnu">Scénario 5 : Certificat Inconnu</option>
                 </select>

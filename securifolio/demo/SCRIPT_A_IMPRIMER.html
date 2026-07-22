@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Script de Démo - SECURI-FOLIO</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 2cm;
+        }
+        h1 {
+            color: #1a365d;
+            border-bottom: 2px solid #1a365d;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #2b6cb0;
+            margin-top: 30px;
+            font-size: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        blockquote {
+            background: #f7fafc;
+            border-left: 5px solid #3182ce;
+            margin: 1.5em 0;
+            padding: 1em;
+            font-style: italic;
+            color: #2d3748;
+        }
+        strong {
+            color: #000;
+        }
+        hr {
+            border: 0;
+            border-top: 2px dashed #cbd5e0;
+            margin: 30px 0;
+        }
+        .meta {
+            background-color: #ebf8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .action {
+            font-weight: bold;
+            color: #c53030;
+        }
+        @media print {
+            body {
+                padding: 0;
+                margin: 1cm;
+            }
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Script de Démo : Ministère des Affaires Foncières (30 Minutes)</h1>
+
+    <div class="meta">
+        <p><strong>Audience :</strong> Directeurs et Hauts Cadres du Ministère des Affaires Foncières (RDC).</p>
+        <p><strong>Objectif de la salle :</strong> Les convaincre que SECURI-FOLIO n'est pas un simple "gadget de plus", mais un outil de souveraineté numérique qui restaure l'autorité de l'État, élimine les conflits (qui saturent les tribunaux) et sécurise les recettes de l'État.</p>
+    </div>
+
+    <hr>
+
+    <h2>⏱️ MINUTE 0 à 5 : L'Accroche (Le Problème Chiffré)</h2>
+    <p><em>(Écran éteint ou sur le logo du Ministère / Securi-Folio. Pas de logiciel pour l'instant).</em></p>
+
+    <p><strong>Discours :</strong></p>
+    <blockquote>
+        "Messieurs les Directeurs, bonjour. <br><br>
+        Aujourd'hui, quel est le plus grand fléau de notre administration foncière ? C'est la perte de confiance. <br>
+        Un simple bout de papier jaune avec un faux tampon suffit pour spolier un propriétaire, vendre un même terrain à trois personnes différentes, ou amputer les recettes de l'État. Nos tribunaux sont saturés à 80% par des conflits fonciers.<br><br>
+        La numérisation classique (scanner des PDF) ne suffit pas. Un PDF se falsifie.<br>
+        C'est pourquoi nous avons créé <strong>SECURI-FOLIO</strong> : le premier cadastre hybride qui lie <strong>l'Intelligence Artificielle</strong> (pour auditer les documents) à <strong>la Topographie de précision</strong> (pour verrouiller la terre physique). <br><br>
+        Laissez-moi vous montrer comment nous allons redonner le pouvoir aux Conservateurs des Titres Immobiliers."
+    </blockquote>
+
+    <hr>
+
+    <h2>⏱️ MINUTE 5 à 15 : Démo "Smart Archive" (Pour l'Administration)</h2>
+    <p><em>(Allumez l'écran sur la page `/smart-archive`)</em></p>
+
+    <p><strong>Discours :</strong></p>
+    <blockquote>"Voici l'outil que vos Conservateurs utiliseront tous les jours. C'est leur nouveau bureau."</blockquote>
+
+    <h3>Action 1 : Le Cas Parfait (La Numérisation Initiale) (3 min)</h3>
+    <ol>
+        <li>Cliquez pour uploader <strong>`certificat_1_authentique.png`</strong>.</li>
+        <li><strong>Pendant que l'IA analyse, dites :</strong> "Je suis l'Opérateur de Niveau 1. Je numérise ce vieux document pour la première fois. L'Intelligence Artificielle m'aide à faire l'extraction pour gagner du temps, mais elle ne valide rien seule."</li>
+        <li><strong>Importation Géospatiale :</strong> Uploadez le fichier du géomètre <strong>`rtk_1_authentique_450m2.csv`</strong>.</li>
+        <li><strong>Dites :</strong> "L'agent ne dessine plus au hasard avec sa souris. Il importe la donnée scientifique du géomètre de l'État. Si le terrain fait 3049m², le polygone fera 3049m² au centimètre près."</li>
+        <li><span class="action">Cliquez sur le bouton de soumission.</span></li>
+        <li><strong>Le Storytelling des 3 Niveaux :</strong> "Je viens de cliquer sur Envoyer. À ce stade, le dossier disparaît de mon écran. Est-il validé ? NON. Il atterrit instantanément sur la tablette du Chef du Cadastre (Niveau 2) pour l'audit spatial, puis sur l'écran du Conservateur (Niveau 3). Seul le Conservateur appuie sur le bouton final 'Sceller'. Une fois scellé, ce terrain devient une forteresse numérique inattaquable."</li>
+    </ol>
+
+    <h3>Action 2 : Le Filtre Anti-Fraude Subtil (La Forteresse) (7 min) - LE MOMENT CHOC</h3>
+    <ol>
+        <li>Rafraîchissez la page.</li>
+        <li><strong>Dites :</strong> "Faisons une avance rapide. Le terrain précédent a été scellé par le Conservateur il y a un an. La vérité est désormais dans le Cloud. Maintenant, que se passe-t-il si un faussaire professionnel crée un faux document visuellement parfait ? Pas de rature, la bonne police, le bon tampon."</li>
+        <li>Sélectionnez le Scénario 3 (Falsification Haute Volée) et uploadez le fichier <strong>`certificat_2_falsifie_subtil.png`</strong>.</li>
+        <li><strong>Dites :</strong> "À l'œil nu, n'importe quel agent validerait ce document. Il indique 6000m² pour Mosele Mombanga. Mais regardez la réaction de l'IA..."</li>
+        <li><span class="action">Montrez l'alerte de divergence sur l'écran.</span></li>
+        <li><strong>Dites (en les regardant dans les yeux) :</strong> "L'IA a extrait le document et l'a croisé instantanément avec la forteresse que le Conservateur a créée. La base indique 3049m² pour ce Volume/Folio. Le système démasque la fraude invisible à l'œil nu et bloque l'opération. L'intelligence artificielle n'est pas là pour remplacer la chaîne de validation humaine, mais pour la protéger."</li>
+    </ol>
+
+    <hr>
+
+    <h2>⏱️ MINUTE 15 à 20 : Démo "Anti-Folio" (Pour le Public & les Banques)</h2>
+    <p><em>(Passez sur l'onglet `/anti-folio`)</em></p>
+
+    <p><strong>Discours :</strong></p>
+    <blockquote>"Nous avons sécurisé la base de données de l'État. Comment s'en servir pour relancer l'économie et rassurer les banques et les citoyens ?"</blockquote>
+
+    <h3>Action :</h3>
+    <ol>
+        <li><strong>Dites :</strong> "Imaginez que je suis une banque ou un citoyen qui va acheter un terrain. On me présente un certificat. Avant, je devais payer un intermédiaire pour aller fouiller dans les archives du Ministère. Aujourd'hui, j'utilise le portail public."</li>
+        <li>Tapez le numéro validé précédemment (ex: <strong>`Vol AMA 171 Folio 68`</strong>).</li>
+        <li>L'écran <strong>Vert</strong> s'affiche. <strong>Dites :</strong> "Le titre est sain. La banque peut prêter. La transaction est sûre."</li>
+        <li><strong>Faites participer les Directeurs :</strong> "Monsieur le Directeur, dites-moi un faux numéro, inventez-le." (ou tapez <strong>`SU/XXX/000`</strong>).</li>
+        <li>L'écran <strong>Rouge</strong> s'affiche. <strong>Dites :</strong> "Le faux document est neutralisé. L'escroquerie est impossible. Le Ministère retrouve sa fonction protectrice absolue."</li>
+    </ol>
+
+    <hr>
+
+    <h2>⏱️ MINUTE 20 à 30 : Conclusion, ROI & Questions</h2>
+    <p><em>(Éteignez l'écran ou remettez le logo)</em></p>
+
+    <p><strong>Discours de conclusion (3 min) :</strong></p>
+    <blockquote>
+        "Messieurs, SECURI-FOLIO apporte 3 choses au Ministère :<br>
+        1. <strong>La Paix Sociale</strong> : Zéro superposition, fin des conflits de voisinage.<br>
+        2. <strong>L'Autorité</strong> : Les certificats de l'État redeviennent la référence absolue et inviolable.<br>
+        3. <strong>L'Augmentation des Recettes</strong> : Les transactions immobilières vont exploser car la confiance est de retour. Qui dit plus de transactions, dit plus de taxes de mutation perçues par le Ministère."
+    </blockquote>
+
+    <h3>Gestion des Questions (7 min) :</h3>
+    <ul>
+        <li>
+            <strong>Question classique d'un Directeur :</strong> "Comment fait-on pour les millions de titres papiers déjà existants dans nos tiroirs ?"<br>
+            <strong>Votre réponse (No BS) :</strong> "Nous ne faisons pas un 'big bang'. Nous numérisons d'abord les nouvelles mutations (flux) et les quartiers à haute valeur foncière comme la Gombe (stock). Les archives physiques restent la sauvegarde. SECURI-FOLIO n'efface pas l'Histoire, il sécurise le futur en commençant par les zones économiques clés."
+        </li>
+        <br>
+        <li>
+            <strong>Question classique :</strong> "L'IA va-t-elle remplacer nos agents ?"<br>
+            <strong>Votre réponse :</strong> "Au contraire, elle leur donne des super-pouvoirs. Le Conservateur reste le seul maître à valider, mais l'IA vérifie le travail de ses subordonnés à sa place, lui évitant d'endosser la responsabilité de dossiers frauduleux."
+        </li>
+    </ul>
+
+    <blockquote>
+        <strong>Conclusion finale :</strong> "Êtes-vous prêts à faire de la RDC le pionnier de la sécurité foncière en Afrique Centrale ?"
+    </blockquote>
+
+    <hr>
+
+    <h2>🛡️ ANNEXE : Argumentaire de Défense (Q&A Avancé)</h2>
+
+    <div class="meta">
+        <p><em>Si un Directeur technique ou le Secrétaire Général tente de vous piéger sur les limites de l'Intelligence Artificielle visuelle, utilisez ces arguments :</em></p>
+    </div>
+
+    <h3>1. "L'IA visuelle n'est pas un laboratoire scientifique"</h3>
+    <p>Si on vous dit : <em>"Mais si le faussaire imprime un faux parfait sur le vrai papier de l'État avec un vrai stylo, votre IA ne verra rien !"</em></p>
+
+    <p><strong>Votre réponse (No BS) :</strong></p>
+    <blockquote>
+        "Exactement, Monsieur le Directeur. L'IA visuelle n'est pas un laboratoire de la police scientifique. Elle ne peut pas analyser la chimie de l'encre, ni la pression du stylo. Face à une copie physique parfaite, l'intégrité visuelle de l'IA sera trompée, tout comme l'agent de guichet. <br><br>
+        Mais c'est <strong>précisément pour cela</strong> que SECURI-FOLIO est un cadastre hybride. Si le faussaire passe le mur visuel, il s'écrasera sur <strong>le mur sémantique et topographique</strong>. Son papier parfait indiquera 6000m², mais en un dixième de seconde, l'outil interrogera notre registre central inviolable qui dira : 'Faux, ce titre fait 3049m²'. C'est le croisement des trois niveaux (Visuel + Base de données + Géospatial) qui rend la fraude impossible."
+    </blockquote>
+
+    <h3>2. Les 4 Vrais Intérêts Stratégiques du Check Visuel</h3>
+    <p>Si on vous demande : <em>"Si le croisement avec la base de données fait tout le travail, à quoi sert l'IA visuelle ?"</em></p>
+
+    <p><strong>Votre réponse :</strong></p>
+    <blockquote>
+        "Le check visuel a 4 fonctions vitales pour l'administration :<br><br>
+        1. <strong>Filtrer 90% des faussaires amateurs</strong> : La majorité des fraudes sont grossières (blanc correcteur, ratures). L'IA arrête immédiatement le fraudeur au guichet sans lancer de requête complexe.<br><br>
+        2. <strong>Le filet de sécurité pour les vieux titres (Trous Noirs)</strong> : Si un citoyen amène un vieux certificat des années 80 qui n'a <em>jamais</em> été informatisé, la base de données répondra 'Inconnu'. Dans ce cas précis, le check visuel devient notre <strong>seule ligne de défense</strong>. Si l'IA dit 'Titre inconnu MAIS aucune altération visuelle', on peut le numériser avec confiance.<br><br>
+        3. <strong>L'Audit Interne (Lutte anti-corruption)</strong> : Si un agent corrompu force la validation d'un document raturé malgré l'alerte visuelle de l'IA, le système garde une trace indélébile de son action.<br><br>
+        4. <strong>Détecter les usines à faux</strong> : L'IA repère les anomalies de pixels invisibles à l'œil nu (comme un faux tampon copié-collé sur Photoshop), démantelant les réseaux organisés avant même de lire le texte."
+    </blockquote>
+
+    <h3>3. "Nos vieux certificats n'ont pas les mêmes mots"</h3>
+    <p>Si on vous demande : <em>"Que se passe-t-il avec nos vieux certificats des années 80 qui utilisent d'anciens termes comme 'Zone' au lieu de 'Commune' ?"</em></p>
+    
+    <p><strong>Votre réponse :</strong></p>
+    <blockquote>
+        "C'est la différence entre un vieux logiciel (OCR) et notre Intelligence Artificielle. Un logiciel classique crasherait car il cherche des mots exacts. Notre modèle d'IA est sémantique : s'il lit 'Zone de Limete', il comprend que c'est la 'Circonscription'. Il s'adapte au jargon de l'époque et déchiffre 60 ans d'archives diverses. S'il manque une donnée, l'IA ne bloque pas : elle avertit l'agent de l'État qui prend le relais. L'outil s'adapte à la réalité du terrain."
+    </blockquote>
+
+</body>
+</html>

@@ -111,7 +111,7 @@ export default function AntiFolioPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="N° d'enregistrement (ex: SU/GOM/1023)"
+              placeholder="N° de volume/folio ou parcelle (ex: Vol AMA 171 Folio 68)"
               className="flex-1 w-full bg-transparent border-none py-3.5 px-4 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-0 text-sm font-semibold"
             />
             <button
@@ -129,6 +129,11 @@ export default function AntiFolioPage() {
               )}
             </button>
           </form>
+
+          {/* Formats acceptés */}
+          <div className="px-4 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+            Formats acceptés : <strong className="text-brand-primary">Vol XXX Folio YY</strong> (ex: Vol AMA 171 Folio 68) ou <strong className="text-brand-primary">Numéro cadastral</strong> (ex: 1178).
+          </div>
 
           {/* Disclaimer d'Intégrité */}
           <div className="flex items-start gap-2 px-4">

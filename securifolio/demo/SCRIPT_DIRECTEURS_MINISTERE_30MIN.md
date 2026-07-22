@@ -24,21 +24,21 @@
 **Discours :**
 > "Voici l'outil que vos Conservateurs utiliseront tous les jours. C'est leur nouveau bureau."
 
-**Action 1 : Le Cas Parfait (3 min)**
+**Action 1 : Le Cas Parfait (La Numérisation Initiale) (3 min)**
 1. Cliquez pour uploader **`certificat_1_authentique.png`**.
-2. **Pendant que l'IA analyse, dites :** *"L'Intelligence Artificielle lit le document comme un auditeur assermenté. Elle vérifie le volume, le folio, la date et croise tout pour s'assurer qu'il n'y a pas d'aberration."*
+2. **Pendant que l'IA analyse, dites :** *"Je suis l'Opérateur de Niveau 1. Je numérise ce vieux document pour la première fois. L'Intelligence Artificielle m'aide à faire l'extraction pour gagner du temps, mais elle ne valide rien seule."*
 3. **Importation Géospatiale :** Uploadez le fichier du géomètre **`rtk_1_authentique_450m2.csv`**. 
-4. **Dites :** *"L'agent ne dessine plus au hasard avec sa souris. Il importe la donnée scientifique du géomètre de l'État. Si le terrain fait 450m², le polygone fera 450m² au centimètre près."*
-5. **Validez l'enregistrement.**
+4. **Dites :** *"L'agent ne dessine plus au hasard avec sa souris. Il importe la donnée scientifique du géomètre de l'État. Si le terrain fait 3049m², le polygone fera 3049m² au centimètre près."*
+5. Cliquez sur le bouton de soumission / validation.
+6. **Le Storytelling des 3 Niveaux (Très Important) :** *"Je viens de cliquer sur Envoyer. À ce stade, le dossier disparaît de mon écran. Est-il validé ? NON. Il atterrit instantanément sur la tablette du Chef du Cadastre (Niveau 2) pour l'audit spatial, puis sur l'écran du Conservateur (Niveau 3). Seul le Conservateur appuie sur le bouton final 'Sceller'. Une fois scellé, ce terrain devient une forteresse numérique inattaquable."*
 
-**Action 2 : Le Filtre Anti-Fraude (7 min) - LE MOMENT CHOC**
+**Action 2 : Le Filtre Anti-Fraude Subtil (La Forteresse) (7 min) - LE MOMENT CHOC**
 1. Rafraîchissez la page.
-2. **Dites :** *"Maintenant, que se passe-t-il si un agent corrompu, ou un faussaire, tente d'enregistrer un document raturé pour voler le terrain du voisin ?"*
-3. Uploadez **`certificat_2_falsifie_rature.png`**.
-4. **Dites :** *"Regardez : l'IA a immédiatement détecté la rature sur la superficie. Mais ce n'est pas tout."*
-5. À l'étape du plan, uploadez **`rtk_2_falsifie_superficie_1000m2.csv`**.
-6. **L'alerte rouge apparaît.**
-7. **Dites (en les regardant dans les yeux) :** *"Le système bloque l'opération. Le papier dit 450m², mais le levé topographique sur le terrain tente de s'accaparer 1000m². Autrefois, ce dossier serait passé et aurait fini au tribunal. Aujourd'hui, l'intelligence artificielle agit comme un pare-feu pour le Ministère. La fraude est tuée dans l'œuf."*
+2. **Dites :** *"Faisons une avance rapide. Le terrain précédent a été scellé par le Conservateur il y a un an. La vérité est désormais dans le Cloud. Maintenant, que se passe-t-il si un faussaire professionnel crée un faux document visuellement parfait ? Pas de rature, la bonne police, le bon tampon."*
+3. Sélectionnez le Scénario 3 (Falsification Haute Volée) et uploadez le fichier **`certificat_2_falsifie_subtil.png`**.
+4. **Dites :** *"À l'œil nu, n'importe quel agent validerait ce document. Il indique 6000m² pour Mosele Mombanga. Mais regardez la réaction de l'IA..."*
+5. Montrez l'alerte de divergence sur l'écran.
+6. **Dites (en les regardant dans les yeux) :** *"L'IA a extrait le document et l'a croisé instantanément avec la forteresse que le Conservateur a créée. La base indique 3049m² pour ce Volume/Folio. Le système démasque la fraude invisible à l'œil nu et bloque l'opération. L'intelligence artificielle n'est pas là pour remplacer la chaîne de validation humaine, mais pour la protéger."*
 
 ---
 
@@ -50,7 +50,7 @@
 
 **Action :**
 1. **Dites :** *"Imaginez que je suis une banque ou un citoyen qui va acheter un terrain. On me présente un certificat. Avant, je devais payer un intermédiaire pour aller fouiller dans les archives du Ministère. Aujourd'hui, j'utilise le portail public."*
-2. Tapez le numéro validé précédemment (ex: **`SU/GOM/1023`**). 
+2. Tapez le numéro validé précédemment (ex: **`Vol AMA 171 Folio 68`**). 
 3. L'écran **Vert** s'affiche. **Dites :** *"Le titre est sain. La banque peut prêter. La transaction est sûre."*
 4. **Faites participer les Directeurs :** *"Monsieur le Directeur, dites-moi un faux numéro, inventez-le."* (ou tapez **`SU/XXX/000`**).
 5. L'écran **Rouge** s'affiche. **Dites :** *"Le faux document est neutralisé. L'escroquerie est impossible. Le Ministère retrouve sa fonction protectrice absolue."*
@@ -73,5 +73,8 @@
 
 *   **Question classique :** *"L'IA va-t-elle remplacer nos agents ?"*
     *   **Votre réponse :** *"Au contraire, elle leur donne des super-pouvoirs. Le Conservateur reste le seul maître à valider, mais l'IA vérifie le travail de ses subordonnés à sa place, lui évitant d'endosser la responsabilité de dossiers frauduleux."*
+
+*   **Question classique :** *"Que se passe-t-il avec nos vieux certificats des années 80 qui utilisent d'anciens termes comme 'Zone' au lieu de 'Commune' ou qui n'ont pas un format standard ?"*
+    *   **Votre réponse (No BS) :** *"Un logiciel de numérisation classique (OCR) crasherait car il cherche des mots-clés rigides. SECURI-FOLIO utilise un modèle d'IA sémantique qui comprend le contexte. S'il lit 'Zone de Limete', il comprend que c'est la 'Circonscription'. Il s'adapte à 60 ans d'archives. Et si une donnée est vraiment illisible, il ne bloque pas le système : il avertit l'agent pour une saisie manuelle. On ne remplace pas l'agent, on lui donne un exosquelette."*
 
 > **Conclusion finale :** *"Êtes-vous prêts à faire de la RDC le pionnier de la sécurité foncière en Afrique Centrale ?"*

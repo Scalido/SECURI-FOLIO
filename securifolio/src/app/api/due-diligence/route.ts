@@ -19,15 +19,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Numéro cadastral invalide.' }, { status: 400 })
     }
 
+    const cleanSearch = numeroCadastral.trim()
+    const volMatch = cleanSearch.match(/vol(?:ume)?\s+([a-z0-9\s]+?)\s+folio\s+(\d+)/i)
+
     const supabase = createAdminClient()
-    const { data, error } = await supabase
+
+    let query = supabase
       .from('titres_fonciers')
       .select('numero_cadastral, circonscription, statut, date_enregistrement')
-      .eq('numero_cadastral', numeroCadastral.trim())
-      .single()
 
-    if (error) {
-      if (error.code === 'PGRST116') {
+    if (volMatch) {
+      const vol = volMatch[1].trim().toUpperCase()
+      const fol = volMatch[2].trim()
+      query = query.eq('volume', vol).eq('folio', fol)
+    } else {
+      query = query.eq('numero_cadastral', cleanSearch)
+    }
+
+    const { data, error } = await query.limit(1).maybeSingle()
+
+    if (error || !data) {
+      if (error?.code === 'PGRST116' || !data) {
         return NextResponse.json({ error: 'Aucun titre foncier trouvé pour ce numéro cadastral.' }, { status: 404 })
       }
 

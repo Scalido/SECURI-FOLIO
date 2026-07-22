@@ -27,13 +27,13 @@ export async function extractTitleData(formData: FormData) {
     const prompt = `
 Tu es un expert juridique et foncier de la République Démocratique du Congo.
 Analyse ce certificat d'enregistrement / titre foncier et extrais les informations suivantes au format JSON strict :
-- "numero_cadastral" : Le numéro cadastral de la parcelle (ex: SU/GOM/1023).
-- "nom_proprietaire" : Le nom complet du ou des propriétaires.
-- "volume" : Le volume du registre.
-- "folio" : Le folio du registre.
-- "circonscription" : La circonscription foncière.
-- "superficie" : La superficie du terrain.
-- "date_enregistrement" : La date d'établissement du certificat (format YYYY-MM-DD).
+- "numero_cadastral" : Le numéro de la parcelle (ex: 1178).
+- "nom_proprietaire" : Le nom complet du concessionnaire/propriétaire.
+- "volume" : Le volume du registre (ex: AMA 171).
+- "folio" : Le folio du registre (ex: 68).
+- "circonscription" : La commune ou circonscription foncière (ex: Limete).
+- "superficie" : La superficie du terrain en m² ou ares (convertis tout en m² si possible).
+- "date_enregistrement" : La date d'établissement du certificat.
 
 Si une information est introuvable ou illisible, mets "Non détecté" ou "".
 Ne retourne que le JSON, pas de markdown, pas d'explications autour.

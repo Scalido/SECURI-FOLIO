@@ -102,7 +102,7 @@ export default function DueDiligencePage() {
               type="text"
               value={numeroCadastral}
               onChange={(e) => setNumeroCadastral(e.target.value)}
-              placeholder="Entrez le numéro cadastral (ex: SU/GOM/1023)..."
+              placeholder="Entrez le numéro cadastral ou Vol/Folio (ex: Vol AMA 171 Folio 68)..."
               className="w-full bg-transparent border-none py-6 pl-16 pr-32 text-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 font-mono"
             />
             <button
@@ -113,6 +113,11 @@ export default function DueDiligencePage() {
               {loading ? 'Recherche...' : 'Vérifier'}
             </button>
           </form>
+          
+          {/* Formats acceptés */}
+          <div className="px-6 pt-3 text-[11px] text-slate-500 dark:text-slate-400 font-medium text-center sm:text-left">
+            Formats acceptés : <strong className="text-brand-primary">Vol XXX Folio YY</strong> (ex: Vol AMA 171 Folio 68) ou <strong className="text-brand-primary">Numéro cadastral</strong> (ex: 1178).
+          </div>
         </div>
 
         {/* Error State */}

@@ -10,10 +10,21 @@ export async function checkCadastralNumber(cadastralNumber: string) {
 
   if (!user) return null
 
-  const { data, error } = await supabaseServer
-    .from('titres_fonciers')
-    .select('*')
-    .eq('numero_cadastral', cadastralNumber)
+  // Parser intelligent (No BS) pour éviter les conflits sur des nombres simples
+  const cleanSearch = cadastralNumber.trim()
+  const volMatch = cleanSearch.match(/vol(?:ume)?\s+([a-z0-9\s]+?)\s+folio\s+(\d+)/i)
+
+  let query = supabaseServer.from('titres_fonciers').select('*')
+
+  if (volMatch) {
+    const vol = volMatch[1].trim().toUpperCase() // ex: AMA 171
+    const fol = volMatch[2].trim()               // ex: 68
+    query = query.eq('volume', vol).eq('folio', fol)
+  } else {
+    query = query.eq('numero_cadastral', cleanSearch)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Erreur Supabase:', error)

@@ -33,13 +33,13 @@ def generate_cert(filename, nom, numero_cadastral, volume, folio, circonscriptio
     line_height = 65
 
     fields = [
-        ("Circonscription Foncière :", circonscription),
-        ("Numéro d'Enregistrement de la Parcelle :", numero_cadastral),
-        ("Superficie de la Concession :", superficie),
-        ("Volume du Registre :", volume),
-        ("Folio du Registre :", folio),
-        ("Inscrit au Nom de (Propriétaire) :", nom),
-        ("Fait à Kinshasa, le :", date_etab),
+        ("Commune :", circonscription),
+        ("Parcelle N° :", numero_cadastral),
+        ("Superficie :", superficie),
+        ("Volume :", volume),
+        ("Folio :", folio),
+        ("Concessionnaire :", nom),
+        ("Établi à Kinshasa, le :", date_etab),
     ]
 
     for i, (label, val) in enumerate(fields):
@@ -47,15 +47,7 @@ def generate_cert(filename, nom, numero_cadastral, volume, folio, circonscriptio
         draw.text((80, y), label, font=label_font, fill="#64748b")
         
         val_x = 450
-        # If rature is True and it's the surface, draw a crossed out text
-        if rature and "Superficie" in label:
-            draw.text((val_x, y), "450 m²", font=value_font, fill="#0f172a")
-            # Strike through
-            draw.line([val_x, y + 10, val_x + 80, y + 10], fill="red", width=3)
-            # Write new text next to it
-            draw.text((val_x + 100, y), val, font=value_font, fill="#0f172a")
-        else:
-            draw.text((val_x, y), val, font=value_font, fill="#0f172a")
+        draw.text((val_x, y), val, font=value_font, fill="#0f172a")
 
         # underline
         draw.line([80, y + 30, width - 80, y + 30], fill="#e2e8f0", width=2)
@@ -84,24 +76,23 @@ os.makedirs(output_dir, exist_ok=True)
 # 1. Authentique
 generate_cert(
     os.path.join(output_dir, "certificat_1_authentique.png"),
-    "Augustin Mwamba", "SU/GOM/1023", "A120", "45", "Gombe", "450 m²", "12 Mars 2018"
+    "Mosele Mombanga", "1178", "AMA 171", "68", "Limete", "3049 m²", "14 Septembre 2020"
 )
 
-# 2. Falsifié (Rature)
+# 2. Falsifié (Subtil - Haute Volée)
 generate_cert(
-    os.path.join(output_dir, "certificat_2_falsifie_rature.png"),
-    "Faux Propriétaire 1", "SU/GOM/1023", "X999", "45", "Gombe", "1000 m²", "14 Mai 2024",
-    rature=True
+    os.path.join(output_dir, "certificat_2_falsifie_subtil.png"),
+    "Mosele Mombanga", "1178", "AMA 171", "68", "Limete", "6000 m²", "14 Septembre 2020"
 )
 
 # 3. Litige
 generate_cert(
     os.path.join(output_dir, "certificat_3_litige.png"),
-    "Pierre Kasongo", "SU/KIM/871", "K11", "03", "Kisenso", "320 m²", "09 Septembre 2021"
+    "Pierre Kasongo", "2044", "LUK 45", "12", "Ngaliema", "320 m²", "09 Septembre 2021"
 )
 
 # 4. Faux Titre (Inconnu)
 generate_cert(
     os.path.join(output_dir, "certificat_4_inconnu.png"),
-    "Michel Kabasele", "SU/NGO/777", "Z55", "09", "Ngaliema", "500 m²", "22 Juillet 2023"
+    "Michel Kabasele", "8888", "XXX 99", "00", "Gombe", "500 m²", "22 Juillet 2023"
 )
