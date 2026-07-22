@@ -161,16 +161,20 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
           return;
         }
 
-        const headers = results.meta.fields?.map(f => f.toLowerCase().trim()) || [];
+        const originalHeaders = results.meta.fields || [];
+        const headers = originalHeaders.map(f => f.toLowerCase().trim());
         
-        let latKey = headers.find(h => h.includes('lat') || h === 'y');
-        let lngKey = headers.find(h => h.includes('lon') || h.includes('lng') || h === 'x');
+        let latIndex = headers.findIndex(h => h.includes('lat') || h === 'y' || h.includes('latitude'));
+        let lngIndex = headers.findIndex(h => h.includes('lon') || h.includes('lng') || h === 'x' || h.includes('longitude'));
 
-        if (!latKey || !lngKey) {
+        if (latIndex === -1 || lngIndex === -1) {
            // Fallback to first two columns if no clear headers
-           latKey = results.meta.fields?.[0];
-           lngKey = results.meta.fields?.[1];
+           latIndex = 0;
+           lngIndex = 1;
         }
+
+        const latKey = originalHeaders[latIndex];
+        const lngKey = originalHeaders[lngIndex];
 
         if (!latKey || !lngKey) {
            alert('Impossible de détecter les colonnes de coordonnées dans le fichier CSV.');
@@ -181,8 +185,14 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
         
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         for (const row of results.data as any[]) {
-           const lat = parseFloat(row[latKey]);
-           const lng = parseFloat(row[lngKey]);
+           if (!row[latKey] || !row[lngKey]) continue;
+           
+           // Replace commas with dots for French locales
+           const latStr = String(row[latKey]).trim().replace(',', '.');
+           const lngStr = String(row[lngKey]).trim().replace(',', '.');
+           
+           const lat = parseFloat(latStr);
+           const lng = parseFloat(lngStr);
            if (!isNaN(lat) && !isNaN(lng)) {
              coordinates.push([lng, lat]);
            }
