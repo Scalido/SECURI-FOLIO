@@ -407,7 +407,11 @@ export default function SmartArchivePage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || 'Une erreur est survenue.');
+      let message = err.message || 'Une erreur est survenue.';
+      if (message.includes('429 Too Many Requests') || message.includes('quota')) {
+        message = "Le service d'Intelligence Artificielle est actuellement surchargé (Quota gratuit de l'API atteint). Veuillez patienter environ 30 secondes avant de réessayer.";
+      }
+      setErrorMsg(message);
       setStatus('error');
     }
   };
