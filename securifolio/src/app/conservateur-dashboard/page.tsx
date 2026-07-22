@@ -163,7 +163,7 @@ export default function ConservateurDashboard() {
                             className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold transition-colors disabled:opacity-50 text-sm"
                           >
                             <CheckCircle2 className="w-4 h-4" />
-                            {actionLoading === title.id ? '...' : 'Approuver'}
+                            {actionLoading === title.id ? '...' : 'Authentifier et Sceller'}
                           </button>
                         </div>
                       </td>

@@ -196,6 +196,19 @@ export default function MfaPage() {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Smartphone className="w-4 h-4" />}
               Générer le facteur MFA
             </button>
+            
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setStep('complete');
+                  await redirectAfterMfa();
+                }}
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest mt-2 border border-slate-300"
+              >
+                Passer cette étape (Mode Démo)
+              </button>
+            )}
           </div>
         )}
 
@@ -231,6 +244,19 @@ export default function MfaPage() {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
               Valider le MFA
             </button>
+
+            {process.env.NODE_ENV === 'development' && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setStep('complete');
+                  await redirectAfterMfa();
+                }}
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest mt-2 border border-slate-300"
+              >
+                Passer cette étape (Mode Démo)
+              </button>
+            )}
           </div>
         )}
 

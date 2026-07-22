@@ -126,6 +126,7 @@ export async function POST(req: NextRequest) {
       found: false,
       matches: {
         nom: false,
+        numero_cadastral: false,
         volume: false,
         folio: false,
         circonscription: false
@@ -155,17 +156,14 @@ export async function POST(req: NextRequest) {
           }
 
           dbVerification.found = true;
-          dbVerification.dbRecord = {
-            numero_cadastral: matchRecord.numero_cadastral,
-            circonscription: matchRecord.circonscription,
-            statut: matchRecord.statut
-          };
+          dbVerification.dbRecord = matchRecord;
           dbVerification.status = matchRecord.statut;
 
           // Comparaison insensible à la casse et aux espaces
           const cleanStr = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
           dbVerification.matches.nom = cleanStr(matchRecord.nom_proprietaire) === cleanStr(parsedJson.nom);
+          dbVerification.matches.numero_cadastral = cleanStr(matchRecord.numero_cadastral) === cleanStr(parsedJson.numero_cadastral);
           dbVerification.matches.volume = cleanStr(matchRecord.volume) === cleanStr(parsedJson.volume);
           dbVerification.matches.folio = cleanStr(matchRecord.folio) === cleanStr(parsedJson.folio);
           dbVerification.matches.circonscription = cleanStr(matchRecord.circonscription) === cleanStr(parsedJson.circonscription);

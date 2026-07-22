@@ -957,7 +957,7 @@ export default function SmartArchivePage() {
                       className="flex-[2] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex justify-center items-center gap-2"
                     >
                       {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />} 
-                      {isSaving ? "Enregistrement..." : "Confirmer et Sceller"}
+                      {isSaving ? "Enregistrement..." : "Transmettre pour Validation"}
                     </button>
                   </div>
                 </div>

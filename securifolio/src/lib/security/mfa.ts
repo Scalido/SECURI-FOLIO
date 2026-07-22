@@ -20,6 +20,12 @@ const SENSITIVE_ROLES = new Set(['admin', 'chef_cadastre', 'conservateur'])
 export async function requireMfaForSensitiveRole(supabase: SupabaseMfaClient, role: string) {
   if (!SENSITIVE_ROLES.has(role)) return null
 
+  // BYPASS D'URGENCE POUR LA DÉMO EN LOCAL
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('⚠️ AVERTISSEMENT: Contournement MFA activé (Mode Développement)');
+    return null;
+  }
+
   const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
 
   if (error) {
