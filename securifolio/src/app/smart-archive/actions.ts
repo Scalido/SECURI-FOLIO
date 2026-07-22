@@ -19,7 +19,7 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     .single()
 
   if (!profile || profile.role !== 'agent') {
-    return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent sceller un document.' }
+    return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent transmettre un document (rôle "agent" requis dans la DB).' }
   }
 
   if (requiresTopography && !coordonneesSpatiales) {
