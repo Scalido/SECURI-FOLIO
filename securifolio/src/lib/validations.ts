@@ -7,7 +7,7 @@ export const certificateSchema = z.object({
   folio: z.string().trim().max(50, "Le folio est trop long.").optional(),
   circonscription: z.string().trim().max(255, "La circonscription est trop longue.").optional(),
   superficie: z.string().trim().max(100, "La superficie est trop longue.").optional(),
-  date_etablissement: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "La date doit être au format YYYY-MM-DD.").optional().or(z.literal('')),
+  date_etablissement: z.string().trim().max(100, "La date est trop longue.").optional().or(z.literal('')),
 })
 
 export type CertificateData = z.infer<typeof certificateSchema>

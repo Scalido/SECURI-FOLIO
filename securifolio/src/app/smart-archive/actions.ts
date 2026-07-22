@@ -4,6 +4,31 @@ import { createClient } from '@/utils/supabase/server'
 import { certificateSchema } from '@/lib/validations'
 import crypto from 'crypto'
 
+function parseFrenchDate(dateStr?: string | null): string {
+  if (!dateStr) return new Date().toISOString();
+  
+  const timestamp = Date.parse(dateStr);
+  if (!isNaN(timestamp)) return new Date(timestamp).toISOString();
+
+  const months: Record<string, string> = {
+    'janvier': '01', 'février': '02', 'fevrier': '02', 'mars': '03', 'avril': '04',
+    'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08', 'aout': '08',
+    'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12', 'decembre': '12'
+  };
+
+  const match = dateStr.toLowerCase().match(/(\d{1,2})\s+([a-zéû]+)\s+(\d{4})/);
+  if (match) {
+    const day = match[1].padStart(2, '0');
+    const month = months[match[2]];
+    const year = match[3];
+    if (month) {
+      return new Date(`${year}-${month}-${day}T12:00:00Z`).toISOString();
+    }
+  }
+
+  return new Date().toISOString(); // Fallback
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, requiresTopography: boolean = false) {
   const supabaseServer = createClient()
@@ -91,6 +116,8 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
 
   const hashSignature = crypto.createHmac('sha256', signatureSecret).update(dataToSign).digest('hex');
 
+  const parsedDate = parseFrenchDate(validData.date_etablissement);
+
   const { error: insertError } = await supabaseServer
     .rpc('create_title_with_history', {
       p_numero_cadastral: numeroCadastral,
@@ -99,7 +126,7 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
       p_folio: validData.folio || '',
       p_circonscription: validData.circonscription || '',
       p_superficie: validData.superficie || '',
-      p_date_enregistrement: validData.date_etablissement || new Date().toISOString(),
+      p_date_enregistrement: parsedDate,
       p_scan_url: scanUrl || null,
       p_coordonnees_spatiales: coordonneesSpatiales || null,
       p_hash_signature: hashSignature
