@@ -1089,7 +1089,7 @@ export default function SmartArchivePage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-sm text-slate-900 dark:text-white">
-                              {item.action_type === 'insert' ? 'Titre Scellé' : 'Doublon Bloqué'}
+                              {item.action_type === 'insert' ? 'Dossier Transmis' : 'Doublon Bloqué'}
                             </span>
                             <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-brand-surface text-slate-600 dark:text-slate-300 font-mono font-medium">
                               {item.numero_cadastral}
@@ -1097,7 +1097,7 @@ export default function SmartArchivePage() {
                           </div>
                           <p className="text-xs text-slate-500 mt-1">
                             {item.action_type === 'insert' 
-                              ? 'Le certificat a été numérisé avec succès.' 
+                              ? 'Le dossier a été numérisé et transmis au Cadastre.' 
                               : 'Une tentative de création a été bloquée pour cause de doublon cadastral.'}
                           </p>
                         </div>
