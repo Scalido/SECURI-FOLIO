@@ -13,7 +13,7 @@ type Message = {
 export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([{
     role: "assistant",
-    content: "Bonjour. Je suis l'assistant Foncier-Édu. Comment puis-je vous conseiller sur le régime foncier congolais ou l'application de la Loi n° 25/062 (Loi N'Sele) ?\n\n📜 **Textes de loi maîtrisés :**\n• Loi Foncière (Loi 73-021 modifiée)\n• Ordonnance n° 74/148\n• Loi n° 15/025 (Baux à loyer)\n• Arrêtés n° 0075 et n° 90-0012\n\n⚠️ *Verrou d'intégrité : Je ne fais aucune déduction hasardeuse. En cas de doute complexe, je vous orienterai vers un Conservateur officiel.*"
+    content: "Bonjour. Je suis Foncier-Édu, votre conseiller stratégique en droit foncier de la RDC. Mon rôle est de vous guider dans vos démarches et de vous protéger des risques (spoliation, nullité de contrats, etc.).\n\n📜 **Ressources maîtrisées :**\n• Guide Pratique d'Acquisition d'une Concession Foncière (Nouveau)\n• Loi Foncière (Loi 73-021 modifiée)\n• Ordonnance n° 74/148\n• Loi n° 15/025 (Baux à loyer)\n• Arrêtés n° 0075 et n° 90-0012\n\n⚠️ *Transparence & Rigueur : Si votre démarche présente un risque légal ou si vous faites fausse route, je vous le dirai directement. En cas de blocage, je vous indiquerai la démarche administrative correcte.*"
   }]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +177,7 @@ export default function AssistantPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isLimitReached ? "Limite atteinte. Connexion requise." : "Posez votre question sur la législation foncière..."}
+            placeholder={isLimitReached ? "Limite atteinte. Connexion requise." : "Décrivez votre situation ou posez votre question juridique..."}
             className="flex-1 border border-slate-200 dark:border-brand-border rounded-xl sm:rounded-2xl py-3 sm:py-4 px-4 sm:px-6 pr-14 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-slate-900 dark:text-white bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all disabled:opacity-50"
             disabled={isLoading || isLimitReached}
           />
