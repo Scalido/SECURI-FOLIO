@@ -90,9 +90,9 @@
 ```
 
 - [ ] Configurer l’alias `@` vers `src` et l’environnement `jsdom`.
-- [ ] Ajouter un test minimal important `src/lib/anti-folio/verdict.ts` pour vérifier que la suite échoue avant création du module.
-- [ ] Exécuter `npm run test:unit` et constater l’échec attendu.
-- [ ] Créer le fichier minimal exportant les types nécessaires.
+- [ ] Ajouter `tests/unit/test-environment.test.ts` qui importe `certificateSchema` via l’alias `@`, vérifie un cas réel de validation et utilise un matcher DOM de `@testing-library/jest-dom`.
+- [ ] Exécuter `npm run test:unit` avant la configuration et constater l’échec attendu du script ou de la résolution de l’environnement.
+- [ ] Ajouter la configuration minimale permettant à ce test réel de réussir; la création du moteur Anti‑Folio reste réservée à la tâche 2.
 - [ ] Réexécuter `npm run test:unit`.
 - [ ] Commit de contrôle :
 
