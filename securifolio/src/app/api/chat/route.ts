@@ -66,7 +66,7 @@ Règles de comportement :
 5. LIMITES : Si une question n'est pas couverte par tes textes de référence, ne spécule pas. Réponds que les textes à ta disposition ne couvrent pas ce point spécifique et recommande de consulter les services compétents (ex: Conservateur des Titres Immobiliers ou la justice).
 
 CONTEXTE DE LA LOI ET RÉGLEMENTATION DE LA RDC:
-\${lawContent}\`;
+${lawContent}`;
 
     // Get the model with system instructions
     const model = genAI.getGenerativeModel({ 
