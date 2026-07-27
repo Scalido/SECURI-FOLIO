@@ -1,0 +1,61 @@
+import { describe, expect, it } from 'vitest'
+
+import { executeCadastralSearch } from '@/lib/anti-folio/search'
+import { deriveAntiFolioOutcome } from '@/lib/anti-folio/verdict'
+
+describe('recherche Anti-Folio', () => {
+  it('retourne les titres trouvés pour un agent authentifié', async () => {
+    const title = {
+      id: 'title-1',
+      numero_cadastral: '1178',
+      volume: 'AMA 171',
+      folio: '68',
+      nom_proprietaire: 'Kanku',
+      circonscription: 'Gombe',
+      statut: 'Valide' as const,
+    }
+
+    const response = await executeCadastralSearch('1178', {
+      getAuthenticatedUser: async () => ({ id: 'agent-1' }),
+      searchTitles: async () => ({ records: [title], error: null }),
+    })
+
+    expect(response).toEqual({ ok: true, records: [title] })
+  })
+
+  it('distingue une absence de session d’une absence de titre', async () => {
+    const response = await executeCadastralSearch('1178', {
+      getAuthenticatedUser: async () => null,
+      searchTitles: async () => ({ records: [], error: null }),
+    })
+
+    expect(response).toEqual({
+      ok: false,
+      code: 'UNAUTHENTICATED',
+      message: 'Authentification requise pour interroger le registre.',
+    })
+  })
+
+  it('classe une panne de base comme erreur technique sans conclure à une fraude', async () => {
+    const response = await executeCadastralSearch('1178', {
+      getAuthenticatedUser: async () => ({ id: 'agent-1' }),
+      searchTitles: async () => ({
+        records: null,
+        error: new Error('database unavailable'),
+      }),
+    })
+
+    expect(response).toEqual({
+      ok: false,
+      code: 'DATABASE_ERROR',
+      message: 'La recherche du registre est temporairement indisponible.',
+    })
+
+    const outcome = deriveAntiFolioOutcome({
+      searchError: response.ok === false,
+    })
+
+    expect(outcome.searchState).toBe('technical_error')
+    expect(outcome.administrativeStatus).toBeNull()
+  })
+})

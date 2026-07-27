@@ -99,7 +99,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Anti-Folio</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Le moteur d'audit hybride (Sémantique + Spatial). Il détecte les documents falsifiés et bloque instantanément les superpositions de polygones pour empêcher le vol de terrain.
+                  Interrogez le registre Securifolio par numéro cadastral ou référence volume/folio, puis consultez les correspondances et leur statut administratif enregistré.
                 </p>
               </div>
             </Link>
@@ -177,7 +177,7 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Protection</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Blocage anticipé des superpositions de titres.</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Constats de recherche traçables, sans conclusion automatique de fraude.</p>
               </div>
             </div>
 

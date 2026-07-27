@@ -108,7 +108,18 @@ CREATE TABLE IF NOT EXISTS anti_folio_history (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     agent_id UUID NOT NULL REFERENCES profiles(id),
     numero_cadastral VARCHAR(255) NOT NULL,
-    resultat VARCHAR(20) NOT NULL CHECK (resultat IN ('valid', 'fraud', 'pending')),
+    resultat VARCHAR(20) NOT NULL CHECK (
+        resultat IN (
+            'valid',
+            'fraud',
+            'pending',
+            'match',
+            'not_found',
+            'ambiguous',
+            'technical_error',
+            'overlap_detected'
+        )
+    ),
     date_scan TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
