@@ -130,10 +130,12 @@ vi.mock('@/utils/supabase/admin', () => ({
 }))
 
 import {
+  addDossierPiece,
   getAdministrativeDocument,
   getTemporaryAnalysisUrl,
   saveCertificate,
 } from '@/app/smart-archive/actions'
+import { buildIntegrityEnvelope } from '@/lib/documents/integrity'
 
 const certificate = {
   nom: 'Mosele Mombanga',
@@ -203,6 +205,27 @@ describe('stockage documentaire privé', () => {
     const rpcPayload = state.rpc.mock.calls[0][1]
     expect(rpcPayload).not.toHaveProperty('p_scan_url')
     expect(rpcPayload).not.toHaveProperty('p_hash_signature')
+    expect(state.remove).not.toHaveBeenCalled()
+  })
+
+  it('ajoute un remplacement de pièce sans accepter de version client', async () => {
+    state.rpc.mockResolvedValueOnce({ data: 2, error: null })
+
+    const result = await addDossierPiece({
+      dossierId: '7d9a93d3-8f28-4c86-99a6-95855e28f062',
+      typePiece: 'croquis',
+      storagePath: 'documents/agent-1/croquis-v2.pdf',
+    })
+
+    expect(result).toEqual({ success: true, version: 2 })
+    expect(state.rpc).toHaveBeenCalledWith('add_dossier_piece', {
+      p_dossier_id: '7d9a93d3-8f28-4c86-99a6-95855e28f062',
+      p_type_piece: 'croquis',
+      p_storage_path: 'documents/agent-1/croquis-v2.pdf',
+      p_file_sha256:
+        '012b3666e2248223852677115ce42337fcfcb1676285cdc333b66fbd2f224bed',
+    })
+    expect(state.rpc.mock.calls[0][1]).not.toHaveProperty('p_version')
     expect(state.remove).not.toHaveBeenCalled()
   })
 
@@ -310,6 +333,44 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       'documents/agent-1/title-1.pdf',
       300,
     )
+  })
+
+  it('vérifie aussi les mentions légales scellées d’un dossier structuré', async () => {
+    const metadata = {
+      nom: 'Mosele Mombanga',
+      numero_cadastral: '1178',
+      volume: 'AMA 171',
+      folio: '68',
+      circonscription: 'Gombe',
+      superficie: '450',
+      date_etablissement: '2026-01-12T12:00:00.000Z',
+      description_immeuble: 'Parcelle bâtie',
+      situation: 'Avenue du Fleuve',
+      charges_reelles: 'Aucune',
+      droits_constates: 'Concession perpétuelle',
+      date_sceau: '2026-01-13T12:00:00.000Z',
+      signataire_conservateur: 'Marie Ilunga',
+    }
+    const envelope = buildIntegrityEnvelope(
+      storedTitle.file_sha256,
+      metadata,
+      'agent-1',
+    )
+    state.title = {
+      ...storedTitle,
+      ...metadata,
+      nom_proprietaire: metadata.nom,
+      date_enregistrement: metadata.date_etablissement,
+      dossier_id: 'dossier-1',
+      metadata_hmac: envelope.metadataHmac,
+    }
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toMatchObject({
+      success: true,
+      integrity: 'passed',
+    })
   })
 
   it.each([

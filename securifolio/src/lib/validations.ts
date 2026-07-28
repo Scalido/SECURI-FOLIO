@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { LAND_FILE_PIECE_TYPES } from '@/lib/land-files'
 
 export const certificateSchema = z.object({
   nom: z.string().trim().min(2, "Le nom du propriétaire doit contenir au moins 2 caractères.").max(255, "Le nom du propriétaire est trop long."),
@@ -8,10 +9,22 @@ export const certificateSchema = z.object({
   circonscription: z.string().trim().max(255, "La circonscription est trop longue.").optional(),
   superficie: z.string().trim().max(100, "La superficie est trop longue.").optional(),
   date_etablissement: z.string().trim().max(100, "La date est trop longue.").optional().or(z.literal('')),
+  description_immeuble: z.string().trim().max(2000, "La description de l'immeuble est trop longue.").optional(),
+  situation: z.string().trim().max(1000, "La situation est trop longue.").optional(),
+  charges_reelles: z.string().trim().max(2000, "Les charges réelles sont trop longues.").optional(),
+  droits_constates: z.string().trim().max(2000, "Les droits constatés sont trop longs.").optional(),
+  date_sceau: z.string().trim().max(100, "La date du sceau est trop longue.").optional().or(z.literal('')),
+  signataire_conservateur: z.string().trim().max(255, "Le nom du signataire est trop long.").optional(),
 })
 
 export const smartArchiveSubmissionSchema = certificateSchema.extend({
   attested: z.literal(true),
+})
+
+export const dossierPieceSubmissionSchema = z.object({
+  dossierId: z.string().uuid(),
+  typePiece: z.enum(LAND_FILE_PIECE_TYPES),
+  storagePath: z.string().min(1),
 })
 
 export type AgentProfileIdentity = {

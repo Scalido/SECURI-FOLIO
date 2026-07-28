@@ -55,6 +55,30 @@ export async function updateTitleStatus(titleId: string, newStatus: 'Validé tec
   const mfaError = await requireMfaForSensitiveRole(supabaseServer, profile.role)
   if (mfaError) return { success: false, error: mfaError }
 
+  if (newStatus === 'Validé techniquement') {
+    const { data: title, error: titleError } = await supabaseServer
+      .from('titres_fonciers')
+      .select('dossier_id')
+      .eq('id', titleId)
+      .single()
+
+    if (titleError || !title?.dossier_id) {
+      return { success: false, error: 'Dossier foncier introuvable.' }
+    }
+
+    const { data: checklist, error: checklistError } = await supabaseServer.rpc(
+      'get_dossier_document_checklist',
+      { p_dossier_id: title.dossier_id },
+    )
+
+    if (checklistError || !checklist?.cadastre?.ready) {
+      return {
+        success: false,
+        error: 'PV de mesurage/bornage et croquis requis avant validation cadastrale.',
+      }
+    }
+  }
+
   const { error: updateError } = await supabaseServer
     .rpc('update_title_status_with_history', {
       p_title_id: titleId,

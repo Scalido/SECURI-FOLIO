@@ -4,9 +4,11 @@ import { createClient } from '@/utils/supabase/server'
 import { createAdminClient } from '@/utils/supabase/admin'
 import {
   type CertificateData,
+  dossierPieceSubmissionSchema,
   isCompleteAgentProfile,
   smartArchiveSubmissionSchema,
 } from '@/lib/validations'
+import type { DocumentChecklist } from '@/lib/land-files'
 import {
   buildIntegrityEnvelope,
   sha256,
@@ -46,6 +48,10 @@ function parseFrenchDate(dateStr?: string | null): string {
   if (!isNaN(timestamp)) return new Date(timestamp).toISOString();
 
   return new Date().toISOString(); // Fallback
+}
+
+function parseOptionalFrenchDate(dateStr?: string | null): string | null {
+  return dateStr?.trim() ? parseFrenchDate(dateStr) : null
 }
 
 function ownsStoragePath(
@@ -283,6 +289,12 @@ export async function saveCertificate(
     ...validData,
     numero_cadastral: numeroCadastral,
     date_etablissement: parsedDate,
+    description_immeuble: validData.description_immeuble || '',
+    situation: validData.situation || '',
+    charges_reelles: validData.charges_reelles || '',
+    droits_constates: validData.droits_constates || '',
+    date_sceau: parseOptionalFrenchDate(validData.date_sceau) || '',
+    signataire_conservateur: validData.signataire_conservateur || '',
   }
 
   let integrityEnvelope
@@ -314,6 +326,13 @@ export async function saveCertificate(
       p_metadata_hmac: integrityEnvelope.metadataHmac,
       p_coordonnees_spatiales: coordonneesSpatiales || null,
       p_attested: true,
+      p_description_immeuble: validData.description_immeuble || null,
+      p_situation: validData.situation || null,
+      p_charges_reelles: validData.charges_reelles || null,
+      p_droits_constates: validData.droits_constates || null,
+      p_date_sceau: parseOptionalFrenchDate(validData.date_sceau),
+      p_signataire_conservateur:
+        validData.signataire_conservateur || null,
     })
 
   if (insertError) {
@@ -336,6 +355,112 @@ export async function saveCertificate(
   })
 }
 
+export async function addDossierPiece(submission: unknown) {
+  const { supabaseServer, user, error } = await getAuthenticatedAgent()
+  if (!user) return { success: false, error }
+
+  const parsed = dossierPieceSubmissionSchema.safeParse(submission)
+  if (!parsed.success) {
+    return { success: false, error: 'Données de pièce invalides.' }
+  }
+
+  const { dossierId, typePiece, storagePath } = parsed.data
+  if (!ownsStoragePath(storagePath, user.id, 'documents')) {
+    return { success: false, error: 'Chemin de stockage privé invalide.' }
+  }
+
+  const privateStorage = createAdminClient().storage
+  const operation = async () => {
+    const { data: storedFile, error: downloadError } = await privateStorage
+      .from(PRIVATE_DOCUMENT_BUCKET)
+      .download(storagePath)
+
+    if (downloadError || !storedFile) {
+      return {
+        success: false as const,
+        error: downloadError?.message || 'Document privé introuvable.',
+      }
+    }
+
+    const fileSha256 = sha256(
+      new Uint8Array(await storedFile.arrayBuffer()),
+    )
+    const { data: version, error: insertError } = await supabaseServer.rpc(
+      'add_dossier_piece',
+      {
+        p_dossier_id: dossierId,
+        p_type_piece: typePiece,
+        p_storage_path: storagePath,
+        p_file_sha256: fileSha256,
+      },
+    )
+
+    if (insertError) {
+      return { success: false as const, error: insertError.message }
+    }
+
+    return { success: true as const, version: Number(version) }
+  }
+
+  return withDefinitiveObjectRetention({
+    operation,
+    cleanup: async () => {
+      const { error: removeError } = await privateStorage
+        .from(PRIVATE_DOCUMENT_BUCKET)
+        .remove([storagePath])
+
+      if (removeError) throw new Error(removeError.message)
+    },
+  })
+}
+
+export async function getDocumentChecklist(
+  numeroCadastral: string,
+): Promise<{
+  data: DocumentChecklist | null
+  dossierId: string | null
+  error: string | null
+}> {
+  const supabaseServer = createClient()
+  const { data: { user } } = await supabaseServer.auth.getUser()
+  if (!user) {
+    return { data: null, dossierId: null, error: 'Non authentifié' }
+  }
+
+  const { data: title, error: titleError } = await supabaseServer
+    .from('titres_fonciers')
+    .select('dossier_id')
+    .eq('numero_cadastral', numeroCadastral.trim())
+    .single()
+
+  if (titleError || !title?.dossier_id) {
+    return {
+      data: null,
+      dossierId: null,
+      error: titleError?.message || 'Dossier foncier introuvable.',
+    }
+  }
+
+  const { data, error } = await supabaseServer.rpc(
+    'get_dossier_document_checklist',
+    { p_dossier_id: title.dossier_id },
+  )
+
+  if (error || !data) {
+    return {
+      data: null,
+      dossierId: title.dossier_id,
+      error: error?.message || 'Checklist documentaire indisponible.',
+    }
+  }
+
+  return {
+    data: data as DocumentChecklist,
+    dossierId: title.dossier_id,
+    error: null,
+  }
+}
+
 export async function getAdministrativeDocument(titleId: string) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
@@ -356,7 +481,7 @@ export async function getAdministrativeDocument(titleId: string) {
 
   const { data: title, error: titleError } = await supabaseServer
     .from('titres_fonciers')
-    .select('id, numero_cadastral, nom_proprietaire, volume, folio, circonscription, superficie, date_enregistrement, storage_path, file_sha256, metadata_hmac, document_version')
+    .select('id, numero_cadastral, nom_proprietaire, volume, folio, circonscription, superficie, date_enregistrement, storage_path, file_sha256, metadata_hmac, document_version, dossier_id, description_immeuble, situation, charges_reelles, droits_constates, date_sceau, signataire_conservateur')
     .eq('id', titleId)
     .single()
 
@@ -457,7 +582,7 @@ export async function getAdministrativeDocument(titleId: string) {
       return failIntegrityCheck('document privé indisponible', downloadError)
     }
 
-    const metadata: CertificateData = {
+    const legacyMetadata: CertificateData = {
       nom: title.nom_proprietaire,
       numero_cadastral: title.numero_cadastral,
       volume: title.volume,
@@ -466,6 +591,17 @@ export async function getAdministrativeDocument(titleId: string) {
       superficie: title.superficie || '',
       date_etablissement: title.date_enregistrement || '',
     }
+    const metadata: CertificateData = title.dossier_id
+      ? {
+          ...legacyMetadata,
+          description_immeuble: title.description_immeuble || '',
+          situation: title.situation || '',
+          charges_reelles: title.charges_reelles || '',
+          droits_constates: title.droits_constates || '',
+          date_sceau: title.date_sceau || '',
+          signataire_conservateur: title.signataire_conservateur || '',
+        }
+      : legacyMetadata
 
     const integrityPassed = verifyIntegrityEnvelope(
       {

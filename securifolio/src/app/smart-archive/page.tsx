@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
 import {
   deleteTemporaryScan,
+  getDocumentChecklist,
   getConnectedAgentProfile,
   getHistoryServer,
   getTemporaryAnalysisUrl,
@@ -15,6 +16,7 @@ import dynamic from 'next/dynamic';
 import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
 import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
 import type { AgentProfileState } from '@/lib/validations';
+import type { DocumentChecklist } from '@/lib/land-files';
 import {
   withDefinitiveUploadObject,
   withTemporaryAnalysisObject,
@@ -51,6 +53,10 @@ export default function SmartArchivePage() {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isCertified, setIsCertified] = useState(false);
   const [agentProfileState, setAgentProfileState] = useState<AgentProfileState>({ status: 'loading' });
+  const [lastChecklist, setLastChecklist] = useState<{
+    dossierId: string;
+    checklist: DocumentChecklist;
+  } | null>(null);
 
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -546,6 +552,14 @@ export default function SmartArchivePage() {
           alert(`Erreur : ${res.error}`);
         }
       } else {
+        const numeroCadastral = String(formData.numero_cadastral || '');
+        const checklistResult = await getDocumentChecklist(numeroCadastral);
+        if (checklistResult.data && checklistResult.dossierId) {
+          setLastChecklist({
+            dossierId: checklistResult.dossierId,
+            checklist: checklistResult.data,
+          });
+        }
         alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
         resetWorkflow();
       }
@@ -577,6 +591,31 @@ export default function SmartArchivePage() {
             Interface Opérateur / Géomètre (Niveau 1) : Numérisation des certificats et capture des données spatiales.
           </p>
         </div>
+
+        {lastChecklist && (
+          <section className="w-full max-w-3xl mb-8 rounded-2xl border border-slate-200 dark:border-brand-border bg-white dark:bg-brand-surface/60 p-5">
+            <h2 className="text-sm font-bold uppercase tracking-wide">
+              Checklist documentaire du dossier
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Dossier {lastChecklist.dossierId}
+            </p>
+            {lastChecklist.checklist.complete ? (
+              <p className="mt-3 text-sm font-semibold text-brand-primary">
+                Pièces requises présentes.
+              </p>
+            ) : (
+              <div className="mt-3 text-sm text-amber-700 dark:text-amber-300">
+                <p className="font-semibold">Pièces requises manquantes :</p>
+                <ul className="mt-1 list-disc list-inside">
+                  {lastChecklist.checklist.missing.map(type => (
+                    <li key={type}>{type}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Instructions d'utilisation */}
         <div className="w-full max-w-3xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
@@ -876,7 +915,21 @@ export default function SmartArchivePage() {
                 <div className="p-6 space-y-5 flex-1">
                   
                   {/* Field Template */}
-                  {['nom', 'numero_cadastral', 'volume', 'folio', 'circonscription', 'superficie', 'date_etablissement'].map((key) => {
+                  {[
+                    'nom',
+                    'numero_cadastral',
+                    'volume',
+                    'folio',
+                    'circonscription',
+                    'superficie',
+                    'date_etablissement',
+                    'description_immeuble',
+                    'situation',
+                    'charges_reelles',
+                    'droits_constates',
+                    'date_sceau',
+                    'signataire_conservateur',
+                  ].map((key) => {
                     const labelMap: Record<string, string> = {
                       nom: "Propriétaire (Nom)",
                       numero_cadastral: "N° d'enregistrement (Cadastre)",
@@ -884,7 +937,13 @@ export default function SmartArchivePage() {
                       folio: "Folio du Registre",
                       circonscription: "Circonscription Foncière",
                       superficie: "Superficie de la Concession",
-                      date_etablissement: "Date d'établissement"
+                      date_etablissement: "Date d'établissement",
+                      description_immeuble: "Description de l'immeuble",
+                      situation: "Situation",
+                      charges_reelles: "Charges réelles",
+                      droits_constates: "Droits constatés",
+                      date_sceau: "Date du sceau",
+                      signataire_conservateur: "Conservateur signataire",
                     };
                     
                     const isDivergent = dbVerification?.found && key !== 'superficie' && key !== 'date_etablissement' && dbVerification.matches && !dbVerification.matches[key];
