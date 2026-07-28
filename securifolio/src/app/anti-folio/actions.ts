@@ -31,7 +31,7 @@ export async function checkCadastralNumber(cadastralNumber: string): Promise<Sea
           .eq('volume', volMatch[1].trim().toUpperCase())
           .eq('folio', volMatch[2].trim())
       } else {
-        query = query.eq('numero_cadastral', cleanSearch)
+        query = query.ilike('numero_cadastral', cleanSearch)
       }
 
       const { data, error } = await query

@@ -89,7 +89,14 @@ export async function executeCadastralSearch(
       }
     }
 
-    const { records, error } = await dependencies.searchTitles(cadastralNumber)
+    const normalizedReference = cadastralNumber
+      .trim()
+      .replace(/[‐‑‒–—―]/g, '-')
+      .replace(/\s*([/-])\s*/g, '$1')
+      .replace(/\s+/g, ' ')
+      .toUpperCase()
+
+    const { records, error } = await dependencies.searchTitles(normalizedReference)
 
     if (error) {
       return {

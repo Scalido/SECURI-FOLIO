@@ -36,10 +36,26 @@ const outcomeLabels: Record<SearchState, string> = {
 }
 
 const outcomeStyles: Record<SearchState, string> = {
-  match: 'border-brand-primary/40 bg-brand-primary/5 text-brand-primary',
+  match: 'border-blue-500/40 bg-blue-500/5 text-blue-700 dark:text-blue-300',
   not_found: 'border-amber-500/40 bg-amber-500/5 text-amber-600 dark:text-amber-400',
   ambiguous: 'border-amber-500/40 bg-amber-500/5 text-amber-600 dark:text-amber-400',
   technical_error: 'border-slate-400/40 bg-slate-500/5 text-slate-600 dark:text-slate-300',
+}
+
+const administrativeStatusLabels: Record<string, string> = {
+  Valide: 'Validé dans le workflow Securifolio',
+  Litige: 'Litige enregistré',
+  Falsifié: 'Signalé comme falsifié dans Securifolio',
+  'En attente de validation cadastrale': 'En attente de validation cadastrale',
+  'Validé techniquement': 'Contrôle cadastral enregistré',
+}
+
+const administrativeStatusStyles: Record<string, string> = {
+  Valide: 'text-blue-700 dark:text-blue-300',
+  Litige: 'text-amber-700 dark:text-amber-300',
+  Falsifié: 'text-red-700 dark:text-red-300',
+  'En attente de validation cadastrale': 'text-slate-700 dark:text-slate-300',
+  'Validé techniquement': 'text-blue-700 dark:text-blue-300',
 }
 
 export default function AntiFolioPage() {
@@ -88,7 +104,7 @@ export default function AntiFolioPage() {
             <ShieldCheck className="h-8 w-8" />
           </div>
           <h1 className="font-display text-4xl font-black tracking-tight md:text-5xl">
-            Vérification <span className="text-brand-primary">Anti-Folio</span>
+            Recherche dans le registre <span className="text-brand-primary">Securifolio</span>
           </h1>
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400 md:text-base">
             Interrogez le registre Securifolio par numéro cadastral ou référence
@@ -116,15 +132,16 @@ export default function AntiFolioPage() {
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-primary px-7 py-3.5 text-xs font-bold uppercase tracking-widest text-brand-bg transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileSearch className="h-4 w-4" />}
-              {isLoading ? 'Recherche…' : 'Vérifier'}
+              {isLoading ? 'Recherche…' : 'Rechercher'}
             </button>
           </form>
 
           <div className="flex items-start gap-2 px-3 text-[11px] leading-relaxed text-slate-500">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-            Une absence de correspondance, une panne ou plusieurs résultats ne
-            prouvent ni fraude ni authenticité. Une vérification humaine reste
-            requise lorsque le résultat n’est pas univoque.
+            Une correspondance confirme uniquement qu&apos;un enregistrement
+            existe dans Securifolio. Elle ne prouve pas l&apos;authenticité du
+            document présenté. Une absence de correspondance ne prouve pas
+            davantage une fraude. Toute décision exige un contrôle humain.
           </div>
 
           {history.length > 0 && (
@@ -179,8 +196,15 @@ export default function AntiFolioPage() {
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Statut administratif enregistré
               </p>
-              <p className="mt-2 text-base font-bold">
-                {outcome.administrativeStatus ?? 'Non déterminé par cette recherche'}
+              <p className={`mt-2 text-base font-bold ${
+                outcome.administrativeStatus
+                  ? administrativeStatusStyles[outcome.administrativeStatus] ?? ''
+                  : ''
+              }`}>
+                {outcome.administrativeStatus
+                  ? administrativeStatusLabels[outcome.administrativeStatus]
+                    ?? outcome.administrativeStatus
+                  : 'Non déterminé par cette recherche'}
               </p>
               <p className="mt-2 text-xs text-slate-500">
                 Ce statut administratif est affiché séparément du constat de
@@ -197,7 +221,7 @@ export default function AntiFolioPage() {
                   >
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                        Propriétaire enregistré
+                        Titulaire du droit enregistré
                       </p>
                       <p className="mt-1 font-bold">{title.nom_proprietaire}</p>
                     </div>
@@ -205,7 +229,11 @@ export default function AntiFolioPage() {
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                         Statut administratif
                       </p>
-                      <p className="mt-1 font-bold">{title.statut}</p>
+                      <p className={`mt-1 font-bold ${
+                        administrativeStatusStyles[title.statut] ?? ''
+                      }`}>
+                        {administrativeStatusLabels[title.statut] ?? title.statut}
+                      </p>
                     </div>
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">

@@ -52,6 +52,34 @@ describe('recherche Anti-Folio', () => {
     expect(response).toEqual({ ok: true, records: [title] })
   })
 
+  it('normalise la casse, les espaces et les variantes de tiret avant la recherche', async () => {
+    let searchedReference = ''
+
+    await executeCadastralSearch('  su – 1178  ', {
+      getAuthenticatedUser: async () => ({ id: 'agent-1' }),
+      searchTitles: async (reference) => {
+        searchedReference = reference
+        return { records: [], error: null }
+      },
+    })
+
+    expect(searchedReference).toBe('SU-1178')
+  })
+
+  it('normalise une référence volume et folio avant la recherche', async () => {
+    let searchedReference = ''
+
+    await executeCadastralSearch('  vol   ama 171   folio  68 ', {
+      getAuthenticatedUser: async () => ({ id: 'agent-1' }),
+      searchTitles: async (reference) => {
+        searchedReference = reference
+        return { records: [], error: null }
+      },
+    })
+
+    expect(searchedReference).toBe('VOL AMA 171 FOLIO 68')
+  })
+
   it('distingue une absence de session d’une absence de titre', async () => {
     const response = await executeCadastralSearch('1178', {
       getAuthenticatedUser: async () => null,
