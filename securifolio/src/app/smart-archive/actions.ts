@@ -103,12 +103,9 @@ export async function saveCertificate(
   if (existingTitle) {
     // 4. DOUBLON DÉTECTÉ : on journalise l'alerte sans muter automatiquement le titre existant.
     const { error: historyError } = await supabaseServer
-      .from('smart_archive_history')
-      .insert([{
-        agent_id: user.id,
-        numero_cadastral: numeroCadastral,
-        action_type: 'rejected_duplicate'
-      }])
+      .rpc('record_smart_archive_duplicate', {
+        p_numero_cadastral: numeroCadastral,
+      })
 
     if (historyError) {
       console.error("Erreur insertion historique (doublon):", historyError)

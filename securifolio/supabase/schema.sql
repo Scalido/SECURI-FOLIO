@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS smart_archive_history (
     numero_cadastral VARCHAR(255) NOT NULL,
     action_type VARCHAR(100) NOT NULL,
     notes TEXT,
-    document_version INTEGER,
+    document_version INTEGER NOT NULL,
     attestation_text TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -105,9 +105,77 @@ ALTER TABLE smart_archive_history ENABLE ROW LEVEL SECURITY;
 -- Politique : Un agent voit son historique
 DROP POLICY IF EXISTS "Agents voient leur historique" ON smart_archive_history;
 CREATE POLICY "Agents voient leur historique" ON smart_archive_history FOR SELECT USING (auth.uid() = agent_id);
--- Politique : Les agents peuvent insérer
+-- Les écritures passent exclusivement par les RPC SECURITY DEFINER.
 DROP POLICY IF EXISTS "Agents peuvent insérer historique" ON smart_archive_history;
-CREATE POLICY "Agents peuvent insérer historique" ON smart_archive_history FOR INSERT WITH CHECK (auth.uid() = agent_id);
+REVOKE INSERT, UPDATE, DELETE ON TABLE smart_archive_history FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON TABLE smart_archive_history FROM anon;
+REVOKE INSERT, UPDATE, DELETE ON TABLE smart_archive_history FROM PUBLIC;
+GRANT SELECT ON TABLE smart_archive_history TO authenticated;
+
+-- Chemin compatible avec une ancienne colonne VARCHAR/TEXT.
+DROP TRIGGER IF EXISTS prevent_smart_archive_history_mutation
+    ON smart_archive_history;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM smart_archive_history
+        WHERE document_version IS NOT NULL AND BTRIM(document_version::text) !~ '^[0-9]+$'
+    ) THEN
+        RAISE EXCEPTION 'smart_archive_history.document_version contient une valeur non entière';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM smart_archive_history
+        WHERE document_version IS NOT NULL
+          AND (
+              BTRIM(document_version::text)::NUMERIC < 1
+              OR BTRIM(document_version::text)::NUMERIC > 2147483647
+          )
+    ) THEN
+        RAISE EXCEPTION 'smart_archive_history.document_version est hors limites';
+    END IF;
+END;
+$$;
+
+ALTER TABLE smart_archive_history
+    ALTER COLUMN document_version TYPE INTEGER
+    USING (
+        CASE
+            WHEN document_version IS NULL THEN NULL
+            ELSE BTRIM(document_version::text)::INTEGER
+        END
+    );
+
+UPDATE smart_archive_history AS history
+SET document_version = COALESCE(
+    (
+        SELECT MAX(previous.document_version)
+        FROM smart_archive_history AS previous
+        WHERE previous.numero_cadastral = history.numero_cadastral
+          AND previous.document_version IS NOT NULL
+          AND previous.created_at <= history.created_at
+    ),
+    (
+        SELECT MIN(known.document_version)
+        FROM smart_archive_history AS known
+        WHERE known.numero_cadastral = history.numero_cadastral
+          AND known.document_version IS NOT NULL
+    ),
+    1
+)
+WHERE history.document_version IS NULL;
+
+ALTER TABLE smart_archive_history
+    ALTER COLUMN document_version SET NOT NULL;
+
+ALTER TABLE smart_archive_history
+    DROP CONSTRAINT IF EXISTS smart_archive_history_document_version_positive;
+ALTER TABLE smart_archive_history
+    ADD CONSTRAINT smart_archive_history_document_version_positive
+    CHECK (document_version > 0);
 
 -- 4. HISTORIQUE ANTI-FOLIO
 CREATE TABLE IF NOT EXISTS anti_folio_history (
@@ -149,6 +217,31 @@ CREATE TRIGGER prevent_smart_archive_history_mutation
     BEFORE UPDATE OR DELETE ON smart_archive_history
     FOR EACH ROW
     EXECUTE FUNCTION prevent_history_mutation();
+
+CREATE OR REPLACE FUNCTION assign_smart_archive_document_version()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.document_version IS NULL THEN
+        PERFORM pg_advisory_xact_lock(hashtextextended(NEW.numero_cadastral, 0));
+
+        SELECT COALESCE(MAX(document_version), 1)
+        INTO NEW.document_version
+        FROM smart_archive_history
+        WHERE numero_cadastral = NEW.numero_cadastral;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+REVOKE ALL ON FUNCTION assign_smart_archive_document_version() FROM PUBLIC;
+
+DROP TRIGGER IF EXISTS assign_smart_archive_document_version
+    ON smart_archive_history;
+CREATE TRIGGER assign_smart_archive_document_version
+    BEFORE INSERT ON smart_archive_history
+    FOR EACH ROW
+    EXECUTE FUNCTION assign_smart_archive_document_version();
 
 DROP TRIGGER IF EXISTS prevent_anti_folio_history_mutation ON anti_folio_history;
 CREATE TRIGGER prevent_anti_folio_history_mutation
@@ -271,6 +364,104 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
+ALTER FUNCTION create_title_with_history(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    TIMESTAMP WITH TIME ZONE,
+    TEXT,
+    JSONB,
+    VARCHAR,
+    BOOLEAN
+) SECURITY DEFINER;
+ALTER FUNCTION create_title_with_history(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    TIMESTAMP WITH TIME ZONE,
+    TEXT,
+    JSONB,
+    VARCHAR,
+    BOOLEAN
+) SET search_path = public;
+REVOKE ALL ON FUNCTION create_title_with_history(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    TIMESTAMP WITH TIME ZONE,
+    TEXT,
+    JSONB,
+    VARCHAR,
+    BOOLEAN
+) FROM PUBLIC;
+REVOKE ALL ON FUNCTION create_title_with_history(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    TIMESTAMP WITH TIME ZONE,
+    TEXT,
+    JSONB,
+    VARCHAR,
+    BOOLEAN
+) FROM anon;
+GRANT EXECUTE ON FUNCTION create_title_with_history(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    TIMESTAMP WITH TIME ZONE,
+    TEXT,
+    JSONB,
+    VARCHAR,
+    BOOLEAN
+) TO authenticated;
+
+CREATE OR REPLACE FUNCTION record_smart_archive_duplicate(
+    p_numero_cadastral VARCHAR
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_profile profiles%ROWTYPE;
+BEGIN
+    SELECT * INTO v_profile FROM profiles WHERE id = auth.uid();
+
+    IF v_profile.id IS NULL OR v_profile.role <> 'agent' THEN
+        RAISE EXCEPTION 'Accès réservé aux agents assermentés.';
+    END IF;
+
+    INSERT INTO smart_archive_history (
+        agent_id,
+        numero_cadastral,
+        action_type
+    )
+    VALUES (
+        auth.uid(),
+        BTRIM(p_numero_cadastral),
+        'rejected_duplicate'
+    );
+
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+REVOKE ALL ON FUNCTION record_smart_archive_duplicate(VARCHAR) FROM PUBLIC;
+REVOKE ALL ON FUNCTION record_smart_archive_duplicate(VARCHAR) FROM anon;
+GRANT EXECUTE ON FUNCTION record_smart_archive_duplicate(VARCHAR) TO authenticated;
+
 CREATE OR REPLACE FUNCTION update_title_status_with_history(
     p_title_id UUID,
     p_new_status VARCHAR,
@@ -324,6 +515,17 @@ BEGIN
     RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+ALTER FUNCTION update_title_status_with_history(UUID, VARCHAR, TEXT)
+    SECURITY DEFINER;
+ALTER FUNCTION update_title_status_with_history(UUID, VARCHAR, TEXT)
+    SET search_path = public;
+REVOKE ALL ON FUNCTION update_title_status_with_history(UUID, VARCHAR, TEXT)
+    FROM PUBLIC;
+REVOKE ALL ON FUNCTION update_title_status_with_history(UUID, VARCHAR, TEXT)
+    FROM anon;
+GRANT EXECUTE ON FUNCTION update_title_status_with_history(UUID, VARCHAR, TEXT)
+    TO authenticated;
 
 -- Fonction pour mettre à jour automatiquement "updated_at"
 CREATE OR REPLACE FUNCTION update_updated_at_column()

@@ -167,3 +167,78 @@ exit 0
 
 - Audit de la tentative doublon : Task 6.
 - Test DB réel : dès disponibilité d’un runtime PostgreSQL/Supabase.
+
+## Correctif après rerevue — round 2/5
+
+### Migration compatible avec l’ancienne colonne texte
+
+Une nouvelle migration ordonnée
+`20260728030000_smart_archive_history_version_security.sql` corrige les bases ayant
+déjà appliqué la première version :
+
+- validation préalable de toutes les valeurs non nulles avec le contrat entier
+  positif 32 bits ;
+- échec explicite avant cast si une valeur est invalide ou hors limites ;
+- conversion explicite avec
+  `ALTER COLUMN document_version TYPE INTEGER USING ...` ;
+- backfill des lignes historiques nulles avec la version connue du même numéro
+  cadastral, ou `1` pour un historique entièrement legacy ;
+- contrainte finale `INTEGER NOT NULL` et `CHECK (document_version > 0)` ;
+- suppression temporaire puis restauration du trigger append-only pendant le
+  backfill transactionnel.
+
+`schema.sql` porte le même état final et le même chemin de conversion.
+
+### Version et attestation sous contrôle exclusif des RPC
+
+- La policy INSERT directe `Agents peuvent insérer historique` est supprimée.
+- `INSERT`, `UPDATE` et `DELETE` sont révoqués à `authenticated`, `anon` et
+  `PUBLIC`; `SELECT` reste accordé à `authenticated` et filtré par la policy RLS.
+- La RPC attestée réaffirme `SECURITY DEFINER`, `search_path = public`, révoque
+  l’exécution à `PUBLIC`/`anon` et l’accorde à `authenticated`.
+- Les écritures de statut continuent via leur RPC sécurisée.
+- Le journal de doublon passe désormais par `record_smart_archive_duplicate`,
+  RPC contrôlée sans paramètre de version ni texte d’attestation.
+- Un trigger interne assigne la version courante aux événements métier qui ne
+  créent pas une nouvelle version ; seule `create_title_with_history` calcule
+  `MAX(document_version) + 1` sous verrou transactionnel.
+
+### RED / GREEN
+
+RED :
+
+```text
+npx vitest run tests/integration/smart-archive-migration-contract.test.ts
+Test Files  1 failed (1)
+Tests       3 failed (3)
+- conversion TYPE INTEGER USING / NOT NULL absente
+- policy et privilèges DML permissifs
+- contexte et permissions RPC non explicités
+```
+
+GREEN ciblé :
+
+```text
+npx vitest run tests/integration/smart-archive-migration-contract.test.ts \
+  tests/integration/smart-archive-workflow.test.ts
+Test Files  2 passed (2)
+Tests       9 passed (9)
+
+npx tsc --noEmit
+exit 0
+```
+
+Vérification finale :
+
+```text
+npm run verify
+Test Files  5 passed (5)
+Tests       19 passed (19)
+Security checks passed
+Compiled successfully
+Generating static pages (19/19)
+exit 0
+```
+
+Les tests SQL sont des contrats statiques exécutables, conformément à la rerevue :
+aucun runtime PostgreSQL/Supabase n’est disponible dans cet environnement.
