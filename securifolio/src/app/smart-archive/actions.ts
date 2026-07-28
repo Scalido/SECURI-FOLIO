@@ -1,7 +1,11 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { certificateSchema } from '@/lib/validations'
+import {
+  buildSmartArchiveAttestation,
+  SMART_ARCHIVE_DOCUMENT_VERSION,
+  smartArchiveSubmissionSchema,
+} from '@/lib/validations'
 import crypto from 'crypto'
 
 function parseFrenchDate(dateStr?: string | null): string {
@@ -29,8 +33,13 @@ function parseFrenchDate(dateStr?: string | null): string {
   return new Date().toISOString(); // Fallback
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, requiresTopography: boolean = false) {
+export async function saveCertificate(
+  submission: unknown,
+  scanUrl?: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  coordonneesSpatiales?: any,
+  requiresTopography: boolean = false,
+) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 
@@ -39,7 +48,7 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
   // 1. RBAC : Vérifier si l'utilisateur est un agent
   const { data: profile } = await supabaseServer
     .from('profiles')
-    .select('role')
+    .select('full_name, role, matricule, fonction')
     .eq('id', user.id)
     .single()
 
@@ -51,8 +60,17 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     return { success: false, error: 'Coordonnées topographiques requises pour ce dossier.' }
   }
 
+  if (
+    typeof submission !== 'object'
+    || submission === null
+    || !('attested' in submission)
+    || submission.attested !== true
+  ) {
+    return { success: false, error: 'Attestation obligatoire avant transmission.' }
+  }
+
   // 2. Validation Zod stricte
-  const validationResult = certificateSchema.safeParse(formData)
+  const validationResult = smartArchiveSubmissionSchema.safeParse(submission)
   
   if (!validationResult.success) {
     const errorMessages = validationResult.error.issues.map(issue => issue.message).join(' ')
@@ -61,6 +79,7 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
 
   const validData = validationResult.data
   const numeroCadastral = validData.numero_cadastral.trim()
+  const attestationText = buildSmartArchiveAttestation(profile)
 
   // 3. Vérifier si le titre existe déjà
   const { data: existingTitle, error: searchError } = await supabaseServer
@@ -106,7 +125,9 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     nom: validData.nom,
     date_etablissement: validData.date_etablissement || null,
     coordonnees_spatiales: coordonneesSpatiales || null,
-    agent_id: user.id
+    agent_id: user.id,
+    document_version: SMART_ARCHIVE_DOCUMENT_VERSION,
+    attestation_text: attestationText,
   });
   const signatureSecret = process.env.CERTIFICATE_HMAC_SECRET;
 
@@ -129,7 +150,8 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
       p_date_enregistrement: parsedDate,
       p_scan_url: scanUrl || null,
       p_coordonnees_spatiales: coordonneesSpatiales || null,
-      p_hash_signature: hashSignature
+      p_hash_signature: hashSignature,
+      p_attested: true,
     })
 
   if (insertError) {
@@ -138,6 +160,25 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
   }
 
   return { success: true }
+}
+
+export async function getConnectedAgentProfile() {
+  const supabaseServer = createClient()
+  const { data: { user } } = await supabaseServer.auth.getUser()
+
+  if (!user) return { data: null, error: 'Non authentifié' }
+
+  const { data, error } = await supabaseServer
+    .from('profiles')
+    .select('full_name, role, matricule, fonction')
+    .eq('id', user.id)
+    .single()
+
+  if (error || !data) {
+    return { data: null, error: error?.message || 'Profil agent introuvable' }
+  }
+
+  return { data, error: null }
 }
 
 export async function getHistoryServer() {

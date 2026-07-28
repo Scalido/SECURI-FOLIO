@@ -2,9 +2,15 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
-import { saveCertificate, getHistoryServer } from './actions';
+import { saveCertificate, getConnectedAgentProfile, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
+import {
+  buildSmartArchiveAttestation,
+  canSubmitArchive,
+  getExtractionReviewLabel,
+} from '@/lib/validations';
+import type { AgentProfileIdentity } from '@/lib/validations';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
@@ -35,6 +41,8 @@ export default function SmartArchivePage() {
   const [geoAreaSqm, setGeoAreaSqm] = useState<number>(0);
   const [isLocationUnknown, setIsLocationUnknown] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [isCertified, setIsCertified] = useState(false);
+  const [agentProfile, setAgentProfile] = useState<AgentProfileIdentity | null>(null);
 
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -95,6 +103,9 @@ export default function SmartArchivePage() {
 
   useEffect(() => {
     fetchHistory();
+    getConnectedAgentProfile().then(({ data }) => {
+      setAgentProfile(data);
+    });
   }, []);
 
   const generateMockCertificate = (scenario: string, hasRatures: boolean) => {
@@ -403,6 +414,7 @@ export default function SmartArchivePage() {
       setResult(data.data);
       setFormData(data.data); // Initialize editable form
       setDbVerification(data.dbVerification);
+      setIsCertified(false);
       setStatus('success');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -745,16 +757,14 @@ export default function SmartArchivePage() {
                       date_etablissement: "Date d'établissement"
                     };
                     
-                    // Simulate confidence scores (lower if there's a discrepancy)
                     const isDivergent = dbVerification?.found && key !== 'superficie' && key !== 'date_etablissement' && dbVerification.matches && !dbVerification.matches[key];
-                    const confidence = isDivergent ? Math.floor(Math.random() * 15) + 65 : Math.floor(Math.random() * 10) + 90; 
 
                     return (
                       <div key={key} className="space-y-1.5">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
-                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}`}>
-                            Confiance IA: {confidence}%
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-brand-accent/20 text-brand-accent">
+                            {getExtractionReviewLabel()}
                           </span>
                         </div>
                         <input 
@@ -875,8 +885,18 @@ export default function SmartArchivePage() {
 
                 <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/30 space-y-4">
                   <div className="flex items-start gap-2 text-[10px] text-slate-500 font-medium">
-                    <input type="checkbox" id="certify" className="mt-0.5 accent-brand-primary" />
-                    <label htmlFor="certify">En tant qu'agent assermenté (AF-7892), j'atteste sur l'honneur avoir vérifié visuellement la conformité de ces données avec le document physique original. Toute altération non signalée engagera ma responsabilité pénale.</label>
+                    <input
+                      type="checkbox"
+                      id="certify"
+                      checked={isCertified}
+                      onChange={(event) => setIsCertified(event.target.checked)}
+                      className="mt-0.5 accent-brand-primary"
+                    />
+                    <label htmlFor="certify">
+                      {agentProfile
+                        ? buildSmartArchiveAttestation(agentProfile)
+                        : 'Chargement de l’identité de l’agent connecté…'}
+                    </label>
                   </div>
                   
                   <div className="flex gap-4">
@@ -890,14 +910,19 @@ export default function SmartArchivePage() {
                         setGeoData(null);
                         setGeoAreaSqm(0);
                         setIsLocationUnknown(false);
+                        setIsCertified(false);
                       }}
                       className="flex-1 py-3.5 border border-slate-200 dark:border-brand-border hover:bg-slate-100 dark:hover:bg-brand-surface rounded-xl text-xs font-bold uppercase tracking-widest transition-colors text-slate-600 dark:text-slate-300"
                     >
                       Annuler
                     </button>
                     <button 
-                      disabled={isSaving}
+                      disabled={!canSubmitArchive(isCertified, isSaving)}
                       onClick={async () => {
+                        if (!isCertified) {
+                          alert("Erreur : Vous devez accepter l'attestation avant transmission.");
+                          return;
+                        }
                         if (!file) {
                           alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
                           return;
@@ -930,7 +955,12 @@ export default function SmartArchivePage() {
                             .getPublicUrl(fileName);
 
                           // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
-                          const res = await saveCertificate(formData, publicUrl, geoData, isLocationUnknown);
+                          const res = await saveCertificate(
+                            { ...formData, attested: isCertified },
+                            publicUrl,
+                            geoData,
+                            isLocationUnknown,
+                          );
                           
                           if (!res.success) {
                             if (res.error === 'TITRE_DEJA_NUMERISE') {
@@ -948,6 +978,7 @@ export default function SmartArchivePage() {
                             setGeoData(null);
                             setGeoAreaSqm(0);
                             setIsLocationUnknown(false);
+                            setIsCertified(false);
                           }
                           // Mettre à jour l'historique après l'action !
                           await fetchHistory();
