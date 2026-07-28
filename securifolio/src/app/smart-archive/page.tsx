@@ -5,12 +5,9 @@ import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriang
 import { saveCertificate, getConnectedAgentProfile, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
-import {
-  buildSmartArchiveAttestation,
-  canSubmitArchive,
-  getExtractionReviewLabel,
-} from '@/lib/validations';
-import type { AgentProfileIdentity } from '@/lib/validations';
+import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
+import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
+import type { AgentProfileState } from '@/lib/validations';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
@@ -42,7 +39,7 @@ export default function SmartArchivePage() {
   const [isLocationUnknown, setIsLocationUnknown] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isCertified, setIsCertified] = useState(false);
-  const [agentProfile, setAgentProfile] = useState<AgentProfileIdentity | null>(null);
+  const [agentProfileState, setAgentProfileState] = useState<AgentProfileState>({ status: 'loading' });
 
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -103,9 +100,25 @@ export default function SmartArchivePage() {
 
   useEffect(() => {
     fetchHistory();
-    getConnectedAgentProfile().then(({ data }) => {
-      setAgentProfile(data);
-    });
+    getConnectedAgentProfile()
+      .then(({ data, error }) => {
+        if (error || !data) {
+          setAgentProfileState({
+            status: 'error',
+            error: error || 'Profil agent indisponible.',
+          });
+          setIsCertified(false);
+          return;
+        }
+        setAgentProfileState({ status: 'ready', profile: data });
+      })
+      .catch(() => {
+        setAgentProfileState({
+          status: 'error',
+          error: 'Impossible de charger le profil agent.',
+        });
+        setIsCertified(false);
+      });
   }, []);
 
   const generateMockCertificate = (scenario: string, hasRatures: boolean) => {
@@ -425,6 +438,83 @@ export default function SmartArchivePage() {
       }
       setErrorMsg(message);
       setStatus('error');
+    }
+  };
+
+  const resetWorkflow = () => {
+    setResult(null);
+    setDbVerification(null);
+    setStatus('idle');
+    setFile(null);
+    setFormData(null);
+    setGeoData(null);
+    setGeoAreaSqm(0);
+    setIsLocationUnknown(false);
+    setIsCertified(false);
+  };
+
+  const transmitForValidation = async () => {
+    if (agentProfileState.status !== 'ready') {
+      setIsCertified(false);
+      alert("Erreur : L'identité complète de l'agent doit être chargée avant transmission.");
+      return;
+    }
+    if (!isCertified) {
+      alert("Erreur : Vous devez accepter l'attestation avant transmission.");
+      return;
+    }
+    if (!file) {
+      alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
+      return;
+    }
+    if (!geoData && !isLocationUnknown) {
+      alert("Erreur : Veuillez tracer le polygone de la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      const fileExt = file.name.split('.').pop() || 'png';
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('scans_certificats')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        console.error("Erreur d'upload:", uploadError);
+        alert("Erreur lors de la sauvegarde du fichier scan. Vérifiez que le bucket existe et est configuré.");
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('scans_certificats')
+        .getPublicUrl(fileName);
+
+      const res = await saveCertificate(
+        { ...formData, attested: isCertified },
+        publicUrl,
+        geoData,
+        isLocationUnknown,
+      );
+
+      if (!res.success) {
+        if (res.error === 'TITRE_DEJA_NUMERISE') {
+          alert(`🚨 ALERTE DOUBLON : ${res.message}`);
+        } else {
+          alert(`Erreur : ${res.error}`);
+        }
+      } else {
+        alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
+        resetWorkflow();
+      }
+      await fetchHistory();
+    } catch (err) {
+      alert("Une erreur inattendue est survenue.");
+      console.error(err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -763,9 +853,7 @@ export default function SmartArchivePage() {
                       <div key={key} className="space-y-1.5">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-brand-accent/20 text-brand-accent">
-                            {getExtractionReviewLabel()}
-                          </span>
+                          <ExtractionReviewLabel />
                         </div>
                         <input 
                           type="text" 
@@ -883,119 +971,14 @@ export default function SmartArchivePage() {
                   </div>
                 </div>
 
-                <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/30 space-y-4">
-                  <div className="flex items-start gap-2 text-[10px] text-slate-500 font-medium">
-                    <input
-                      type="checkbox"
-                      id="certify"
-                      checked={isCertified}
-                      onChange={(event) => setIsCertified(event.target.checked)}
-                      className="mt-0.5 accent-brand-primary"
-                    />
-                    <label htmlFor="certify">
-                      {agentProfile
-                        ? buildSmartArchiveAttestation(agentProfile)
-                        : 'Chargement de l’identité de l’agent connecté…'}
-                    </label>
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => {
-                        setResult(null);
-                        setDbVerification(null);
-                        setStatus('idle');
-                        setFile(null);
-                        setFormData(null);
-                        setGeoData(null);
-                        setGeoAreaSqm(0);
-                        setIsLocationUnknown(false);
-                        setIsCertified(false);
-                      }}
-                      className="flex-1 py-3.5 border border-slate-200 dark:border-brand-border hover:bg-slate-100 dark:hover:bg-brand-surface rounded-xl text-xs font-bold uppercase tracking-widest transition-colors text-slate-600 dark:text-slate-300"
-                    >
-                      Annuler
-                    </button>
-                    <button 
-                      disabled={!canSubmitArchive(isCertified, isSaving)}
-                      onClick={async () => {
-                        if (!isCertified) {
-                          alert("Erreur : Vous devez accepter l'attestation avant transmission.");
-                          return;
-                        }
-                        if (!file) {
-                          alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
-                          return;
-                        }
-                        if (!geoData && !isLocationUnknown) {
-                          alert("Erreur : Veuillez tracer le polygone de la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
-                          return;
-                        }
-                        setIsSaving(true);
-                        try {
-                          const supabase = createClient();
-                          // 1. Upload du fichier vers Supabase Storage
-                          const fileExt = file.name.split('.').pop() || 'png';
-                          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                          
-                          const { error: uploadError } = await supabase.storage
-                            .from('scans_certificats')
-                            .upload(fileName, file);
-
-                          if (uploadError) {
-                            console.error("Erreur d'upload:", uploadError);
-                            alert("Erreur lors de la sauvegarde du fichier scan. Vérifiez que le bucket existe et est configuré.");
-                            setIsSaving(false);
-                            return;
-                          }
-
-                          // 2. Récupérer l'URL publique
-                          const { data: { publicUrl } } = supabase.storage
-                            .from('scans_certificats')
-                            .getPublicUrl(fileName);
-
-                          // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
-                          const res = await saveCertificate(
-                            { ...formData, attested: isCertified },
-                            publicUrl,
-                            geoData,
-                            isLocationUnknown,
-                          );
-                          
-                          if (!res.success) {
-                            if (res.error === 'TITRE_DEJA_NUMERISE') {
-                              alert(`🚨 ALERTE DOUBLON : ${res.message}`);
-                            } else {
-                              alert(`Erreur : ${res.error}`);
-                            }
-                          } else {
-                            alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
-                            setResult(null);
-                            setDbVerification(null);
-                            setStatus('idle');
-                            setFile(null);
-                            setFormData(null);
-                            setGeoData(null);
-                            setGeoAreaSqm(0);
-                            setIsLocationUnknown(false);
-                            setIsCertified(false);
-                          }
-                          // Mettre à jour l'historique après l'action !
-                          await fetchHistory();
-                        } catch (err) {
-                          alert("Une erreur inattendue est survenue.");
-                          console.error(err);
-                        } finally {
-                          setIsSaving(false);
-                        }
-                      }}
-                      className="flex-[2] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex justify-center items-center gap-2"
-                    >
-                      {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />} 
-                      {isSaving ? "Enregistrement..." : "Transmettre pour Validation"}
-                    </button>
-                  </div>
-                </div>
+                <SmartArchiveAttestationControls
+                  profileState={agentProfileState}
+                  isCertified={isCertified}
+                  isSaving={isSaving}
+                  onCertifiedChange={setIsCertified}
+                  onCancel={resetWorkflow}
+                  onSubmit={transmitForValidation}
+                />
               </div>
 
             </div>

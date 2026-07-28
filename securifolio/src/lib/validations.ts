@@ -21,14 +21,40 @@ export type AgentProfileIdentity = {
   fonction: string | null
 }
 
-export const SMART_ARCHIVE_DOCUMENT_VERSION = '1'
+export type CompleteAgentProfileIdentity = {
+  full_name: string
+  role: 'agent'
+  matricule: string
+  fonction: string
+}
+
+export type AgentProfileState =
+  | { status: 'loading' }
+  | { status: 'error'; error: string }
+  | { status: 'ready'; profile: CompleteAgentProfileIdentity }
 
 export function getExtractionReviewLabel() {
   return 'Extrait par IA — vérification humaine requise'
 }
 
-export function canSubmitArchive(isCertified: boolean, isSaving: boolean) {
-  return isCertified && !isSaving
+export function isCompleteAgentProfile(
+  profile: AgentProfileIdentity | null,
+): profile is CompleteAgentProfileIdentity {
+  return Boolean(
+    profile
+    && profile.role === 'agent'
+    && profile.full_name?.trim()
+    && profile.matricule?.trim()
+    && profile.fonction?.trim(),
+  )
+}
+
+export function canSubmitArchive(
+  isCertified: boolean,
+  isSaving: boolean,
+  hasValidAgentProfile: boolean,
+) {
+  return isCertified && !isSaving && hasValidAgentProfile
 }
 
 export function buildSmartArchiveAttestation(profile: AgentProfileIdentity) {

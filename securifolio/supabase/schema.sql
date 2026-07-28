@@ -92,11 +92,11 @@ CREATE TABLE IF NOT EXISTS smart_archive_history (
     numero_cadastral VARCHAR(255) NOT NULL,
     action_type VARCHAR(100) NOT NULL,
     notes TEXT,
-    document_version VARCHAR(50),
+    document_version INTEGER,
     attestation_text TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE smart_archive_history ADD COLUMN IF NOT EXISTS document_version VARCHAR(50);
+ALTER TABLE smart_archive_history ADD COLUMN IF NOT EXISTS document_version INTEGER;
 ALTER TABLE smart_archive_history ADD COLUMN IF NOT EXISTS attestation_text TEXT;
 
 -- Active le RLS sur l'historique
@@ -187,11 +187,18 @@ DECLARE
     v_profile profiles%ROWTYPE;
     v_title_id UUID;
     v_attestation_text TEXT;
+    v_document_version INTEGER;
 BEGIN
     SELECT * INTO v_profile FROM profiles WHERE id = auth.uid();
 
     IF v_profile.id IS NULL OR v_profile.role <> 'agent' THEN
         RAISE EXCEPTION 'Accès réservé aux agents assermentés.';
+    END IF;
+
+    IF NULLIF(BTRIM(v_profile.full_name), '') IS NULL
+       OR NULLIF(BTRIM(v_profile.fonction), '') IS NULL
+       OR NULLIF(BTRIM(v_profile.matricule), '') IS NULL THEN
+        RAISE EXCEPTION 'Profil agent incomplet : nom, fonction et matricule sont obligatoires.';
     END IF;
 
     IF p_attested IS DISTINCT FROM TRUE THEN
@@ -209,6 +216,13 @@ BEGIN
         v_profile.role,
         COALESCE(NULLIF(BTRIM(v_profile.matricule), ''), 'Matricule non renseigné')
     );
+
+    PERFORM pg_advisory_xact_lock(hashtextextended(p_numero_cadastral, 0));
+
+    SELECT COALESCE(MAX(document_version), 0) + 1
+    INTO v_document_version
+    FROM smart_archive_history
+    WHERE numero_cadastral = p_numero_cadastral;
 
     INSERT INTO titres_fonciers (
         numero_cadastral,
@@ -249,7 +263,7 @@ BEGIN
         auth.uid(),
         p_numero_cadastral,
         'insert',
-        '1',
+        v_document_version,
         v_attestation_text
     );
 

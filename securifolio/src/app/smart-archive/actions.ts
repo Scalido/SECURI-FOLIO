@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/server'
 import {
   buildSmartArchiveAttestation,
-  SMART_ARCHIVE_DOCUMENT_VERSION,
+  isCompleteAgentProfile,
   smartArchiveSubmissionSchema,
 } from '@/lib/validations'
 import crypto from 'crypto'
@@ -54,6 +54,13 @@ export async function saveCertificate(
 
   if (!profile || profile.role !== 'agent') {
     return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent transmettre un document (rôle "agent" requis dans la DB).' }
+  }
+
+  if (!isCompleteAgentProfile(profile)) {
+    return {
+      success: false,
+      error: 'Profil agent incomplet : nom, fonction et matricule sont obligatoires.',
+    }
   }
 
   if (requiresTopography && !coordonneesSpatiales) {
@@ -126,7 +133,6 @@ export async function saveCertificate(
     date_etablissement: validData.date_etablissement || null,
     coordonnees_spatiales: coordonneesSpatiales || null,
     agent_id: user.id,
-    document_version: SMART_ARCHIVE_DOCUMENT_VERSION,
     attestation_text: attestationText,
   });
   const signatureSecret = process.env.CERTIFICATE_HMAC_SECRET;
@@ -176,6 +182,13 @@ export async function getConnectedAgentProfile() {
 
   if (error || !data) {
     return { data: null, error: error?.message || 'Profil agent introuvable' }
+  }
+
+  if (!isCompleteAgentProfile(data)) {
+    return {
+      data: null,
+      error: 'Profil agent incomplet : nom, fonction et matricule sont obligatoires.',
+    }
   }
 
   return { data, error: null }
