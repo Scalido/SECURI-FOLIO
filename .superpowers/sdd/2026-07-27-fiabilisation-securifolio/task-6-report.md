@@ -30,9 +30,10 @@
 - `git diff --check` : succès.
 - La migration et la section canonique ajoutée à `schema.sql` sont identiques.
 
-## Limite d’environnement
+## Environnement Supabase
 
-- Aucun moteur PostgreSQL/Supabase local n’est disponible dans le dépôt; les garanties SQL sont couvertes par des tests de contrat, mais la migration devra aussi être appliquée sur un environnement Supabase de recette avant production.
+- Le pré-test transactionnel puis le déploiement permanent ont été exécutés sur le projet Supabase `ccsjsfdhupxfpacnvnxz`.
+- L’absence de moteur PostgreSQL local n’est plus un blocage de déploiement.
 
 ## Fix round 1
 
@@ -85,3 +86,19 @@
 - Pré-test Supabase final : purge transactionnelle des 22 titres et 12 historiques mock, puis application ordonnée des six migrations et validations SQL : succès.
 - Les 26 objets Storage sont restés intacts pendant le pré-test.
 - Contrôle post-`ROLLBACK` : 22 titres, 12 historiques et 26 objets restaurés; `dossiers_fonciers`, `pieces_dossier` et `titres_fonciers.dossier_id` absents.
+
+## Déploiement permanent Supabase — 28 juillet 2026
+
+- Transaction de production validée puis commitée : 22 titres mock et 12 historiques mock supprimés.
+- Six migrations appliquées dans l’ordre `20260728010000` à `20260728060000`.
+- Historique Supabase créé avec six versions, leur nom canonique et un tableau `statements` non nul.
+- Vérification indépendante après commit :
+  - `titres_fonciers` : 0;
+  - `smart_archive_history` : 0;
+  - tables `dossiers_fonciers` et `pieces_dossier` présentes;
+  - colonne `titres_fonciers.dossier_id` présente;
+  - RLS actif sur les deux nouvelles tables, avec deux politiques;
+  - contrat `get_dossier_document_checklist` conforme;
+  - nomenclature documentaire conforme au Guide.
+- Suppression via l’interface Storage des 26 fichiers mock du bucket `scans_certificats`; le bucket et ses quatre politiques sont conservés.
+- Contrôle final : aucun des 26 noms mock ne subsiste. Supabase a créé l’objet technique masqué `.emptyFolderPlaceholder`; il ne représente ni un titre, ni un certificat, ni une pièce utilisateur.
