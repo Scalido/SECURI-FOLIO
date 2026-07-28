@@ -603,8 +603,8 @@ export default function SmartArchivePage() {
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
               <li>Prenez en photo ou uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Utilisez le bouton <strong>"Importer Levé RTK (CSV)"</strong> pour intégrer automatiquement les coordonnées exactes du terrain (ou cochez "Localisation inconnue").</li>
-              <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
+              <li>Importez le levé cadastral au format CSV ou tracez la parcelle, puis faites vérifier les coordonnées par le service cadastral.</li>
+              <li>Cliquez sur <strong>&quot;Transmettre pour validation&quot;</strong> pour envoyer le dossier au Dashboard cadastral. Cette transmission ne vaut pas validation juridique.</li>
             </ul>
           </div>
         </div>
@@ -852,8 +852,8 @@ export default function SmartArchivePage() {
                       <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                         <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         <div>
-                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance Validée</h3>
-                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">L'extraction correspond au registre. Validation rapide possible.</p>
+                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance détectée</h3>
+                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Les champs comparés correspondent à un enregistrement présent dans Securifolio. Un contrôle humain reste obligatoire.</p>
                         </div>
                       </div>
                     )}
@@ -885,7 +885,7 @@ export default function SmartArchivePage() {
                     <FileText className="w-5 h-5 text-brand-primary" />
                     <div>
                       <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Validation de l'Extraction (OCR)</h2>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Vérification humaine obligatoire avant scellement</p>
+                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Vérification humaine obligatoire avant transmission</p>
                     </div>
                   </div>
                 </div>
@@ -1043,7 +1043,7 @@ export default function SmartArchivePage() {
                       className="mt-0.5 accent-amber-500" 
                     />
                     <label htmlFor="unknownLocation" className="text-xs text-amber-800 dark:text-amber-200/80 font-medium leading-relaxed cursor-pointer">
-                      <strong>Localisation spatiale inconnue :</strong> Je n'ai pas les moyens d'identifier la parcelle avec précision. (Le dossier sera marqué "Topographie requise" pour une descente sur le terrain).
+                      <strong>Localisation spatiale inconnue :</strong> les coordonnées devront être établies et contrôlées avant la transmission du dossier.
                     </label>
                   </div>
                 </div>
@@ -1081,7 +1081,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Capture / Numérisation</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent photographie ou scanne le certificat d'enregistrement physique. Le document original est téléchargé de manière sécurisée vers les serveurs de l'État.
+                  L&apos;agent téléverse une copie numérique du certificat ou d&apos;une autre pièce du dossier dans un espace de stockage privé.
                 </p>
               </div>
 
@@ -1092,7 +1092,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Extraction (IA)</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Notre Vision AI lit, comprend et extrait automatiquement toutes les métadonnées (Propriétaire, Superficie, Dates) tout en traquant la moindre falsification (rature, blanco).
+                  L&apos;outil propose certains champs extraits du document et peut signaler une anomalie visuelle potentielle, comme une rature ou une trace de correcteur. L&apos;agent doit vérifier et corriger les résultats.
                 </p>
               </div>
 
@@ -1103,7 +1103,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Le géomètre téléverse les données brutes (CSV/KML) issues de son appareil RTK. L'outil génère automatiquement le tracé avec une précision centimétrique, scellant la position sans intervention humaine.
+                  L&apos;agent importe un fichier CSV ou trace la parcelle sur la carte. La provenance, la qualité et la précision des coordonnées restent soumises au contrôle du service cadastral.
                 </p>
               </div>
 
@@ -1112,9 +1112,9 @@ export default function SmartArchivePage() {
                 <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
                   <Lock className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">4. Scellement</h3>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">4. Empreinte et transmission</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Les métadonnées et les coordonnées sont "scellées" cryptographiquement dans la base de données. Le <strong>Jumeau Numérique</strong> est créé et prêt à être audité.
+                  Le système enregistre les empreintes du fichier et des métadonnées pour permettre un contrôle d&apos;intégrité, puis transmet le dossier au Cadastre. Cette opération ne constitue ni une authentification juridique ni le scellement légal du certificat.
                 </p>
               </div>
             </div>
@@ -1122,10 +1122,10 @@ export default function SmartArchivePage() {
 
           <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
             <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-3">
-              <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
+              <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Portée de l&apos;outil
             </h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-              Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
+              Smart-Archive facilite la constitution, la traçabilité et le contrôle administratif des dossiers numérisés. Il ne remplace ni les vérifications du Cadastre, ni la décision du Conservateur des titres immobiliers. Le certificat juridiquement valable demeure celui établi, daté, scellé et signé conformément à la procédure foncière applicable.
             </p>
           </div>
         </section>
