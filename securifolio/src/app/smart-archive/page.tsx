@@ -14,7 +14,7 @@ import {
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
 import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
-import { DossierPieceManager } from '@/components/DossierPieceManager';
+import { DossierWorkspace } from '@/components/DossierWorkspace';
 import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
 import type { AgentProfileState } from '@/lib/validations';
 import type { DocumentChecklist } from '@/lib/land-files';
@@ -593,39 +593,7 @@ export default function SmartArchivePage() {
           </p>
         </div>
 
-        {lastChecklist && (
-          <section className="w-full max-w-3xl mb-8 rounded-2xl border border-slate-200 dark:border-brand-border bg-white dark:bg-brand-surface/60 p-5">
-            <h2 className="text-sm font-bold uppercase tracking-wide">
-              Checklist documentaire du dossier
-            </h2>
-            <p className="mt-1 text-xs text-slate-500">
-              Dossier {lastChecklist.dossierId}
-            </p>
-            {lastChecklist.checklist.complete ? (
-              <p className="mt-3 text-sm font-semibold text-brand-primary">
-                Pièces requises présentes.
-              </p>
-            ) : (
-              <div className="mt-3 text-sm text-amber-700 dark:text-amber-300">
-                <p className="font-semibold">Pièces requises manquantes :</p>
-                <ul className="mt-1 list-disc list-inside">
-                  {lastChecklist.checklist.missing.map(type => (
-                    <li key={type}>{type}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <DossierPieceManager
-              dossierId={lastChecklist.dossierId}
-              initialChecklist={lastChecklist.checklist}
-              onChecklistChange={checklist => {
-                setLastChecklist(current => current
-                  ? { ...current, checklist }
-                  : current);
-              }}
-            />
-          </section>
-        )}
+        <DossierWorkspace initialDossier={lastChecklist} />
 
         {/* Instructions d'utilisation */}
         <div className="w-full max-w-3xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-5 mb-8 flex items-start gap-4">

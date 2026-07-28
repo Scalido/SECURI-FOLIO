@@ -491,6 +491,46 @@ export async function getDossierDocumentChecklist(
   return { data: data as DocumentChecklist, error: null }
 }
 
+export async function listManageableDossiers(): Promise<{
+  data: Array<{
+    id: string
+    numeroDossier: string
+    statut: string
+  }> | null
+  error: string | null
+}> {
+  const { supabaseServer, user, profile, error } =
+    await getAuthenticatedAgent()
+
+  if (!user || !profile) {
+    return { data: null, error }
+  }
+
+  let query = supabaseServer
+    .from('dossiers_fonciers')
+    .select('id, numero_dossier, statut')
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  if (profile.circonscription) {
+    query = query.eq('circonscription', profile.circonscription)
+  }
+
+  const { data, error: queryError } = await query
+  if (queryError) {
+    return { data: null, error: queryError.message }
+  }
+
+  return {
+    data: (data || []).map(dossier => ({
+      id: dossier.id,
+      numeroDossier: dossier.numero_dossier,
+      statut: dossier.statut,
+    })),
+    error: null,
+  }
+}
+
 export async function getAdministrativeDocument(titleId: string) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
@@ -576,6 +616,8 @@ export async function getAdministrativeDocument(titleId: string) {
       || !/^[a-f0-9]{64}$/.test(title.metadata_hmac || '')
       || !Number.isInteger(title.document_version)
       || title.document_version < 1
+      || !Number.isInteger(title.integrity_schema_version)
+      || ![1, 2].includes(title.integrity_schema_version)
     ) {
       return failIntegrityCheck('enveloppe absente ou malformée')
     }
@@ -621,7 +663,7 @@ export async function getAdministrativeDocument(titleId: string) {
       superficie: title.superficie || '',
       date_etablissement: title.date_enregistrement || '',
     }
-    const metadata: CertificateData = title.dossier_id
+    const metadata: CertificateData = title.integrity_schema_version === 2
       ? {
           ...legacyMetadata,
           description_immeuble: title.description_immeuble || '',
@@ -641,7 +683,7 @@ export async function getAdministrativeDocument(titleId: string) {
       new Uint8Array(await storedFile.arrayBuffer()),
       metadata,
       creationEvent.agent_id,
-      title.integrity_schema_version === 2 ? 2 : 1,
+      title.integrity_schema_version,
     )
 
     if (!integrityPassed) {

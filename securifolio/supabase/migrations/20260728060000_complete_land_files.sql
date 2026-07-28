@@ -44,6 +44,13 @@ ALTER TABLE public.titres_fonciers
 
 ALTER TABLE public.titres_fonciers
     ADD COLUMN IF NOT EXISTS integrity_schema_version INTEGER;
+UPDATE public.titres_fonciers
+SET integrity_schema_version = 1
+WHERE integrity_schema_version IS NULL
+  AND storage_path IS NOT NULL
+  AND file_sha256 IS NOT NULL
+  AND metadata_hmac IS NOT NULL
+  AND document_version IS NOT NULL;
 ALTER TABLE public.titres_fonciers
     DROP CONSTRAINT IF EXISTS titres_fonciers_integrity_schema_version;
 ALTER TABLE public.titres_fonciers
@@ -51,6 +58,28 @@ ALTER TABLE public.titres_fonciers
     CHECK (
         integrity_schema_version IS NULL
         OR integrity_schema_version IN (1, 2)
+    );
+
+ALTER TABLE public.titres_fonciers
+    DROP CONSTRAINT IF EXISTS titres_fonciers_private_document_complete;
+ALTER TABLE public.titres_fonciers
+    ADD CONSTRAINT titres_fonciers_private_document_complete
+    CHECK (
+        (
+            storage_path IS NULL
+            AND file_sha256 IS NULL
+            AND metadata_hmac IS NULL
+            AND document_version IS NULL
+            AND integrity_schema_version IS NULL
+        )
+        OR
+        (
+            storage_path IS NOT NULL
+            AND file_sha256 ~ '^[a-f0-9]{64}$'
+            AND metadata_hmac ~ '^[a-f0-9]{64}$'
+            AND document_version > 0
+            AND integrity_schema_version IN (1, 2)
+        )
     );
 
 CREATE UNIQUE INDEX IF NOT EXISTS titres_fonciers_dossier_id_unique

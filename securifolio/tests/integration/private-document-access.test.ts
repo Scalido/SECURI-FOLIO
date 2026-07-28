@@ -161,6 +161,7 @@ const storedTitle = {
   file_sha256: '012b3666e2248223852677115ce42337fcfcb1676285cdc333b66fbd2f224bed',
   metadata_hmac: 'fffe9676bd5eda5c8dad81fc5c5da70144bb6cfea031cba45991aa6f52cb41e3',
   document_version: 1,
+  integrity_schema_version: 1,
 }
 
 describe('stockage documentaire privé', () => {
@@ -361,7 +362,8 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       ...storedTitle,
       ...metadata,
       nom_proprietaire: metadata.nom,
-      date_enregistrement: metadata.date_etablissement,
+      date_enregistrement: '2026-01-12T12:00:00+00:00',
+      date_sceau: '2026-01-13T12:00:00+00:00',
       dossier_id: 'dossier-1',
       integrity_schema_version: 2,
       metadata_hmac: envelope.metadataHmac,
@@ -374,6 +376,25 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       integrity: 'passed',
     })
   })
+
+  it.each([null, 3, '2'])(
+    'échoue fermé pour une version d’intégrité absente ou inconnue: %s',
+    async integritySchemaVersion => {
+      state.title = {
+        ...storedTitle,
+        integrity_schema_version: integritySchemaVersion,
+      }
+
+      const result = await getAdministrativeDocument('title-1')
+
+      expect(result).toEqual({
+        success: false,
+        integrity: 'failed',
+        error: 'Contrôle d’intégrité échoué.',
+      })
+      expect(state.createSignedUrl).not.toHaveBeenCalled()
+    },
+  )
 
   it.each([
     'description_immeuble',

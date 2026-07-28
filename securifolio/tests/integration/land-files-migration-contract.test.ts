@@ -28,6 +28,24 @@ describe('contrat SQL des dossiers fonciers', () => {
     expect(migration).not.toMatch(/UPDATE\s+public\.pieces_dossier/i)
   })
 
+  it('backfill uniquement les enveloppes legacy et couple enveloppe/version', () => {
+    const backfill = migration.match(
+      /UPDATE\s+public\.titres_fonciers\s+SET\s+integrity_schema_version\s*=\s*1\s+WHERE([\s\S]+?);/i,
+    )?.[1] || ''
+
+    expect(backfill).toMatch(/integrity_schema_version\s+IS\s+NULL/i)
+    expect(backfill).toMatch(/storage_path\s+IS\s+NOT\s+NULL/i)
+    expect(backfill).toMatch(/file_sha256\s+IS\s+NOT\s+NULL/i)
+    expect(backfill).toMatch(/metadata_hmac\s+IS\s+NOT\s+NULL/i)
+    expect(backfill).toMatch(/document_version\s+IS\s+NOT\s+NULL/i)
+    expect(migration).not.toMatch(
+      /ALTER\s+COLUMN\s+integrity_schema_version\s+SET\s+NOT\s+NULL/i,
+    )
+    expect(migration).toMatch(
+      /storage_path\s+IS\s+NULL[\s\S]+integrity_schema_version\s+IS\s+NULL[\s\S]+storage_path\s+IS\s+NOT\s+NULL[\s\S]+integrity_schema_version\s+IN\s*\(\s*1\s*,\s*2\s*\)/i,
+    )
+  })
+
   it('alloue atomiquement une nouvelle version de pièce côté serveur', () => {
     expect(migration).toMatch(/FUNCTION\s+public\.add_dossier_piece/i)
     expect(migration).toMatch(/pg_advisory_xact_lock/i)

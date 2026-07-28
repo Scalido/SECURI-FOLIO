@@ -9,6 +9,16 @@ export type IntegrityEnvelope = {
 
 export type IntegritySchemaVersion = 1 | 2
 
+function canonicalDate(value?: string): string {
+  const trimmed = value?.trim() || ''
+  if (!trimmed) return ''
+
+  const timestamp = Date.parse(trimmed)
+  return Number.isNaN(timestamp)
+    ? trimmed
+    : new Date(timestamp).toISOString()
+}
+
 function requireIntegritySecret() {
   const secret = process.env.CERTIFICATE_HMAC_SECRET
 
@@ -44,7 +54,8 @@ export function canonicalizeTitleMetadata(
   return JSON.stringify({
     ...legacyMetadata,
     charges_reelles: input.charges_reelles?.trim() || '',
-    date_sceau: input.date_sceau?.trim() || '',
+    date_etablissement: canonicalDate(input.date_etablissement),
+    date_sceau: canonicalDate(input.date_sceau),
     description_immeuble: input.description_immeuble?.trim() || '',
     droits_constates: input.droits_constates?.trim() || '',
     signataire_conservateur:

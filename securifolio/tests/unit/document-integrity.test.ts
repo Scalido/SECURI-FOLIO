@@ -133,6 +133,26 @@ describe('intégrité des documents', () => {
     )
   })
 
+  it('normalise les dates équivalentes sans confondre deux instants distincts', () => {
+    const equivalentOffset = {
+      ...metadata,
+      date_etablissement: '2026-01-12T13:00:00+01:00',
+      date_sceau: '2026-01-13T13:00:00+01:00',
+    }
+    const laterInstant = {
+      ...metadata,
+      date_etablissement: '2026-01-12T13:00:00.000Z',
+      date_sceau: '2026-01-13T13:00:00.000Z',
+    }
+
+    expect(canonicalizeTitleMetadata(equivalentOffset, 2)).toBe(
+      canonicalizeTitleMetadata(metadata, 2),
+    )
+    expect(canonicalizeTitleMetadata(laterInstant, 2)).not.toBe(
+      canonicalizeTitleMetadata(metadata, 2),
+    )
+  })
+
   it('échoue fermé lorsque le secret HMAC serveur manque', () => {
     expect(() =>
       buildIntegrityEnvelope(
