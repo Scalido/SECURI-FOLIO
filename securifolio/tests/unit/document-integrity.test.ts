@@ -117,6 +117,85 @@ describe('intégrité des documents', () => {
     ).toBe(true)
   })
 
+  it('vérifie une enveloppe v1 après sérialisation PostgREST de la date', () => {
+    process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    const bytes = new TextEncoder().encode('legacy-postgrest-file')
+    const nodeMetadata = {
+      ...metadata,
+      date_etablissement: '2026-01-12T12:00:00.000Z',
+    }
+    const postgrestMetadata = {
+      ...nodeMetadata,
+      date_etablissement: '2026-01-12T12:00:00+00:00',
+    }
+    const envelope = buildIntegrityEnvelope(
+      sha256(bytes),
+      nodeMetadata,
+      'agent-1',
+      1,
+    )
+
+    expect(
+      verifyIntegrityEnvelope(
+        envelope,
+        bytes,
+        postgrestMetadata,
+        'agent-1',
+        1,
+      ),
+    ).toBe(true)
+  })
+
+  it('produit le même HMAC v1 pour deux offsets du même instant', () => {
+    process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    const fileHash = sha256(new TextEncoder().encode('legacy-offset-file'))
+    const utcEnvelope = buildIntegrityEnvelope(
+      fileHash,
+      {
+        ...metadata,
+        date_etablissement: '2026-01-12T12:00:00.000Z',
+      },
+      'agent-1',
+      1,
+    )
+    const offsetEnvelope = buildIntegrityEnvelope(
+      fileHash,
+      {
+        ...metadata,
+        date_etablissement: '2026-01-12T13:00:00+01:00',
+      },
+      'agent-1',
+      1,
+    )
+
+    expect(offsetEnvelope.metadataHmac).toBe(utcEnvelope.metadataHmac)
+  })
+
+  it('produit des HMAC v1 distincts pour deux instants distincts', () => {
+    process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    const fileHash = sha256(new TextEncoder().encode('legacy-instant-file'))
+    const originalEnvelope = buildIntegrityEnvelope(
+      fileHash,
+      {
+        ...metadata,
+        date_etablissement: '2026-01-12T12:00:00.000Z',
+      },
+      'agent-1',
+      1,
+    )
+    const laterEnvelope = buildIntegrityEnvelope(
+      fileHash,
+      {
+        ...metadata,
+        date_etablissement: '2026-01-12T13:00:00.000Z',
+      },
+      'agent-1',
+      1,
+    )
+
+    expect(laterEnvelope.metadataHmac).not.toBe(originalEnvelope.metadataHmac)
+  })
+
   it('canonise les métadonnées indépendamment de l’ordre des propriétés', () => {
     const reordered = {
       numero_cadastral: '1178',

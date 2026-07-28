@@ -39,7 +39,7 @@ export function canonicalizeTitleMetadata(
 ): string {
   const legacyMetadata = {
     circonscription: input.circonscription?.trim() || '',
-    date_etablissement: input.date_etablissement?.trim() || '',
+    date_etablissement: canonicalDate(input.date_etablissement),
     folio: input.folio?.trim() || '',
     nom: input.nom.trim(),
     numero_cadastral: input.numero_cadastral.trim(),
