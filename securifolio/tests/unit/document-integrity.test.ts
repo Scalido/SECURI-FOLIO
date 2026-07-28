@@ -6,7 +6,10 @@ import {
   sha256,
   verifyIntegrityEnvelope,
 } from '@/lib/documents/integrity'
-import { withTemporaryAnalysisObject } from '@/lib/documents/temporary-analysis'
+import {
+  withDefinitiveObjectRetention,
+  withTemporaryAnalysisObject,
+} from '@/lib/documents/temporary-analysis'
 
 const metadata = {
   nom: 'Mosele Mombanga',
@@ -117,5 +120,97 @@ describe('nettoyage des objets temporaires d’analyse', () => {
     ).rejects.toThrow('analysis failed')
 
     expect(events).toEqual(['upload', 'analyze', 'cleanup'])
+  })
+
+  it('tente le nettoyage même si l’upload temporaire échoue', async () => {
+    const events: string[] = []
+
+    await expect(
+      withTemporaryAnalysisObject({
+        upload: async () => {
+          events.push('upload')
+          throw new Error('partial upload failed')
+        },
+        createSignedUrl: async () => {
+          throw new Error('must not run')
+        },
+        analyze: async () => {
+          throw new Error('must not run')
+        },
+        cleanup: async () => events.push('cleanup'),
+      }),
+    ).rejects.toThrow('partial upload failed')
+
+    expect(events).toEqual(['upload', 'cleanup'])
+  })
+})
+
+describe('cycle de vie des objets définitifs', () => {
+  it('conserve uniquement l’objet rattaché par une opération réussie', async () => {
+    const cleanupEvents: string[] = []
+
+    const result = await withDefinitiveObjectRetention({
+      operation: async () => ({ success: true as const }),
+      cleanup: async () => cleanupEvents.push('cleanup'),
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(cleanupEvents).toEqual([])
+  })
+
+  it('supprime l’objet après un résultat métier en échec', async () => {
+    const cleanupEvents: string[] = []
+
+    const result = await withDefinitiveObjectRetention({
+      operation: async () => ({ success: false as const, error: 'invalid' }),
+      cleanup: async () => cleanupEvents.push('cleanup'),
+    })
+
+    expect(result).toEqual({ success: false, error: 'invalid' })
+    expect(cleanupEvents).toEqual(['cleanup'])
+  })
+
+  it('supprime l’objet après une exception en aval', async () => {
+    const cleanupEvents: string[] = []
+
+    await expect(
+      withDefinitiveObjectRetention({
+        operation: async () => {
+          throw new Error('rpc unavailable')
+        },
+        cleanup: async () => cleanupEvents.push('cleanup'),
+      }),
+    ).rejects.toThrow('rpc unavailable')
+
+    expect(cleanupEvents).toEqual(['cleanup'])
+  })
+
+  it('conserve l’erreur métier et signale un nettoyage définitif impossible', async () => {
+    const result = await withDefinitiveObjectRetention({
+      operation: async () => ({ success: false as const, error: 'invalid' }),
+      cleanup: async () => {
+        throw new Error('storage remove denied')
+      },
+    })
+
+    expect(result).toEqual({
+      success: false,
+      error: 'invalid Nettoyage du fichier impossible : storage remove denied',
+    })
+  })
+
+  it('conserve les deux causes lorsque opération et nettoyage lèvent', async () => {
+    await expect(
+      withDefinitiveObjectRetention({
+        operation: async () => {
+          throw new Error('rpc unavailable')
+        },
+        cleanup: async () => {
+          throw new Error('storage remove denied')
+        },
+      }),
+    ).rejects.toThrow(
+      'rpc unavailable Nettoyage du fichier impossible : storage remove denied',
+    )
   })
 })

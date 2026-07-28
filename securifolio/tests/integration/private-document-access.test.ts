@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const originalBytes = new TextEncoder().encode('original-file-bytes')
 
 const state = vi.hoisted(() => ({
+  userId: 'agent-1',
   queryField: '',
   profile: {
     full_name: 'Amina Kabasele',
@@ -12,9 +13,10 @@ const state = vi.hoisted(() => ({
     circonscription: 'Gombe',
   },
   title: null as null | Record<string, unknown>,
-  history: {
+  history: null as null | {
     agent_id: 'agent-1',
   },
+  historyError: null as null | Record<string, unknown>,
   downloadBytes: new TextEncoder().encode('original-file-bytes'),
   download: vi.fn(),
   createSignedUrl: vi.fn(),
@@ -25,7 +27,7 @@ const state = vi.hoisted(() => ({
 vi.mock('@/utils/supabase/server', () => ({
   createClient: () => ({
     auth: {
-      getUser: async () => ({ data: { user: { id: 'agent-1' } } }),
+      getUser: async () => ({ data: { user: { id: state.userId } } }),
     },
     from: (table: string) => {
       if (table === 'profiles') {
@@ -56,7 +58,10 @@ vi.mock('@/utils/supabase/server', () => ({
         const query = {
           select: () => query,
           eq: () => query,
-          single: async () => ({ data: state.history, error: null }),
+          single: async () => ({
+            data: null,
+            error: { code: '42501', message: 'RLS denied cross-actor history' },
+          }),
         }
         return query
       }
@@ -82,6 +87,33 @@ vi.mock('@/utils/supabase/server', () => ({
 vi.mock('@/utils/supabase/admin', () => ({
   createAdminClient: () => ({
     rpc: state.rpc,
+    from: (table: string) => {
+      if (table === 'titres_fonciers') {
+        const query = {
+          select: () => query,
+          eq: () => query,
+          single: async () => ({
+            data: state.title,
+            error: state.title ? null : { code: 'PGRST116' },
+          }),
+        }
+        return query
+      }
+
+      if (table === 'smart_archive_history') {
+        const query = {
+          select: () => query,
+          eq: () => query,
+          single: async () => ({
+            data: state.history,
+            error: state.historyError,
+          }),
+        }
+        return query
+      }
+
+      throw new Error(`Unexpected admin table: ${table}`)
+    },
     storage: {
       from: (bucket: string) => {
         if (bucket !== 'scans_certificats') {
@@ -132,6 +164,8 @@ const storedTitle = {
 describe('stockage documentaire privé', () => {
   beforeEach(() => {
     process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    state.userId = 'agent-1'
+    state.profile.role = 'agent'
     state.queryField = ''
     state.title = null
     state.downloadBytes = originalBytes
@@ -169,6 +203,22 @@ describe('stockage documentaire privé', () => {
     const rpcPayload = state.rpc.mock.calls[0][1]
     expect(rpcPayload).not.toHaveProperty('p_scan_url')
     expect(rpcPayload).not.toHaveProperty('p_hash_signature')
+    expect(state.remove).not.toHaveBeenCalled()
+  })
+
+  it('supprime l’objet définitif lorsque la validation en aval échoue', async () => {
+    const result = await saveCertificate(
+      { ...certificate, attested: false },
+      'documents/agent-1/title-1.pdf',
+    )
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Attestation obligatoire avant transmission.',
+    })
+    expect(state.remove).toHaveBeenCalledWith([
+      'documents/agent-1/title-1.pdf',
+    ])
   })
 
   it('refuse de signer un objet temporaire qui n’appartient pas à l’agent', async () => {
@@ -202,9 +252,11 @@ describe('stockage documentaire privé', () => {
 describe('consultation administrative avec contrôle d’intégrité', () => {
   beforeEach(() => {
     process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    state.userId = 'conservateur-2'
     state.profile.role = 'conservateur'
     state.title = { ...storedTitle }
     state.history = { agent_id: 'agent-1' }
+    state.historyError = null
     state.downloadBytes = originalBytes
     state.download.mockReset()
     state.download.mockImplementation(async () => ({
@@ -232,7 +284,7 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
     expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
       p_title_id: 'title-1',
       p_passed: true,
-      p_actor_id: 'agent-1',
+      p_actor_id: 'conservateur-2',
     })
     expect(state.createSignedUrl).toHaveBeenCalledWith(
       'documents/agent-1/title-1.pdf',
@@ -253,8 +305,108 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
     expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
       p_title_id: 'title-1',
       p_passed: false,
-      p_actor_id: 'agent-1',
+      p_actor_id: 'conservateur-2',
     })
     expect(state.createSignedUrl).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['enveloppe absente', { metadata_hmac: null }],
+    ['enveloppe malformée', { metadata_hmac: 'not-a-valid-hmac' }],
+  ])('journalise l’échec lorsque %s', async (_label, titlePatch) => {
+    state.title = { ...storedTitle, ...titlePatch }
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Contrôle d’intégrité échoué.',
+    })
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: false,
+      p_actor_id: 'conservateur-2',
+    })
+  })
+
+  it('journalise l’échec lorsque l’auteur du scellement est inaccessible', async () => {
+    state.history = null
+    state.historyError = { code: 'PGRST116' }
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Contrôle d’intégrité échoué.',
+    })
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: false,
+      p_actor_id: 'conservateur-2',
+    })
+  })
+
+  it('journalise l’échec lorsque le fichier privé est absent', async () => {
+    state.download.mockResolvedValue({
+      data: null,
+      error: { message: 'object not found' },
+    })
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Contrôle d’intégrité échoué.',
+    })
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: false,
+      p_actor_id: 'conservateur-2',
+    })
+  })
+
+  it('rejette et journalise un chemin persistant qui ne correspond pas à l’auteur', async () => {
+    state.title = {
+      ...storedTitle,
+      storage_path: 'documents/another-agent/title-1.pdf',
+    }
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Contrôle d’intégrité échoué.',
+    })
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: false,
+      p_actor_id: 'conservateur-2',
+    })
+    expect(state.download).not.toHaveBeenCalled()
+    expect(state.createSignedUrl).not.toHaveBeenCalled()
+  })
+
+  it('journalise l’échec si la génération de l’URL signée échoue', async () => {
+    state.createSignedUrl.mockResolvedValue({
+      data: null,
+      error: { message: 'signing unavailable' },
+    })
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Contrôle d’intégrité échoué.',
+    })
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: false,
+      p_actor_id: 'conservateur-2',
+    })
   })
 })

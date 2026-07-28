@@ -534,7 +534,8 @@ export default function SmartArchivePage() {
 
       if (!res.success) {
         if (res.error === 'TITRE_DEJA_NUMERISE') {
-          alert(`🚨 ALERTE DOUBLON : ${res.message}`);
+          const duplicateMessage = 'message' in res ? res.message : res.error;
+          alert(`🚨 ALERTE DOUBLON : ${duplicateMessage}`);
         } else {
           alert(`Erreur : ${res.error}`);
         }

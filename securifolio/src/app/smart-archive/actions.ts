@@ -12,6 +12,7 @@ import {
   sha256,
   verifyIntegrityEnvelope,
 } from '@/lib/documents/integrity'
+import { withDefinitiveObjectRetention } from '@/lib/documents/temporary-analysis'
 
 const PRIVATE_DOCUMENT_BUCKET = 'scans_certificats'
 const SIGNED_URL_TTL_SECONDS = 300
@@ -52,11 +53,14 @@ function ownsStoragePath(
   userId: string,
   purpose: 'temporary' | 'documents',
 ) {
-  return (
-    path.startsWith(`${purpose}/${userId}/`)
-    && !path.includes('..')
-    && !path.includes('\\')
-  )
+  const segments = path.split('/')
+
+  return segments.length === 3
+    && segments[0] === purpose
+    && segments[1] === userId
+    && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(segments[2])
+    && segments[2] !== '.'
+    && segments[2] !== '..'
 }
 
 async function getAuthenticatedAgent() {
@@ -158,6 +162,33 @@ export async function saveCertificate(
 
   if (!user) return { success: false, error: 'Non autorisé. Veuillez vous connecter.' }
 
+  const definitiveStoragePath = storagePath && ownsStoragePath(
+    storagePath,
+    user.id,
+    'documents',
+  )
+    ? storagePath
+    : null
+  const privateStorage = definitiveStoragePath
+    ? createAdminClient().storage
+    : null
+  const rejectPreflight = async (error: string) => {
+    if (!privateStorage || !definitiveStoragePath) {
+      return { success: false as const, error }
+    }
+
+    return withDefinitiveObjectRetention({
+      operation: async () => ({ success: false as const, error }),
+      cleanup: async () => {
+        const { error: removeError } = await privateStorage
+          .from(PRIVATE_DOCUMENT_BUCKET)
+          .remove([definitiveStoragePath])
+
+        if (removeError) throw new Error(removeError.message)
+      },
+    })
+  }
+
   // 1. RBAC : Vérifier si l'utilisateur est un agent
   const { data: profile } = await supabaseServer
     .from('profiles')
@@ -166,18 +197,15 @@ export async function saveCertificate(
     .single()
 
   if (!profile || profile.role !== 'agent') {
-    return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent transmettre un document (rôle "agent" requis dans la DB).' }
+    return rejectPreflight('Accès refusé. Seuls les agents assermentés peuvent transmettre un document (rôle "agent" requis dans la DB).')
   }
 
   if (!isCompleteAgentProfile(profile)) {
-    return {
-      success: false,
-      error: 'Profil agent incomplet : nom, fonction et matricule sont obligatoires.',
-    }
+    return rejectPreflight('Profil agent incomplet : nom, fonction et matricule sont obligatoires.')
   }
 
   if (requiresTopography && !coordonneesSpatiales) {
-    return { success: false, error: 'Coordonnées topographiques requises pour ce dossier.' }
+    return rejectPreflight('Coordonnées topographiques requises pour ce dossier.')
   }
 
   if (
@@ -186,7 +214,7 @@ export async function saveCertificate(
     || !('attested' in submission)
     || submission.attested !== true
   ) {
-    return { success: false, error: 'Attestation obligatoire avant transmission.' }
+    return rejectPreflight('Attestation obligatoire avant transmission.')
   }
 
   // 2. Validation Zod stricte
@@ -194,25 +222,27 @@ export async function saveCertificate(
   
   if (!validationResult.success) {
     const errorMessages = validationResult.error.issues.map(issue => issue.message).join(' ')
-    return { success: false, error: `Données invalides : ${errorMessages}` }
+    return rejectPreflight(`Données invalides : ${errorMessages}`)
   }
 
   const validData = validationResult.data
   const numeroCadastral = validData.numero_cadastral.trim()
 
-  if (
-    !storagePath
-    || !ownsStoragePath(storagePath, user.id, 'documents')
-  ) {
+  if (!definitiveStoragePath || !privateStorage) {
     return { success: false, error: 'Chemin de stockage privé invalide.' }
   }
 
-  const privateStorage = createAdminClient().storage
-  const cleanupUploadedDocument = async () => {
-    await privateStorage
-      .from(PRIVATE_DOCUMENT_BUCKET)
-      .remove([storagePath])
-  }
+  return withDefinitiveObjectRetention({
+    cleanup: async () => {
+      const { error: removeError } = await privateStorage
+        .from(PRIVATE_DOCUMENT_BUCKET)
+        .remove([definitiveStoragePath])
+
+      if (removeError) {
+        throw new Error(removeError.message)
+      }
+    },
+    operation: async () => {
 
   // 3. Vérifier si le titre existe déjà
   const { data: existingTitle, error: searchError } = await supabaseServer
@@ -223,7 +253,6 @@ export async function saveCertificate(
 
   if (searchError && searchError.code !== 'PGRST116') {
     console.error('Erreur recherche titre:', searchError)
-    await cleanupUploadedDocument()
     return { success: false, error: 'Erreur lors de la vérification de la base de données.' }
   }
 
@@ -236,14 +265,12 @@ export async function saveCertificate(
 
     if (historyError) {
       console.error("Erreur insertion historique (doublon):", historyError)
-      await cleanupUploadedDocument()
       return { 
         success: false, 
         error: `Erreur Historique: ${historyError.message}` 
       }
     }
 
-    await cleanupUploadedDocument()
     return { 
       success: false, 
       error: 'TITRE_DEJA_NUMERISE', 
@@ -253,10 +280,9 @@ export async function saveCertificate(
 
   const { data: storedFile, error: downloadError } = await privateStorage
     .from(PRIVATE_DOCUMENT_BUCKET)
-    .download(storagePath)
+    .download(definitiveStoragePath)
 
   if (downloadError || !storedFile) {
-    await cleanupUploadedDocument()
     return {
       success: false,
       error: downloadError?.message || 'Document privé introuvable.',
@@ -279,7 +305,6 @@ export async function saveCertificate(
       user.id,
     )
   } catch (error) {
-    await cleanupUploadedDocument()
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Échec du scellement.',
@@ -295,7 +320,7 @@ export async function saveCertificate(
       p_circonscription: validData.circonscription || '',
       p_superficie: validData.superficie || '',
       p_date_enregistrement: parsedDate,
-      p_storage_path: storagePath,
+      p_storage_path: definitiveStoragePath,
       p_file_sha256: integrityEnvelope.fileSha256,
       p_metadata_hmac: integrityEnvelope.metadataHmac,
       p_coordonnees_spatiales: coordonneesSpatiales || null,
@@ -304,11 +329,12 @@ export async function saveCertificate(
 
   if (insertError) {
     console.error('Erreur insertion nouveau titre:', insertError)
-    await cleanupUploadedDocument()
     return { success: false, error: `Erreur DB: ${insertError.message}` }
   }
 
   return { success: true }
+    },
+  })
 }
 
 export async function getAdministrativeDocument(titleId: string) {
@@ -346,61 +372,103 @@ export async function getAdministrativeDocument(titleId: string) {
     return { success: false, integrity: 'failed', error: 'Accès refusé.' }
   }
 
-  if (
-    !title.storage_path
-    || !title.file_sha256
-    || !title.metadata_hmac
-    || !title.document_version
-  ) {
-    return {
-      success: false,
-      integrity: 'failed',
-      error: 'Enveloppe d’intégrité absente.',
+  // Le client service-role n’est créé qu’après authentification, RBAC,
+  // visibilité autorisée du titre et contrôle de circonscription.
+  const adminClient = createAdminClient()
+  const privateStorage = adminClient.storage
+
+  const writeIntegrityAudit = async (passed: boolean) => {
+    try {
+      const { error } = await adminClient.rpc(
+        'log_document_integrity_check',
+        {
+          p_title_id: titleId,
+          p_passed: passed,
+          p_actor_id: user.id,
+        },
+      )
+
+      if (error) {
+        console.error('Journalisation du contrôle d’intégrité impossible:', error)
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error('Journalisation du contrôle d’intégrité impossible:', error)
+      return false
     }
   }
 
-  const { data: creationEvent, error: historyError } = await supabaseServer
-    .from('smart_archive_history')
-    .select('agent_id')
-    .eq('numero_cadastral', title.numero_cadastral)
-    .eq('document_version', title.document_version)
-    .eq('action_type', 'insert')
-    .single()
+  const failIntegrityCheck = async (reason: string, cause?: unknown) => {
+    console.error('Contrôle d’intégrité administratif refusé:', {
+      titleId,
+      reason,
+      cause,
+    })
+    await writeIntegrityAudit(false)
 
-  if (historyError || !creationEvent) {
     return {
-      success: false,
-      integrity: 'failed',
-      error: 'Auteur du scellement introuvable.',
+      success: false as const,
+      integrity: 'failed' as const,
+      error: 'Contrôle d’intégrité échoué.',
     }
   }
 
-  const privateStorage = createAdminClient().storage
-  const { data: storedFile, error: downloadError } = await privateStorage
-    .from(PRIVATE_DOCUMENT_BUCKET)
-    .download(title.storage_path)
-
-  if (downloadError || !storedFile) {
-    return {
-      success: false,
-      integrity: 'failed',
-      error: 'Document privé indisponible.',
-    }
-  }
-
-  const metadata: CertificateData = {
-    nom: title.nom_proprietaire,
-    numero_cadastral: title.numero_cadastral,
-    volume: title.volume,
-    folio: title.folio,
-    circonscription: title.circonscription,
-    superficie: title.superficie || '',
-    date_etablissement: title.date_enregistrement || '',
-  }
-
-  let integrityPassed = false
   try {
-    integrityPassed = verifyIntegrityEnvelope(
+    if (
+      !title.storage_path
+      || !/^[a-f0-9]{64}$/.test(title.file_sha256 || '')
+      || !/^[a-f0-9]{64}$/.test(title.metadata_hmac || '')
+      || !Number.isInteger(title.document_version)
+      || title.document_version < 1
+    ) {
+      return failIntegrityCheck('enveloppe absente ou malformée')
+    }
+
+    // Lecture privilégiée strictement limitée à l’auteur du scellement :
+    // la policy utilisateur de l’historique reste propriétaire uniquement.
+    const { data: creationEvent, error: historyError } = await adminClient
+      .from('smart_archive_history')
+      .select('agent_id')
+      .eq('numero_cadastral', title.numero_cadastral)
+      .eq('document_version', title.document_version)
+      .eq('action_type', 'insert')
+      .single()
+
+    if (historyError || !creationEvent?.agent_id) {
+      return failIntegrityCheck('auteur du scellement inaccessible', historyError)
+    }
+
+    if (
+      !ownsStoragePath(
+        title.storage_path,
+        creationEvent.agent_id,
+        'documents',
+      )
+    ) {
+      return failIntegrityCheck('chemin persistant invalide')
+    }
+
+    const { data: storedFile, error: downloadError } = await privateStorage
+      .from(PRIVATE_DOCUMENT_BUCKET)
+      .download(title.storage_path)
+
+    if (downloadError || !storedFile) {
+      return failIntegrityCheck('document privé indisponible', downloadError)
+    }
+
+    const metadata: CertificateData = {
+      nom: title.nom_proprietaire,
+      numero_cadastral: title.numero_cadastral,
+      volume: title.volume,
+      folio: title.folio,
+      circonscription: title.circonscription,
+      superficie: title.superficie || '',
+      date_etablissement: title.date_enregistrement || '',
+    }
+
+    const integrityPassed = verifyIntegrityEnvelope(
       {
         fileSha256: title.file_sha256,
         metadataHmac: title.metadata_hmac,
@@ -409,52 +477,34 @@ export async function getAdministrativeDocument(titleId: string) {
       metadata,
       creationEvent.agent_id,
     )
-  } catch {
-    integrityPassed = false
-  }
 
-  const { error: auditError } = await createAdminClient().rpc(
-    'log_document_integrity_check',
-    {
-      p_title_id: titleId,
-      p_passed: integrityPassed,
-      p_actor_id: user.id,
-    },
-  )
-
-  if (auditError) {
-    return {
-      success: false,
-      integrity: integrityPassed ? 'passed' : 'failed',
-      error: 'Journalisation du contrôle impossible.',
+    if (!integrityPassed) {
+      return failIntegrityCheck('empreinte ou HMAC invalide')
     }
-  }
 
-  if (!integrityPassed) {
-    return {
-      success: false,
-      integrity: 'failed',
-      error: 'Contrôle d’intégrité échoué.',
+    const { data: signedUrl, error: signedUrlError } = await privateStorage
+      .from(PRIVATE_DOCUMENT_BUCKET)
+      .createSignedUrl(title.storage_path, SIGNED_URL_TTL_SECONDS)
+
+    if (signedUrlError || !signedUrl) {
+      return failIntegrityCheck(
+        'génération de l’URL signée impossible',
+        signedUrlError,
+      )
     }
-  }
 
-  const { data: signedUrl, error: signedUrlError } = await privateStorage
-    .from(PRIVATE_DOCUMENT_BUCKET)
-    .createSignedUrl(title.storage_path, SIGNED_URL_TTL_SECONDS)
-
-  if (signedUrlError || !signedUrl) {
-    return {
-      success: false,
-      integrity: 'passed',
-      error: 'Impossible de créer l’URL de consultation.',
+    if (!await writeIntegrityAudit(true)) {
+      return failIntegrityCheck('journalisation du succès impossible')
     }
-  }
 
-  return {
-    success: true,
-    integrity: 'passed',
-    signedUrl: signedUrl.signedUrl,
-    expiresIn: SIGNED_URL_TTL_SECONDS,
+    return {
+      success: true,
+      integrity: 'passed' as const,
+      signedUrl: signedUrl.signedUrl,
+      expiresIn: SIGNED_URL_TTL_SECONDS,
+    }
+  } catch (error) {
+    return failIntegrityCheck('erreur technique pendant le contrôle', error)
   }
 }
 
