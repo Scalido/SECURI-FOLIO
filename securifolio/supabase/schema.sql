@@ -675,7 +675,7 @@ INSERT INTO public.dossiers_fonciers (
     created_at
 )
 SELECT
-    title.numero_cadastral,
+    CONCAT(title.numero_cadastral, ':legacy:', title.id::TEXT),
     title.circonscription,
     creation.agent_id,
     CASE
@@ -700,7 +700,28 @@ UPDATE public.titres_fonciers AS title
 SET dossier_id = dossier.id
 FROM public.dossiers_fonciers AS dossier
 WHERE title.dossier_id IS NULL
-  AND dossier.numero_dossier = title.numero_cadastral;
+  AND dossier.numero_dossier = CONCAT(
+      title.numero_cadastral,
+      ':legacy:',
+      title.id::TEXT
+  );
+
+DO $$
+DECLARE
+    v_unlinked_legacy_titles BIGINT;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_unlinked_legacy_titles
+    FROM public.titres_fonciers
+    WHERE dossier_id IS NULL;
+
+    IF v_unlinked_legacy_titles > 0 THEN
+        RAISE NOTICE
+            '% titres legacy restent sans dossier faute de provenance agent attribuable',
+            v_unlinked_legacy_titles;
+    END IF;
+END;
+$$;
 
 INSERT INTO public.pieces_dossier (
     dossier_id,

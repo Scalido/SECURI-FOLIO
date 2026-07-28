@@ -18,6 +18,44 @@ function functionDefinition(name: string) {
   return migration.slice(start, end)
 }
 
+type LegacyTitle = {
+  id: string
+  numeroCadastral: string
+  dossierId: string | null
+  createdBy: string | null
+}
+
+type LegacyDossier = {
+  id: string
+  numeroDossier: string
+}
+
+function executeLegacyBackfill(
+  titles: LegacyTitle[],
+  dossiers: LegacyDossier[],
+) {
+  const nextTitles = structuredClone(titles)
+  const nextDossiers = structuredClone(dossiers)
+
+  for (const title of nextTitles) {
+    if (title.dossierId !== null || title.createdBy === null) continue
+
+    const numeroDossier = `${title.numeroCadastral}:legacy:${title.id}`
+    let dossier = nextDossiers.find(
+      (candidate) => candidate.numeroDossier === numeroDossier,
+    )
+
+    if (!dossier) {
+      dossier = { id: `dossier-${title.id}`, numeroDossier }
+      nextDossiers.push(dossier)
+    }
+
+    title.dossierId = dossier.id
+  }
+
+  return { titles: nextTitles, dossiers: nextDossiers }
+}
+
 describe('contrat SQL des dossiers fonciers', () => {
   it('crée les dossiers, les pièces immuables et le lien du titre', () => {
     expect(migration).toMatch(/CREATE TABLE[\s\S]+dossiers_fonciers/i)
@@ -43,6 +81,103 @@ describe('contrat SQL des dossiers fonciers', () => {
     )
     expect(migration).toMatch(
       /storage_path\s+IS\s+NULL[\s\S]+integrity_schema_version\s+IS\s+NULL[\s\S]+storage_path\s+IS\s+NOT\s+NULL[\s\S]+integrity_schema_version\s+IN\s*\(\s*1\s*,\s*2\s*\)/i,
+    )
+  })
+
+  it('attribue un dossier distinct à chaque titre legacy, même avec un numéro cadastral répété', () => {
+    const legacyTitles: LegacyTitle[] = [
+      {
+        id: 'title-a',
+        numeroCadastral: 'CAD-001',
+        dossierId: null,
+        createdBy: 'agent-1',
+      },
+      {
+        id: 'title-b',
+        numeroCadastral: 'CAD-001',
+        dossierId: null,
+        createdBy: 'agent-1',
+      },
+      {
+        id: 'title-c',
+        numeroCadastral: 'CAD-002',
+        dossierId: null,
+        createdBy: 'agent-2',
+      },
+      {
+        id: 'title-linked',
+        numeroCadastral: 'CAD-003',
+        dossierId: 'existing-dossier',
+        createdBy: null,
+      },
+    ]
+    const existingDossiers: LegacyDossier[] = [
+      { id: 'existing-dossier', numeroDossier: 'CAD-003' },
+    ]
+
+    const firstRun = executeLegacyBackfill(legacyTitles, existingDossiers)
+    const secondRun = executeLegacyBackfill(
+      firstRun.titles,
+      firstRun.dossiers,
+    )
+
+    expect(firstRun.titles.map((title) => title.dossierId)).toEqual([
+      'dossier-title-a',
+      'dossier-title-b',
+      'dossier-title-c',
+      'existing-dossier',
+    ])
+    expect(firstRun.dossiers.map((dossier) => dossier.numeroDossier)).toEqual([
+      'CAD-003',
+      'CAD-001:legacy:title-a',
+      'CAD-001:legacy:title-b',
+      'CAD-002:legacy:title-c',
+    ])
+    expect(new Set(firstRun.titles.map((title) => title.dossierId)).size).toBe(4)
+    expect(secondRun).toEqual(firstRun)
+  })
+
+  it('ne fabrique aucun dossier lorsqu’aucun acteur legacy n’est attribuable', () => {
+    const result = executeLegacyBackfill(
+      [
+        {
+          id: 'title-without-actor',
+          numeroCadastral: 'CAD-004',
+          dossierId: null,
+          createdBy: null,
+        },
+      ],
+      [],
+    )
+
+    expect(result).toEqual({
+      titles: [
+        {
+          id: 'title-without-actor',
+          numeroCadastral: 'CAD-004',
+          dossierId: null,
+          createdBy: null,
+        },
+      ],
+      dossiers: [],
+    })
+  })
+
+  it('encode dans le SQL le rattachement legacy un-à-un sans écrasement', () => {
+    expect(migration).toMatch(
+      /CONCAT\s*\(\s*title\.numero_cadastral\s*,\s*':legacy:'\s*,\s*title\.id::TEXT\s*\)/i,
+    )
+    expect(migration).toMatch(
+      /UPDATE\s+public\.titres_fonciers[\s\S]+SET\s+dossier_id\s*=\s*dossier\.id[\s\S]+title\.dossier_id\s+IS\s+NULL[\s\S]+dossier\.numero_dossier\s*=\s*CONCAT\s*\(\s*title\.numero_cadastral\s*,\s*':legacy:'\s*,\s*title\.id::TEXT\s*\)/i,
+    )
+    expect(migration).toMatch(
+      /CREATE UNIQUE INDEX IF NOT EXISTS titres_fonciers_dossier_id_unique/i,
+    )
+    expect(migration).toMatch(
+      /JOIN LATERAL\s*\([\s\S]+history\.agent_id[\s\S]+history\.action_type\s*=\s*'insert'[\s\S]+\)\s+AS creation ON TRUE/i,
+    )
+    expect(migration).toMatch(
+      /RAISE NOTICE[\s\S]+titres legacy restent sans dossier faute de provenance agent attribuable/i,
     )
   })
 
