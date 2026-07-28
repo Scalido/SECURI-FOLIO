@@ -82,3 +82,6 @@
 - Vérification complète : 13 fichiers, 100/100 tests, contrôles sécurité et build Next.js réussis.
 - `npx tsc --noEmit`, `git diff --check` et miroir migration/schema : succès.
 - Revue indépendante round 2 : approuvée, aucun blocage.
+- Pré-test Supabase final : purge transactionnelle des 22 titres et 12 historiques mock, puis application ordonnée des six migrations et validations SQL : succès.
+- Les 26 objets Storage sont restés intacts pendant le pré-test.
+- Contrôle post-`ROLLBACK` : 22 titres, 12 historiques et 26 objets restaurés; `dossiers_fonciers`, `pieces_dossier` et `titres_fonciers.dossier_id` absents.
