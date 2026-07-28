@@ -15,6 +15,11 @@ type DefinitiveObjectDependencies<T extends DefinitiveOperationResult> = {
   cleanup: () => Promise<unknown>
 }
 
+type DefinitiveUploadDependencies<T extends DefinitiveOperationResult> =
+  DefinitiveObjectDependencies<T> & {
+    upload: () => Promise<unknown>
+  }
+
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'erreur inconnue'
 }
@@ -44,11 +49,39 @@ export async function withTemporaryAnalysisObject<T>({
     } catch (cleanupError) {
       console.error('Temporary analysis object cleanup failed:', cleanupError)
 
-      if (primaryError === undefined) {
-        throw cleanupError
+      if (primaryError !== undefined) {
+        throw new Error(
+          `${errorMessage(primaryError)} ${cleanupFailureMessage(cleanupError)}`,
+        )
       }
+
+      throw cleanupError
     }
   }
+}
+
+export async function withDefinitiveUploadObject<
+  T extends DefinitiveOperationResult,
+>({
+  upload,
+  operation,
+  cleanup,
+}: DefinitiveUploadDependencies<T>): Promise<T> {
+  try {
+    await upload()
+  } catch (uploadError) {
+    try {
+      await cleanup()
+    } catch (cleanupError) {
+      throw new Error(
+        `${errorMessage(uploadError)} ${cleanupFailureMessage(cleanupError)}`,
+      )
+    }
+
+    throw uploadError
+  }
+
+  return withDefinitiveObjectRetention({ operation, cleanup })
 }
 
 export async function withDefinitiveObjectRetention<

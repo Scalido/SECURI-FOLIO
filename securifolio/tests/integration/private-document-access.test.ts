@@ -292,6 +292,29 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
     )
   })
 
+  it.each([
+    ['retourne une erreur RPC', async () => ({ data: null, error: { message: 'audit unavailable' } })],
+    ['lève une exception RPC', async () => {
+      throw new Error('audit network failed')
+    }],
+  ])('ferme sans journal contradictoire si le succès d’audit %s', async (_label, rpc) => {
+    state.rpc.mockImplementation(rpc)
+
+    const result = await getAdministrativeDocument('title-1')
+
+    expect(result).toEqual({
+      success: false,
+      integrity: 'failed',
+      error: 'Journalisation du contrôle impossible.',
+    })
+    expect(state.rpc).toHaveBeenCalledTimes(1)
+    expect(state.rpc).toHaveBeenCalledWith('log_document_integrity_check', {
+      p_title_id: 'title-1',
+      p_passed: true,
+      p_actor_id: 'conservateur-2',
+    })
+  })
+
   it('bloque la consultation et journalise l’échec après altération du fichier', async () => {
     state.downloadBytes = new TextEncoder().encode('tampered-file-bytes')
 
@@ -307,6 +330,7 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       p_passed: false,
       p_actor_id: 'conservateur-2',
     })
+    expect(state.rpc).toHaveBeenCalledTimes(1)
     expect(state.createSignedUrl).not.toHaveBeenCalled()
   })
 

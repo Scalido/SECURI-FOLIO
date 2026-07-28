@@ -15,7 +15,10 @@ import dynamic from 'next/dynamic';
 import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
 import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
 import type { AgentProfileState } from '@/lib/validations';
-import { withTemporaryAnalysisObject } from '@/lib/documents/temporary-analysis';
+import {
+  withDefinitiveUploadObject,
+  withTemporaryAnalysisObject,
+} from '@/lib/documents/temporary-analysis';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
@@ -515,22 +518,24 @@ export default function SmartArchivePage() {
 
       const storagePath = reserved.data.path;
 
-      const { error: uploadError } = await supabase.storage
-        .from('scans_certificats')
-        .upload(storagePath, file);
-
-      if (uploadError) {
-        console.error("Erreur d'upload:", uploadError);
-        alert("Erreur lors de la sauvegarde du fichier scan. Vérifiez que le bucket existe et est configuré.");
-        return;
-      }
-
-      const res = await saveCertificate(
-        { ...formData, attested: isCertified },
-        storagePath,
-        geoData,
-        isLocationUnknown,
-      );
+      const documentBucket = supabase.storage.from('scans_certificats');
+      const res = await withDefinitiveUploadObject({
+        upload: async () => {
+          const { error: uploadError } = await documentBucket.upload(storagePath, file);
+          if (uploadError) throw new Error(uploadError.message);
+        },
+        operation: () => saveCertificate(
+          { ...formData, attested: isCertified },
+          storagePath,
+          geoData,
+          isLocationUnknown,
+          false,
+        ),
+        cleanup: async () => {
+          const { error } = await documentBucket.remove([storagePath]);
+          if (error) throw new Error(error.message);
+        },
+      });
 
       if (!res.success) {
         if (res.error === 'TITRE_DEJA_NUMERISE') {

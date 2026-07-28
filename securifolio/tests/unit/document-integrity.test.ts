@@ -8,6 +8,7 @@ import {
 } from '@/lib/documents/integrity'
 import {
   withDefinitiveObjectRetention,
+  withDefinitiveUploadObject,
   withTemporaryAnalysisObject,
 } from '@/lib/documents/temporary-analysis'
 
@@ -143,9 +144,67 @@ describe('nettoyage des objets temporaires d’analyse', () => {
 
     expect(events).toEqual(['upload', 'cleanup'])
   })
+
+  it('remonte l’échec primaire et l’échec de nettoyage temporaire', async () => {
+    await expect(
+      withTemporaryAnalysisObject({
+        upload: async () => {
+          throw new Error('upload partial failed')
+        },
+        createSignedUrl: async () => 'unused',
+        analyze: async () => 'unused',
+        cleanup: async () => {
+          throw new Error('cleanup denied')
+        },
+      }),
+    ).rejects.toThrow('upload partial failed Nettoyage du fichier impossible : cleanup denied')
+  })
 })
 
 describe('cycle de vie des objets définitifs', () => {
+  it('tente le nettoyage si l’upload définitif échoue', async () => {
+    const events: string[] = []
+
+    await expect(
+      withDefinitiveUploadObject({
+        upload: async () => {
+          events.push('upload')
+          throw new Error('partial upload failed')
+        },
+        operation: async () => ({ success: true as const }),
+        cleanup: async () => events.push('cleanup'),
+      }),
+    ).rejects.toThrow('partial upload failed')
+
+    expect(events).toEqual(['upload', 'cleanup'])
+  })
+
+  it('supprime après un rejet en aval de l’upload définitif', async () => {
+    const events: string[] = []
+
+    const result = await withDefinitiveUploadObject({
+      upload: async () => events.push('upload'),
+      operation: async () => ({ success: false as const, error: 'rejected' }),
+      cleanup: async () => events.push('cleanup'),
+    })
+
+    expect(result).toEqual({ success: false, error: 'rejected' })
+    expect(events).toEqual(['upload', 'cleanup'])
+  })
+
+  it('conserve après upload et rattachement définitif réussis', async () => {
+    const events: string[] = []
+
+    const result = await withDefinitiveUploadObject({
+      upload: async () => events.push('upload'),
+      operation: async () => ({ success: true as const }),
+      cleanup: async () => events.push('cleanup'),
+    })
+
+    expect(result).toEqual({ success: true })
+    expect(events).toEqual(['upload'])
+  })
+
   it('conserve uniquement l’objet rattaché par une opération réussie', async () => {
     const cleanupEvents: string[] = []
 

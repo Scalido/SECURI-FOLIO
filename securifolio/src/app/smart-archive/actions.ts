@@ -156,6 +156,7 @@ export async function saveCertificate(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   coordonneesSpatiales?: any,
   requiresTopography: boolean = false,
+  manageStorageLifecycle: boolean = true,
 ) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
@@ -173,7 +174,7 @@ export async function saveCertificate(
     ? createAdminClient().storage
     : null
   const rejectPreflight = async (error: string) => {
-    if (!privateStorage || !definitiveStoragePath) {
+    if (!manageStorageLifecycle || !privateStorage || !definitiveStoragePath) {
       return { success: false as const, error }
     }
 
@@ -232,18 +233,7 @@ export async function saveCertificate(
     return { success: false, error: 'Chemin de stockage privé invalide.' }
   }
 
-  return withDefinitiveObjectRetention({
-    cleanup: async () => {
-      const { error: removeError } = await privateStorage
-        .from(PRIVATE_DOCUMENT_BUCKET)
-        .remove([definitiveStoragePath])
-
-      if (removeError) {
-        throw new Error(removeError.message)
-      }
-    },
-    operation: async () => {
-
+  const operation = async () => {
   // 3. Vérifier si le titre existe déjà
   const { data: existingTitle, error: searchError } = await supabaseServer
     .from('titres_fonciers')
@@ -333,7 +323,19 @@ export async function saveCertificate(
   }
 
   return { success: true }
+  }
+
+  if (!manageStorageLifecycle) return operation()
+
+  return withDefinitiveObjectRetention({
+    cleanup: async () => {
+      const { error: removeError } = await privateStorage
+        .from(PRIVATE_DOCUMENT_BUCKET)
+        .remove([definitiveStoragePath])
+
+      if (removeError) throw new Error(removeError.message)
     },
+    operation,
   })
 }
 
@@ -494,7 +496,11 @@ export async function getAdministrativeDocument(titleId: string) {
     }
 
     if (!await writeIntegrityAudit(true)) {
-      return failIntegrityCheck('journalisation du succès impossible')
+      return {
+        success: false,
+        integrity: 'failed' as const,
+        error: 'Journalisation du contrôle impossible.',
+      }
     }
 
     return {
