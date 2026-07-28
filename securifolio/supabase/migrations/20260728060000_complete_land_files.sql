@@ -42,6 +42,17 @@ ALTER TABLE public.titres_fonciers
     ADD COLUMN IF NOT EXISTS date_sceau TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS signataire_conservateur TEXT;
 
+ALTER TABLE public.titres_fonciers
+    ADD COLUMN IF NOT EXISTS integrity_schema_version INTEGER;
+ALTER TABLE public.titres_fonciers
+    DROP CONSTRAINT IF EXISTS titres_fonciers_integrity_schema_version;
+ALTER TABLE public.titres_fonciers
+    ADD CONSTRAINT titres_fonciers_integrity_schema_version
+    CHECK (
+        integrity_schema_version IS NULL
+        OR integrity_schema_version IN (1, 2)
+    );
+
 CREATE UNIQUE INDEX IF NOT EXISTS titres_fonciers_dossier_id_unique
     ON public.titres_fonciers(dossier_id)
     WHERE dossier_id IS NOT NULL;
@@ -308,6 +319,7 @@ BEGIN
         file_sha256,
         metadata_hmac,
         document_version,
+        integrity_schema_version,
         coordonnees_spatiales,
         dossier_id,
         description_immeuble,
@@ -332,6 +344,7 @@ BEGIN
         p_file_sha256,
         p_metadata_hmac,
         v_document_version,
+        2,
         p_coordonnees_spatiales,
         v_dossier_id,
         NULLIF(BTRIM(p_description_immeuble), ''),
@@ -487,6 +500,7 @@ DECLARE
     v_present TEXT[];
     v_cadastre_missing TEXT[];
     v_conservateur_missing TEXT[];
+    v_versions JSONB;
 BEGIN
     SELECT * INTO v_profile
     FROM public.profiles
@@ -512,6 +526,15 @@ BEGIN
     FROM public.pieces_dossier
     WHERE dossier_id = p_dossier_id;
 
+    SELECT COALESCE(jsonb_object_agg(type_piece, max_version), '{}'::JSONB)
+    INTO v_versions
+    FROM (
+        SELECT type_piece, MAX(version) AS max_version
+        FROM public.pieces_dossier
+        WHERE dossier_id = p_dossier_id
+        GROUP BY type_piece
+    ) AS latest_versions;
+
     SELECT COALESCE(array_agg(required), ARRAY[]::TEXT[])
     INTO v_cadastre_missing
     FROM unnest(ARRAY['pv_mesurage_bornage', 'croquis']) AS required
@@ -528,6 +551,8 @@ BEGIN
             AND cardinality(v_conservateur_missing) = 0,
         'missing',
         to_jsonb(v_cadastre_missing || v_conservateur_missing),
+        'versions',
+        v_versions,
         'cadastre',
         jsonb_build_object(
             'ready', cardinality(v_cadastre_missing) = 0,

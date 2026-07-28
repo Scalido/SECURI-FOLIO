@@ -355,6 +355,7 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       storedTitle.file_sha256,
       metadata,
       'agent-1',
+      2,
     )
     state.title = {
       ...storedTitle,
@@ -362,6 +363,7 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       nom_proprietaire: metadata.nom,
       date_enregistrement: metadata.date_etablissement,
       dossier_id: 'dossier-1',
+      integrity_schema_version: 2,
       metadata_hmac: envelope.metadataHmac,
     }
 
@@ -372,6 +374,59 @@ describe('consultation administrative avec contrôle d’intégrité', () => {
       integrity: 'passed',
     })
   })
+
+  it.each([
+    'description_immeuble',
+    'situation',
+    'charges_reelles',
+    'droits_constates',
+    'date_sceau',
+    'signataire_conservateur',
+  ] as const)(
+    'refuse une consultation si %s a été altéré après scellement',
+    async field => {
+      const metadata = {
+        nom: 'Mosele Mombanga',
+        numero_cadastral: '1178',
+        volume: 'AMA 171',
+        folio: '68',
+        circonscription: 'Gombe',
+        superficie: '450',
+        date_etablissement: '2026-01-12T12:00:00.000Z',
+        description_immeuble: 'Parcelle bâtie',
+        situation: 'Avenue du Fleuve',
+        charges_reelles: 'Aucune',
+        droits_constates: 'Concession perpétuelle',
+        date_sceau: '2026-01-13T12:00:00.000Z',
+        signataire_conservateur: 'Marie Ilunga',
+      }
+      const envelope = buildIntegrityEnvelope(
+        storedTitle.file_sha256,
+        metadata,
+        'agent-1',
+        2,
+      )
+      state.title = {
+        ...storedTitle,
+        ...metadata,
+        nom_proprietaire: metadata.nom,
+        date_enregistrement: metadata.date_etablissement,
+        dossier_id: 'dossier-1',
+        integrity_schema_version: 2,
+        metadata_hmac: envelope.metadataHmac,
+        [field]: `${metadata[field]} altéré`,
+      }
+
+      const result = await getAdministrativeDocument('title-1')
+
+      expect(result).toEqual({
+        success: false,
+        integrity: 'failed',
+        error: 'Contrôle d’intégrité échoué.',
+      })
+      expect(state.createSignedUrl).not.toHaveBeenCalled()
+    },
+  )
 
   it.each([
     ['retourne une erreur RPC', async () => ({ data: null, error: { message: 'audit unavailable' } })],

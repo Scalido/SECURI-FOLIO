@@ -14,6 +14,7 @@ import {
 import { createClient } from '@/utils/supabase/client';
 import dynamic from 'next/dynamic';
 import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
+import { DossierPieceManager } from '@/components/DossierPieceManager';
 import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
 import type { AgentProfileState } from '@/lib/validations';
 import type { DocumentChecklist } from '@/lib/land-files';
@@ -614,6 +615,15 @@ export default function SmartArchivePage() {
                 </ul>
               </div>
             )}
+            <DossierPieceManager
+              dossierId={lastChecklist.dossierId}
+              initialChecklist={lastChecklist.checklist}
+              onChecklistChange={checklist => {
+                setLastChecklist(current => current
+                  ? { ...current, checklist }
+                  : current);
+              }}
+            />
           </section>
         )}
 

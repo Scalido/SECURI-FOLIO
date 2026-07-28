@@ -10,6 +10,14 @@ const migration = readFileSync(
   'utf8',
 )
 
+function functionDefinition(name: string) {
+  const start = migration.indexOf(`FUNCTION public.${name}`)
+  if (start < 0) throw new Error(`Fonction SQL absente: ${name}`)
+  const end = migration.indexOf('$$ LANGUAGE plpgsql', start)
+  if (end < 0) throw new Error(`Fin de fonction SQL absente: ${name}`)
+  return migration.slice(start, end)
+}
+
 describe('contrat SQL des dossiers fonciers', () => {
   it('crée les dossiers, les pièces immuables et le lien du titre', () => {
     expect(migration).toMatch(/CREATE TABLE[\s\S]+dossiers_fonciers/i)
@@ -29,13 +37,19 @@ describe('contrat SQL des dossiers fonciers', () => {
   })
 
   it('bloque les approbations sans pièces ou justification de contrôle', () => {
-    expect(migration).toMatch(/v_profile\.role\s*=\s*'chef_cadastre'/i)
-    expect(migration).toMatch(/'pv_mesurage_bornage'/i)
-    expect(migration).toMatch(/'croquis'/i)
-    expect(migration).toMatch(/v_profile\.role\s*=\s*'conservateur'/i)
-    expect(migration).toMatch(/'minute_certificat'/i)
-    expect(migration).toMatch(/'preuve_paiement'/i)
-    expect(migration).toMatch(/NULLIF\s*\(\s*BTRIM\s*\(\s*p_notes\s*\)/i)
+    const guard = functionDefinition('update_title_status_with_history')
+
+    expect(guard).toMatch(/v_profile\.role\s*=\s*'chef_cadastre'/i)
+    expect(guard).toMatch(
+      /p_new_status\s*=\s*'Validé techniquement'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'pv_mesurage_bornage'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'croquis'[\s\S]+RAISE EXCEPTION/i,
+    )
+    expect(guard).toMatch(/v_profile\.role\s*=\s*'conservateur'/i)
+    expect(guard).toMatch(
+      /p_new_status\s*=\s*'Valide'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'minute_certificat'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'preuve_paiement'[\s\S]+NULLIF\s*\(\s*BTRIM\s*\(\s*p_notes\s*\)[\s\S]+RAISE EXCEPTION/i,
+    )
+    expect(guard.indexOf('UPDATE public.titres_fonciers')).toBeGreaterThan(
+      guard.indexOf('Validation du Conservateur impossible'),
+    )
   })
 
   it('reprend la version et l’attestation autoritaires pour les doublons', () => {

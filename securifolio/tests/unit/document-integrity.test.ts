@@ -20,6 +20,12 @@ const metadata = {
   circonscription: 'Gombe',
   superficie: '450',
   date_etablissement: '2026-01-12T12:00:00.000Z',
+  description_immeuble: 'Parcelle bâtie',
+  situation: 'Avenue du Fleuve',
+  charges_reelles: 'Aucune',
+  droits_constates: 'Concession perpétuelle',
+  date_sceau: '2026-01-13T12:00:00.000Z',
+  signataire_conservateur: 'Marie Ilunga',
 }
 
 describe('intégrité des documents', () => {
@@ -31,16 +37,16 @@ describe('intégrité des documents', () => {
     process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
     const original = new TextEncoder().encode('original-file-bytes')
     const changed = new TextEncoder().encode('original-file-byteS')
-    const envelope = buildIntegrityEnvelope(sha256(original), metadata, 'agent-1')
+    const envelope = buildIntegrityEnvelope(sha256(original), metadata, 'agent-1', 2)
 
-    expect(verifyIntegrityEnvelope(envelope, original, metadata, 'agent-1')).toBe(true)
-    expect(verifyIntegrityEnvelope(envelope, changed, metadata, 'agent-1')).toBe(false)
+    expect(verifyIntegrityEnvelope(envelope, original, metadata, 'agent-1', 2)).toBe(true)
+    expect(verifyIntegrityEnvelope(envelope, changed, metadata, 'agent-1', 2)).toBe(false)
   })
 
   it('détecte la modification d’un champ de métadonnées', () => {
     process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
     const bytes = new TextEncoder().encode('original-file-bytes')
-    const envelope = buildIntegrityEnvelope(sha256(bytes), metadata, 'agent-1')
+    const envelope = buildIntegrityEnvelope(sha256(bytes), metadata, 'agent-1', 2)
 
     expect(
       verifyIntegrityEnvelope(
@@ -48,8 +54,67 @@ describe('intégrité des documents', () => {
         bytes,
         { ...metadata, superficie: '451' },
         'agent-1',
+        2,
       ),
     ).toBe(false)
+  })
+
+  it.each([
+    'description_immeuble',
+    'situation',
+    'charges_reelles',
+    'droits_constates',
+    'date_sceau',
+    'signataire_conservateur',
+  ] as const)('détecte l’altération de la mention légale %s', field => {
+    process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    const bytes = new TextEncoder().encode('original-file-bytes')
+    const envelope = buildIntegrityEnvelope(
+      sha256(bytes),
+      metadata,
+      'agent-1',
+      2,
+    )
+
+    expect(
+      verifyIntegrityEnvelope(
+        envelope,
+        bytes,
+        { ...metadata, [field]: `${metadata[field]} altéré` },
+        'agent-1',
+        2,
+      ),
+    ).toBe(false)
+  })
+
+  it('vérifie explicitement une enveloppe legacy sans l’élargir silencieusement', () => {
+    process.env.CERTIFICATE_HMAC_SECRET = 'test-integrity-secret'
+    const bytes = new TextEncoder().encode('legacy-file')
+    const legacyMetadata = {
+      nom: metadata.nom,
+      numero_cadastral: metadata.numero_cadastral,
+      volume: metadata.volume,
+      folio: metadata.folio,
+      circonscription: metadata.circonscription,
+      superficie: metadata.superficie,
+      date_etablissement: metadata.date_etablissement,
+    }
+    const envelope = buildIntegrityEnvelope(
+      sha256(bytes),
+      legacyMetadata,
+      'agent-1',
+      1,
+    )
+
+    expect(
+      verifyIntegrityEnvelope(
+        envelope,
+        bytes,
+        legacyMetadata,
+        'agent-1',
+        1,
+      ),
+    ).toBe(true)
   })
 
   it('canonise les métadonnées indépendamment de l’ordre des propriétés', () => {
@@ -63,8 +128,8 @@ describe('intégrité des documents', () => {
       nom: 'Mosele Mombanga',
     }
 
-    expect(canonicalizeTitleMetadata(reordered)).toBe(
-      canonicalizeTitleMetadata(metadata),
+    expect(canonicalizeTitleMetadata(reordered, 1)).toBe(
+      canonicalizeTitleMetadata(metadata, 1),
     )
   })
 
@@ -74,6 +139,7 @@ describe('intégrité des documents', () => {
         sha256(new TextEncoder().encode('bytes')),
         metadata,
         'agent-1',
+        2,
       ),
     ).toThrow('CERTIFICATE_HMAC_SECRET')
   })

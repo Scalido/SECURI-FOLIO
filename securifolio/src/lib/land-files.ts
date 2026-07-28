@@ -27,6 +27,7 @@ const CONSERVATEUR_REQUIRED: readonly LandFilePieceType[] = [
 export type DocumentChecklist = {
   complete: boolean
   missing: LandFilePieceType[]
+  versions: Partial<Record<LandFilePieceType, number>>
   cadastre: {
     ready: boolean
     missing: LandFilePieceType[]
@@ -39,6 +40,7 @@ export type DocumentChecklist = {
 
 export function buildDocumentChecklist(
   presentTypes: readonly LandFilePieceType[],
+  versions: Partial<Record<LandFilePieceType, number>> = {},
 ): DocumentChecklist {
   const present = new Set(presentTypes)
   const cadastreMissing = CADASTRE_REQUIRED.filter(type => !present.has(type))
@@ -50,6 +52,7 @@ export function buildDocumentChecklist(
   return {
     complete: missing.length === 0,
     missing,
+    versions,
     cadastre: {
       ready: cadastreMissing.length === 0,
       missing: cadastreMissing,

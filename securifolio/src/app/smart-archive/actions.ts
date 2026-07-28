@@ -304,6 +304,7 @@ export async function saveCertificate(
       sha256(fileBytes),
       persistedMetadata,
       user.id,
+      2,
     )
   } catch (error) {
     return {
@@ -461,6 +462,35 @@ export async function getDocumentChecklist(
   }
 }
 
+export async function getDossierDocumentChecklist(
+  dossierId: string,
+): Promise<{ data: DocumentChecklist | null; error: string | null }> {
+  const supabaseServer = createClient()
+  const { data: { user } } = await supabaseServer.auth.getUser()
+  if (!user) return { data: null, error: 'Non authentifié' }
+
+  const parsedId = dossierPieceSubmissionSchema.shape.dossierId.safeParse(
+    dossierId,
+  )
+  if (!parsedId.success) {
+    return { data: null, error: 'Identifiant de dossier invalide.' }
+  }
+
+  const { data, error } = await supabaseServer.rpc(
+    'get_dossier_document_checklist',
+    { p_dossier_id: parsedId.data },
+  )
+
+  if (error || !data) {
+    return {
+      data: null,
+      error: error?.message || 'Checklist documentaire indisponible.',
+    }
+  }
+
+  return { data: data as DocumentChecklist, error: null }
+}
+
 export async function getAdministrativeDocument(titleId: string) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
@@ -481,7 +511,7 @@ export async function getAdministrativeDocument(titleId: string) {
 
   const { data: title, error: titleError } = await supabaseServer
     .from('titres_fonciers')
-    .select('id, numero_cadastral, nom_proprietaire, volume, folio, circonscription, superficie, date_enregistrement, storage_path, file_sha256, metadata_hmac, document_version, dossier_id, description_immeuble, situation, charges_reelles, droits_constates, date_sceau, signataire_conservateur')
+    .select('id, numero_cadastral, nom_proprietaire, volume, folio, circonscription, superficie, date_enregistrement, storage_path, file_sha256, metadata_hmac, document_version, integrity_schema_version, dossier_id, description_immeuble, situation, charges_reelles, droits_constates, date_sceau, signataire_conservateur')
     .eq('id', titleId)
     .single()
 
@@ -611,6 +641,7 @@ export async function getAdministrativeDocument(titleId: string) {
       new Uint8Array(await storedFile.arrayBuffer()),
       metadata,
       creationEvent.agent_id,
+      title.integrity_schema_version === 2 ? 2 : 1,
     )
 
     if (!integrityPassed) {
