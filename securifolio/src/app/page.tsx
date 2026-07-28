@@ -66,10 +66,10 @@ export default function Home() {
               <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> est la plateforme institutionnelle dédiée à l&apos;assainissement, la conformité et la sécurisation du secteur foncier et immobilier en République Démocratique du Congo.
             </p>
             <p>
-              Face aux défis historiques liés aux erreurs d&apos;archivage, à la perte de documents physiques et au phénomène ravageur des superpositions de titres, notre écosystème apporte une réponse technologique radicale.
+              Face aux erreurs d&apos;archivage et à la perte de documents physiques, la plateforme centralise la consultation du registre et le suivi des informations foncières numérisées.
             </p>
             <p>
-              Notre mission est d&apos;éradiquer l&apos;insécurité juridique et la fraude foncière grâce à une architecture hybride inédite : l&apos;Intelligence Artificielle pour les documents, et les technologies géospatiales pour la réalité physique du terrain.
+              La version actuelle fournit des constats fondés sur les données enregistrées et laisse les décisions administratives aux agents compétents.
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Smart-Archive</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  La plateforme de création des Jumeaux Numériques. Numérisation OCR, extraction par IA et ancrage spatial pour créer des archives infalsifiables.
+                  Centralisez la saisie, la consultation et le suivi des informations issues des archives foncières numérisées.
                 </p>
               </div>
             </Link>

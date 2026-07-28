@@ -15,7 +15,7 @@ import type {
   AntiFolioOutcome,
   SearchState,
 } from '@/lib/anti-folio/types'
-import { deriveAntiFolioOutcome } from '@/lib/anti-folio/verdict'
+import { executeAntiFolioSearchFlow } from '@/lib/anti-folio/search'
 import {
   checkCadastralNumber,
   getScanHistory,
@@ -68,26 +68,13 @@ export default function AntiFolioPage() {
     setErrorMessage(null)
 
     try {
-      const response = await checkCadastralNumber(cadastralNumber)
-      const nextOutcome = response.ok
-        ? deriveAntiFolioOutcome({ records: response.records })
-        : deriveAntiFolioOutcome({ searchError: true })
-
-      setOutcome(nextOutcome)
-
-      if (!response.ok) {
-        setErrorMessage(response.message)
-        if (response.code === 'DATABASE_ERROR') {
-          await saveScanHistory(cadastralNumber, nextOutcome.searchState)
-        }
-      } else {
-        await saveScanHistory(cadastralNumber, nextOutcome.searchState)
-      }
-
-      await refreshHistory()
-    } catch {
-      setOutcome(deriveAntiFolioOutcome({ searchError: true }))
-      setErrorMessage('Une erreur technique inattendue a interrompu la vérification.')
+      const result = await executeAntiFolioSearchFlow(cadastralNumber, {
+        checkCadastralNumber,
+        saveScanHistory,
+        refreshHistory,
+      })
+      setOutcome(result.outcome)
+      setErrorMessage(result.errorMessage)
     } finally {
       setIsLoading(false)
     }

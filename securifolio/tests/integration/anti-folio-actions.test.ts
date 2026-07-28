@@ -1,9 +1,38 @@
 import { describe, expect, it } from 'vitest'
 
-import { executeCadastralSearch } from '@/lib/anti-folio/search'
+import {
+  executeAntiFolioSearchFlow,
+  executeCadastralSearch,
+} from '@/lib/anti-folio/search'
 import { deriveAntiFolioOutcome } from '@/lib/anti-folio/verdict'
 
 describe('recherche Anti-Folio', () => {
+  it('conserve un match lorsque l’écriture ou le rafraîchissement de l’historique échoue', async () => {
+    const title = {
+      id: 'title-1',
+      numero_cadastral: '1178',
+      volume: 'AMA 171',
+      folio: '68',
+      nom_proprietaire: 'Kanku',
+      circonscription: 'Gombe',
+      statut: 'Valide' as const,
+    }
+
+    const result = await executeAntiFolioSearchFlow('1178', {
+      checkCadastralNumber: async () => ({ ok: true, records: [title] }),
+      saveScanHistory: async () => {
+        throw new Error('history unavailable')
+      },
+      refreshHistory: async () => {
+        throw new Error('history unavailable')
+      },
+    })
+
+    expect(result.outcome.searchState).toBe('match')
+    expect(result.outcome.records).toEqual([title])
+    expect(result.errorMessage).toBeNull()
+  })
+
   it('retourne les titres trouvés pour un agent authentifié', async () => {
     const title = {
       id: 'title-1',
