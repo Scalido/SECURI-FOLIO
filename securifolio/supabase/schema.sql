@@ -221,13 +221,22 @@ CREATE TRIGGER prevent_smart_archive_history_mutation
 CREATE OR REPLACE FUNCTION assign_smart_archive_document_version()
 RETURNS TRIGGER AS $$
 BEGIN
+    IF NEW.action_type = 'insert' THEN
+        IF NEW.document_version IS NULL THEN
+            RAISE EXCEPTION 'Une création autoritative doit fournir sa version transactionnelle.';
+        END IF;
+        RETURN NEW;
+    END IF;
+
     IF NEW.document_version IS NULL THEN
         PERFORM pg_advisory_xact_lock(hashtextextended(NEW.numero_cadastral, 0));
 
         SELECT COALESCE(MAX(document_version), 1)
         INTO NEW.document_version
         FROM smart_archive_history
-        WHERE numero_cadastral = NEW.numero_cadastral;
+        WHERE numero_cadastral = NEW.numero_cadastral
+          AND action_type = 'insert'
+          AND attestation_text IS NOT NULL;
     END IF;
 
     RETURN NEW;
@@ -281,6 +290,7 @@ DECLARE
     v_title_id UUID;
     v_attestation_text TEXT;
     v_document_version INTEGER;
+    v_numero_cadastral VARCHAR;
 BEGIN
     SELECT * INTO v_profile FROM profiles WHERE id = auth.uid();
 
@@ -302,6 +312,7 @@ BEGIN
         RAISE EXCEPTION 'Circonscription non autorisée pour cet agent.';
     END IF;
 
+    v_numero_cadastral := BTRIM(p_numero_cadastral);
     v_attestation_text := format(
         'En tant qu''agent assermenté %s (%s, rôle %s, matricule %s), j''atteste sur l''honneur avoir vérifié visuellement la conformité de ces données avec le document physique original. Toute altération non signalée engagera ma responsabilité pénale.',
         COALESCE(NULLIF(BTRIM(v_profile.full_name), ''), 'Nom non renseigné'),
@@ -310,12 +321,14 @@ BEGIN
         COALESCE(NULLIF(BTRIM(v_profile.matricule), ''), 'Matricule non renseigné')
     );
 
-    PERFORM pg_advisory_xact_lock(hashtextextended(p_numero_cadastral, 0));
+    PERFORM pg_advisory_xact_lock(hashtextextended(v_numero_cadastral, 0));
 
     SELECT COALESCE(MAX(document_version), 0) + 1
     INTO v_document_version
     FROM smart_archive_history
-    WHERE numero_cadastral = p_numero_cadastral;
+    WHERE numero_cadastral = v_numero_cadastral
+      AND action_type = 'insert'
+      AND attestation_text IS NOT NULL;
 
     INSERT INTO titres_fonciers (
         numero_cadastral,
@@ -331,7 +344,7 @@ BEGIN
         hash_signature
     )
     VALUES (
-        p_numero_cadastral,
+        v_numero_cadastral,
         p_nom_proprietaire,
         COALESCE(p_volume, ''),
         COALESCE(p_folio, ''),
@@ -354,7 +367,7 @@ BEGIN
     )
     VALUES (
         auth.uid(),
-        p_numero_cadastral,
+        v_numero_cadastral,
         'insert',
         v_document_version,
         v_attestation_text
@@ -436,11 +449,34 @@ CREATE OR REPLACE FUNCTION record_smart_archive_duplicate(
 RETURNS BOOLEAN AS $$
 DECLARE
     v_profile profiles%ROWTYPE;
+    v_numero_cadastral VARCHAR;
+    v_has_authoritative_title BOOLEAN;
 BEGIN
     SELECT * INTO v_profile FROM profiles WHERE id = auth.uid();
 
     IF v_profile.id IS NULL OR v_profile.role <> 'agent' THEN
         RAISE EXCEPTION 'Accès réservé aux agents assermentés.';
+    END IF;
+
+    v_numero_cadastral := BTRIM(p_numero_cadastral);
+    PERFORM pg_advisory_xact_lock(hashtextextended(v_numero_cadastral, 0));
+
+    SELECT EXISTS (
+        SELECT 1
+        FROM titres_fonciers AS title
+        WHERE title.numero_cadastral = v_numero_cadastral
+          AND EXISTS (
+              SELECT 1
+              FROM smart_archive_history AS history
+              WHERE history.numero_cadastral = v_numero_cadastral
+                AND history.action_type = 'insert'
+                AND history.attestation_text IS NOT NULL
+          )
+    )
+    INTO v_has_authoritative_title;
+
+    IF NOT v_has_authoritative_title THEN
+        RAISE EXCEPTION 'Aucun titre autoritatif existant pour ce numéro cadastral.';
     END IF;
 
     INSERT INTO smart_archive_history (
@@ -450,7 +486,7 @@ BEGIN
     )
     VALUES (
         auth.uid(),
-        BTRIM(p_numero_cadastral),
+        v_numero_cadastral,
         'rejected_duplicate'
     );
 

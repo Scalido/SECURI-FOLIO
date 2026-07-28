@@ -242,3 +242,71 @@ exit 0
 
 Les tests SQL sont des contrats statiques exécutables, conformément à la rerevue :
 aucun runtime PostgreSQL/Supabase n’est disponible dans cet environnement.
+
+## Correctif après rerevue — round 3/5
+
+### Sémantique autoritative des doublons et versions
+
+La migration ordonnée
+`20260728040000_smart_archive_duplicate_version_semantics.sql` ferme le RPC de
+doublon forgeable :
+
+- `record_smart_archive_duplicate` normalise le numéro puis prend le même
+  `pg_advisory_xact_lock` par numéro cadastral ;
+- sous ce verrou, la RPC exige à la fois un titre stocké et un historique de
+  création `action_type = 'insert'` avec attestation non nulle ;
+- elle lève une exception avant tout INSERT si cette preuve autoritative manque ;
+- l’événement `rejected_duplicate` réutilise la version autoritative courante ;
+- `create_title_with_history` calcule désormais `MAX + 1` uniquement sur les
+  créations attestées ;
+- le trigger d’allocation ignore lui aussi tous les événements non créateurs lors
+  de son `MAX` et refuse une création sans version transactionnelle.
+
+`schema.sql` reflète la même sémantique.
+
+### Tests sémantiques exécutables
+
+En l’absence de runtime PostgreSQL, deux couches protègent le contrat :
+
+- modèle pur `src/lib/smart-archive/versioning.ts` : les doublons/statuts
+  n’influencent pas la prochaine version et un doublon exige titre + création
+  attestée ;
+- contrats SQL exécutables : filtre `action_type = 'insert'`, ordre
+  verrou → vérification titre/historique → INSERT, attestation non nulle et rejet.
+
+RED :
+
+```text
+smart-archive-migration-contract.test.ts
+Tests 2 failed : MAX non filtré et RPC doublon sans verrou/vérification
+
+smart-archive-versioning.test.ts
+Suite failed : modèle sémantique absent
+```
+
+GREEN ciblé :
+
+```text
+npx vitest run tests/integration/smart-archive-migration-contract.test.ts \
+  tests/unit/smart-archive-versioning.test.ts
+Test Files  2 passed (2)
+Tests       8 passed (8)
+
+npx tsc --noEmit
+exit 0
+```
+
+Vérification finale :
+
+```text
+npm run verify
+Test Files  6 passed (6)
+Tests       24 passed (24)
+Security checks passed
+Compiled successfully
+Generating static pages (19/19)
+exit 0
+```
+
+Limitation inchangée : ces contrats ne remplacent pas un test transactionnel sur
+PostgreSQL réel, indisponible dans cet environnement.
