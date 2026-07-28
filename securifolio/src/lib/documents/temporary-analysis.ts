@@ -81,7 +81,22 @@ export async function withDefinitiveUploadObject<
     throw uploadError
   }
 
-  return withDefinitiveObjectRetention({ operation, cleanup })
+  try {
+    // Une réponse serveur, succès comme refus métier, porte déjà la garantie
+    // de rétention/nettoyage. Le client ne traite que les exceptions sans
+    // résultat définitif.
+    return await operation()
+  } catch (operationError) {
+    try {
+      await cleanup()
+    } catch (cleanupError) {
+      throw new Error(
+        `${errorMessage(operationError)} ${cleanupFailureMessage(cleanupError)}`,
+      )
+    }
+
+    throw operationError
+  }
 }
 
 export async function withDefinitiveObjectRetention<

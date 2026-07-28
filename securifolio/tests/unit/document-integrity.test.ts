@@ -179,7 +179,7 @@ describe('cycle de vie des objets définitifs', () => {
     expect(events).toEqual(['upload', 'cleanup'])
   })
 
-  it('supprime après un rejet en aval de l’upload définitif', async () => {
+  it('laisse le nettoyage d’un rejet serveur au serveur', async () => {
     const events: string[] = []
 
     const result = await withDefinitiveUploadObject({
@@ -189,7 +189,7 @@ describe('cycle de vie des objets définitifs', () => {
     })
 
     expect(result).toEqual({ success: false, error: 'rejected' })
-    expect(events).toEqual(['upload', 'cleanup'])
+    expect(events).toEqual(['upload'])
   })
 
   it('conserve après upload et rattachement définitif réussis', async () => {
@@ -203,6 +203,22 @@ describe('cycle de vie des objets définitifs', () => {
 
     expect(result).toEqual({ success: true })
     expect(events).toEqual(['upload'])
+  })
+
+  it('nettoie si l’action serveur lève avant un résultat définitif', async () => {
+    const events: string[] = []
+
+    await expect(
+      withDefinitiveUploadObject({
+        upload: async () => events.push('upload'),
+        operation: async () => {
+          throw new Error('transport interrupted')
+        },
+        cleanup: async () => events.push('cleanup'),
+      }),
+    ).rejects.toThrow('transport interrupted')
+
+    expect(events).toEqual(['upload', 'cleanup'])
   })
 
   it('conserve uniquement l’objet rattaché par une opération réussie', async () => {

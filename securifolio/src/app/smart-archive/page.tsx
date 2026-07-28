@@ -529,11 +529,12 @@ export default function SmartArchivePage() {
           storagePath,
           geoData,
           isLocationUnknown,
-          false,
         ),
         cleanup: async () => {
           const { error } = await documentBucket.remove([storagePath]);
-          if (error) throw new Error(error.message);
+          if (error && !/not found|does not exist/i.test(error.message)) {
+            throw new Error(error.message);
+          }
         },
       });
 

@@ -156,7 +156,6 @@ export async function saveCertificate(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   coordonneesSpatiales?: any,
   requiresTopography: boolean = false,
-  manageStorageLifecycle: boolean = true,
 ) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
@@ -174,7 +173,7 @@ export async function saveCertificate(
     ? createAdminClient().storage
     : null
   const rejectPreflight = async (error: string) => {
-    if (!manageStorageLifecycle || !privateStorage || !definitiveStoragePath) {
+    if (!privateStorage || !definitiveStoragePath) {
       return { success: false as const, error }
     }
 
@@ -324,8 +323,6 @@ export async function saveCertificate(
 
   return { success: true }
   }
-
-  if (!manageStorageLifecycle) return operation()
 
   return withDefinitiveObjectRetention({
     cleanup: async () => {

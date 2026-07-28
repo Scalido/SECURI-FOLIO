@@ -219,6 +219,26 @@ describe('stockage documentaire privé', () => {
     expect(state.remove).toHaveBeenCalledWith([
       'documents/agent-1/title-1.pdf',
     ])
+    expect(state.remove).toHaveBeenCalledTimes(1)
+  })
+
+  it('ne peut pas désactiver le nettoyage serveur par un argument client forgé', async () => {
+    const result = await Reflect.apply(saveCertificate, undefined, [
+      { ...certificate, attested: false },
+      'documents/agent-1/title-1.pdf',
+      undefined,
+      false,
+      false,
+    ])
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Attestation obligatoire avant transmission.',
+    })
+    expect(state.remove).toHaveBeenCalledWith([
+      'documents/agent-1/title-1.pdf',
+    ])
+    expect(state.remove).toHaveBeenCalledTimes(1)
   })
 
   it('refuse de signer un objet temporaire qui n’appartient pas à l’agent', async () => {
