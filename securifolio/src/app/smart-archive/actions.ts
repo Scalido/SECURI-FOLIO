@@ -8,7 +8,10 @@ import {
   isCompleteAgentProfile,
   smartArchiveSubmissionSchema,
 } from '@/lib/validations'
-import type { DocumentChecklist } from '@/lib/land-files'
+import {
+  detectLandFileFormat,
+  type DocumentChecklist,
+} from '@/lib/land-files'
 import {
   buildIntegrityEnvelope,
   sha256,
@@ -383,9 +386,15 @@ export async function addDossierPiece(submission: unknown) {
       }
     }
 
-    const fileSha256 = sha256(
-      new Uint8Array(await storedFile.arrayBuffer()),
-    )
+    const fileBytes = new Uint8Array(await storedFile.arrayBuffer())
+    if (!detectLandFileFormat(fileBytes.subarray(0, 8))) {
+      return {
+        success: false as const,
+        error: 'Format invalide. Utilisez un fichier PDF, JPEG ou PNG.',
+      }
+    }
+
+    const fileSha256 = sha256(fileBytes)
     const { data: version, error: insertError } = await supabaseServer.rpc(
       'add_dossier_piece',
       {

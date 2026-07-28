@@ -37,7 +37,7 @@ import type { DocumentChecklist } from '@/lib/land-files'
 
 const dossierId = '7d9a93d3-8f28-4c86-99a6-95855e28f062'
 const checklistV1: DocumentChecklist = {
-  complete: false,
+  validationReady: false,
   missing: ['croquis'],
   versions: { croquis: 1 },
   cadastre: { ready: false, missing: ['croquis'] },
@@ -45,7 +45,7 @@ const checklistV1: DocumentChecklist = {
 }
 const checklistV2: DocumentChecklist = {
   ...checklistV1,
-  complete: true,
+  validationReady: true,
   missing: [],
   versions: { croquis: 2 },
   cadastre: { ready: true, missing: [] },
@@ -83,14 +83,24 @@ describe('espace de travail d’un dossier existant', () => {
     })
     await waitFor(() => {
       expect(state.checklist).toHaveBeenCalledWith(dossierId)
-      expect(screen.getByText('croquis : version 1')).toBeInTheDocument()
+      expect(
+        screen.getByText('Croquis du terrain : version 1'),
+      ).toBeInTheDocument()
     })
 
     fireEvent.change(screen.getByLabelText('Type de pièce'), {
       target: { value: 'croquis' },
     })
     fireEvent.change(screen.getByLabelText('Fichier de la pièce'), {
-      target: { files: [new File(['croquis'], 'croquis.pdf', { type: 'application/pdf' })] },
+      target: {
+        files: [
+          new File(
+            ['%PDF-1.7 croquis'],
+            'croquis.pdf',
+            { type: 'application/pdf' },
+          ),
+        ],
+      },
     })
     fireEvent.click(screen.getByRole('button', { name: 'Enregistrer la pièce' }))
 
@@ -105,9 +115,11 @@ describe('espace de travail d’un dossier existant', () => {
         storagePath: 'documents/agent-1/croquis-v2.pdf',
       })
       expect(screen.getByRole('status')).toHaveTextContent(
-        'croquis enregistrée — version 2.',
+        'Croquis du terrain enregistré — version 2.',
       )
-      expect(screen.getByText('croquis : version 2')).toBeInTheDocument()
+      expect(
+        screen.getByText('Croquis du terrain : version 2'),
+      ).toBeInTheDocument()
     })
     expect(state.checklist).toHaveBeenCalledTimes(2)
   })

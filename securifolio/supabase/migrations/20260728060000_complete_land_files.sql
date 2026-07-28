@@ -12,15 +12,43 @@ CREATE TABLE IF NOT EXISTS public.pieces_dossier (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     dossier_id UUID NOT NULL REFERENCES public.dossiers_fonciers(id),
     type_piece TEXT NOT NULL CHECK (type_piece IN (
-        'demande',
+        'demande_terre',
+        'demande_certificat_enregistrement',
+        'demande_travaux_cadastre',
+        'ordre_mission',
+        'attestation_occupation',
         'fiche_parcellaire',
-        'pv_enquete',
+        'fiche_cadastrale',
+        'plan_parcellaire',
+        'plan_terrain',
+        'photographie_aerienne',
+        'procuration',
+        'pv_enquete_prealable',
         'pv_mesurage_bornage',
+        'pv_constat_lieux',
+        'pv_mise_en_valeur',
         'croquis',
         'contrat_concession',
-        'preuve_paiement',
+        'contrat_location',
+        'permis_construire',
+        'livret_logeur',
+        'acte_vente',
+        'acte_cession',
+        'acte_coutumier',
+        'jugement_investiture',
+        'acte_donation',
+        'acte_echange',
+        'attestation_cession_propriete',
+        'attestation_apurement_dette',
+        'note_frais',
+        'note_perception',
+        'bordereau_versement',
+        'attestation_paiement_banque',
         'minute_certificat',
         'certificat_enregistrement',
+        'fiche_domaniale',
+        'lettre_transmission',
+        'accuse_reception',
         'copie_certifiee',
         'autre'
     )),
@@ -487,10 +515,24 @@ BEGIN
     END IF;
 
     IF p_type_piece NOT IN (
-        'demande', 'fiche_parcellaire', 'pv_enquete',
-        'pv_mesurage_bornage', 'croquis', 'contrat_concession',
-        'preuve_paiement', 'minute_certificat',
-        'certificat_enregistrement', 'copie_certifiee', 'autre'
+        'demande_terre', 'demande_certificat_enregistrement',
+        'demande_travaux_cadastre', 'ordre_mission',
+        'attestation_occupation', 'fiche_parcellaire',
+        'fiche_cadastrale', 'plan_parcellaire', 'plan_terrain',
+        'photographie_aerienne', 'procuration',
+        'pv_enquete_prealable', 'pv_mesurage_bornage',
+        'pv_constat_lieux', 'pv_mise_en_valeur', 'croquis',
+        'contrat_concession', 'contrat_location',
+        'permis_construire', 'livret_logeur', 'acte_vente',
+        'acte_cession', 'acte_coutumier', 'jugement_investiture',
+        'acte_donation', 'acte_echange',
+        'attestation_cession_propriete',
+        'attestation_apurement_dette', 'note_frais',
+        'note_perception', 'bordereau_versement',
+        'attestation_paiement_banque', 'minute_certificat',
+        'certificat_enregistrement', 'fiche_domaniale',
+        'lettre_transmission', 'accuse_reception',
+        'copie_certifiee', 'autre'
     ) THEN
         RAISE EXCEPTION 'Type de pièce non autorisé.';
     END IF;
@@ -592,11 +634,15 @@ BEGIN
 
     SELECT COALESCE(array_agg(required), ARRAY[]::TEXT[])
     INTO v_conservateur_missing
-    FROM unnest(ARRAY['minute_certificat', 'preuve_paiement']) AS required
+    FROM unnest(ARRAY[
+        'minute_certificat',
+        'bordereau_versement',
+        'attestation_paiement_banque'
+    ]) AS required
     WHERE NOT (required = ANY(v_present));
 
     RETURN jsonb_build_object(
-        'complete',
+        'validationReady',
         cardinality(v_cadastre_missing) = 0
             AND cardinality(v_conservateur_missing) = 0,
         'missing',
@@ -700,11 +746,16 @@ BEGIN
                OR NOT EXISTS (
                    SELECT 1 FROM public.pieces_dossier
                    WHERE dossier_id = v_title.dossier_id
-                     AND type_piece = 'preuve_paiement'
+                     AND type_piece = 'bordereau_versement'
+               )
+               OR NOT EXISTS (
+                   SELECT 1 FROM public.pieces_dossier
+                   WHERE dossier_id = v_title.dossier_id
+                     AND type_piece = 'attestation_paiement_banque'
                )
                OR NULLIF(BTRIM(p_notes), '') IS NULL
            ) THEN
-            RAISE EXCEPTION 'Validation du Conservateur impossible : minute, preuve de paiement ou justification de contrôle manquante.';
+            RAISE EXCEPTION 'Validation du Conservateur impossible : minute, bordereau, attestation bancaire ou justification de contrôle manquante.';
         END IF;
 
         v_action_type := CASE

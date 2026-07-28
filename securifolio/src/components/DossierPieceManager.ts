@@ -8,6 +8,9 @@ import {
   reservePrivateStoragePath,
 } from '@/app/smart-archive/actions'
 import {
+  detectLandFileFormat,
+  LAND_FILE_ACCEPT,
+  LAND_FILE_PIECE_DEFINITIONS,
   LAND_FILE_PIECE_TYPES,
   type DocumentChecklist,
   type LandFilePieceType,
@@ -46,8 +49,21 @@ export function DossierPieceManager({
     setMessage(null)
 
     try {
-      const extension = file.name.split('.').pop() || 'bin'
-      const reserved = await reservePrivateStoragePath('documents', extension)
+      const signature = new Uint8Array(
+        await file.slice(0, 8).arrayBuffer(),
+      )
+      const format = detectLandFileFormat(signature)
+      if (!format) {
+        setError(
+          'Format invalide. Utilisez un fichier PDF, JPEG ou PNG.',
+        )
+        return
+      }
+
+      const reserved = await reservePrivateStoragePath(
+        'documents',
+        format.extension,
+      )
       if (!reserved.data) {
         setError(reserved.error || 'Réservation du stockage impossible.')
         return
@@ -92,7 +108,9 @@ export function DossierPieceManager({
 
       setChecklist(refreshed.data)
       onChecklistChange?.(refreshed.data)
-      setMessage(`${typePiece} enregistrée — version ${result.version}.`)
+      setMessage(
+        `${LAND_FILE_PIECE_DEFINITIONS[typePiece].label} enregistré — version ${result.version}.`,
+      )
       setFile(null)
     } catch (caught) {
       setError(
@@ -134,7 +152,11 @@ export function DossierPieceManager({
             className: 'mt-1 block w-full rounded-lg border p-2',
           },
           LAND_FILE_PIECE_TYPES.map(type =>
-            React.createElement('option', { key: type, value: type }, type),
+            React.createElement(
+              'option',
+              { key: type, value: type },
+              LAND_FILE_PIECE_DEFINITIONS[type].label,
+            ),
           ),
         ),
       ),
@@ -145,6 +167,7 @@ export function DossierPieceManager({
         React.createElement('input', {
           'aria-label': 'Fichier de la pièce',
           type: 'file',
+          accept: LAND_FILE_ACCEPT,
           onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
             setFile(event.target.files?.[0] || null)
           },
@@ -162,6 +185,18 @@ export function DossierPieceManager({
         },
         isSaving ? 'Enregistrement…' : 'Enregistrer la pièce',
       ),
+    ),
+    LAND_FILE_PIECE_DEFINITIONS[typePiece].form
+      ? React.createElement(
+          'p',
+          { className: 'mt-2 text-xs text-slate-600 dark:text-slate-300' },
+          LAND_FILE_PIECE_DEFINITIONS[typePiece].form,
+        )
+      : null,
+    React.createElement(
+      'p',
+      { className: 'mt-2 text-xs text-slate-600 dark:text-slate-300' },
+      'Formats numériques acceptés par Securifolio : PDF, JPEG ou PNG.',
     ),
     error
       ? React.createElement(
@@ -194,13 +229,15 @@ export function DossierPieceManager({
         : React.createElement(
             'ul',
             { className: 'mt-1 text-xs text-slate-600 dark:text-slate-300' },
-            Object.entries(checklist.versions).map(([type, version]) =>
-              React.createElement(
-                'li',
-                { key: type },
-                `${type} : version ${version}`,
-              ),
+          Object.entries(checklist.versions).map(([type, version]) =>
+            React.createElement(
+              'li',
+              { key: type },
+              `${LAND_FILE_PIECE_DEFINITIONS[
+                type as LandFilePieceType
+              ]?.label || type} : version ${version}`,
             ),
+          ),
           ),
     ),
   )

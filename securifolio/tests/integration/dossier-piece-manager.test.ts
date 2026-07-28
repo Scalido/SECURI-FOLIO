@@ -38,12 +38,13 @@ import type { DocumentChecklist } from '@/lib/land-files'
 
 const dossierId = '7d9a93d3-8f28-4c86-99a6-95855e28f062'
 const initialChecklist: DocumentChecklist = {
-  complete: false,
+  validationReady: false,
   missing: [
     'pv_mesurage_bornage',
     'croquis',
     'minute_certificat',
-    'preuve_paiement',
+    'bordereau_versement',
+    'attestation_paiement_banque',
   ],
   versions: { croquis: 1 },
   cadastre: {
@@ -52,7 +53,11 @@ const initialChecklist: DocumentChecklist = {
   },
   conservateur: {
     ready: false,
-    missing: ['minute_certificat', 'preuve_paiement'],
+    missing: [
+      'minute_certificat',
+      'bordereau_versement',
+      'attestation_paiement_banque',
+    ],
   },
 }
 
@@ -82,6 +87,31 @@ describe('gestion des pièces du dossier', () => {
     })
   })
 
+  it('présente les libellés du Guide et sépare la politique de format numérique', () => {
+    render(React.createElement(DossierPieceManager, {
+      dossierId,
+      initialChecklist,
+    }))
+
+    expect(screen.getByRole('option', {
+      name: 'Procès-verbal de mise en valeur',
+    })).toBeInTheDocument()
+    expect(screen.getByRole('option', {
+      name: 'Attestation de paiement délivrée par la banque',
+    })).toBeInTheDocument()
+    expect(screen.queryByRole('option', {
+      name: 'preuve_paiement',
+    })).not.toBeInTheDocument()
+    expect(screen.getByText(/Guide : trois exemplaires/)).toBeInTheDocument()
+    expect(screen.getByText(
+      'Formats numériques acceptés par Securifolio : PDF, JPEG ou PNG.',
+    )).toBeInTheDocument()
+    expect(screen.getByLabelText('Fichier de la pièce')).toHaveAttribute(
+      'accept',
+      '.pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png',
+    )
+  })
+
   it('téléverse un remplacement privé et affiche la version serveur', async () => {
     const onChecklistChange = vi.fn()
     render(React.createElement(DossierPieceManager, {
@@ -95,7 +125,7 @@ describe('gestion des pièces du dossier', () => {
     })
     fireEvent.change(screen.getByLabelText('Fichier de la pièce'), {
       target: {
-        files: [new File(['croquis'], 'croquis.pdf', {
+        files: [new File(['%PDF-1.7 croquis'], 'croquis.pdf', {
           type: 'application/pdf',
         })],
       },
@@ -106,7 +136,7 @@ describe('gestion des pièces du dossier', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('status')).toHaveTextContent(
-        'croquis enregistrée — version 2.',
+        'Croquis du terrain enregistré — version 2.',
       )
     })
     expect(state.upload).toHaveBeenCalledWith(
@@ -119,7 +149,7 @@ describe('gestion des pièces du dossier', () => {
       storagePath: 'documents/agent-1/croquis-v2.pdf',
     })
     expect(state.refresh).toHaveBeenCalledWith(dossierId)
-    expect(screen.getByText('croquis : version 2')).toBeInTheDocument()
+    expect(screen.getByText('Croquis du terrain : version 2')).toBeInTheDocument()
     expect(onChecklistChange).toHaveBeenCalled()
     expect(state.remove).not.toHaveBeenCalled()
   })
@@ -133,7 +163,7 @@ describe('gestion des pièces du dossier', () => {
     }))
     fireEvent.change(screen.getByLabelText('Fichier de la pièce'), {
       target: {
-        files: [new File(['pv'], 'pv.pdf', {
+        files: [new File(['%PDF-1.7 pv'], 'pv.pdf', {
           type: 'application/pdf',
         })],
       },
@@ -150,5 +180,30 @@ describe('gestion des pièces du dossier', () => {
     expect(state.remove).toHaveBeenCalledWith([
       'documents/agent-1/croquis-v2.pdf',
     ])
+  })
+
+  it('refuse un faux PDF avant toute réservation ou téléversement', async () => {
+    render(React.createElement(DossierPieceManager, {
+      dossierId,
+      initialChecklist,
+    }))
+    fireEvent.change(screen.getByLabelText('Fichier de la pièce'), {
+      target: {
+        files: [new File(['texte'], 'faux.pdf', {
+          type: 'application/pdf',
+        })],
+      },
+    })
+    fireEvent.click(screen.getByRole('button', {
+      name: 'Enregistrer la pièce',
+    }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Format invalide. Utilisez un fichier PDF, JPEG ou PNG.',
+      )
+    })
+    expect(state.reserve).not.toHaveBeenCalled()
+    expect(state.upload).not.toHaveBeenCalled()
   })
 })

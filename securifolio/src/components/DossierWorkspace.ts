@@ -125,14 +125,14 @@ export function DossierWorkspace({
       ? React.createElement(
           React.Fragment,
           null,
-          checklist.complete
+          checklist.validationReady
             ? React.createElement(
                 'p',
                 {
                   className:
                     'mt-3 text-sm font-semibold text-brand-primary',
                 },
-                'Pièces requises présentes.',
+                'Contrôles documentaires requis pour validation présents.',
               )
             : React.createElement(
                 'p',
@@ -140,7 +140,7 @@ export function DossierWorkspace({
                   className:
                     'mt-3 text-sm text-amber-700 dark:text-amber-300',
                 },
-                `Pièces requises manquantes : ${checklist.missing.join(', ')}`,
+                `Contrôles documentaires requis pour validation manquants : ${checklist.missing.join(', ')}`,
               ),
           React.createElement(DossierPieceManager, {
             key: selectedId,

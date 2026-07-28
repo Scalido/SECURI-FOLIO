@@ -189,6 +189,25 @@ describe('contrat SQL des dossiers fonciers', () => {
     expect(migration).toMatch(/GRANT EXECUTE ON FUNCTION public\.add_dossier_piece[\s\S]+TO authenticated/i)
   })
 
+  it('encode les types documentaires et les deux preuves bancaires du Guide', () => {
+    expect(migration).toMatch(/'demande_terre'/)
+    expect(migration).toMatch(/'demande_certificat_enregistrement'/)
+    expect(migration).toMatch(/'demande_travaux_cadastre'/)
+    expect(migration).toMatch(/'pv_enquete_prealable'/)
+    expect(migration).toMatch(/'attestation_occupation'/)
+    expect(migration).toMatch(/'pv_constat_lieux'/)
+    expect(migration).toMatch(/'fiche_cadastrale'/)
+    expect(migration).toMatch(/'contrat_location'/)
+    expect(migration).toMatch(/'pv_mise_en_valeur'/)
+    expect(migration).toMatch(/'bordereau_versement'/)
+    expect(migration).toMatch(/'attestation_paiement_banque'/)
+    expect(migration).toMatch(/'attestation_cession_propriete'/)
+    expect(migration).toMatch(/'attestation_apurement_dette'/)
+    expect(migration).not.toMatch(/'preuve_paiement'/)
+    expect(migration).toMatch(/'validationReady'/)
+    expect(migration).not.toMatch(/'complete'\s*,/)
+  })
+
   it('bloque les approbations sans pièces ou justification de contrôle', () => {
     const guard = functionDefinition('update_title_status_with_history')
 
@@ -198,7 +217,7 @@ describe('contrat SQL des dossiers fonciers', () => {
     )
     expect(guard).toMatch(/v_profile\.role\s*=\s*'conservateur'/i)
     expect(guard).toMatch(
-      /p_new_status\s*=\s*'Valide'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'minute_certificat'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'preuve_paiement'[\s\S]+NULLIF\s*\(\s*BTRIM\s*\(\s*p_notes\s*\)[\s\S]+RAISE EXCEPTION/i,
+      /p_new_status\s*=\s*'Valide'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'minute_certificat'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'bordereau_versement'[\s\S]+NOT EXISTS[\s\S]+type_piece\s*=\s*'attestation_paiement_banque'[\s\S]+NULLIF\s*\(\s*BTRIM\s*\(\s*p_notes\s*\)[\s\S]+RAISE EXCEPTION/i,
     )
     expect(guard.indexOf('UPDATE public.titres_fonciers')).toBeGreaterThan(
       guard.indexOf('Validation du Conservateur impossible'),

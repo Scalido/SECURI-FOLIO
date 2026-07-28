@@ -210,6 +210,7 @@ describe('stockage documentaire privé', () => {
   })
 
   it('ajoute un remplacement de pièce sans accepter de version client', async () => {
+    state.downloadBytes = new TextEncoder().encode('%PDF-1.7 test')
     state.rpc.mockResolvedValueOnce({ data: 2, error: null })
 
     const result = await addDossierPiece({
@@ -224,10 +225,29 @@ describe('stockage documentaire privé', () => {
       p_type_piece: 'croquis',
       p_storage_path: 'documents/agent-1/croquis-v2.pdf',
       p_file_sha256:
-        '012b3666e2248223852677115ce42337fcfcb1676285cdc333b66fbd2f224bed',
+        'eddc31937fbdaf708e866af0d20b9fb8c79dd001881c8a11e4c617f2882e779f',
     })
     expect(state.rpc.mock.calls[0][1]).not.toHaveProperty('p_version')
     expect(state.remove).not.toHaveBeenCalled()
+  })
+
+  it('refuse côté serveur une pièce dont les octets ne sont ni PDF ni image', async () => {
+    state.downloadBytes = new TextEncoder().encode('faux document')
+
+    const result = await addDossierPiece({
+      dossierId: '7d9a93d3-8f28-4c86-99a6-95855e28f062',
+      typePiece: 'croquis',
+      storagePath: 'documents/agent-1/faux.pdf',
+    })
+
+    expect(result).toEqual({
+      success: false,
+      error: 'Format invalide. Utilisez un fichier PDF, JPEG ou PNG.',
+    })
+    expect(state.rpc).not.toHaveBeenCalled()
+    expect(state.remove).toHaveBeenCalledWith([
+      'documents/agent-1/faux.pdf',
+    ])
   })
 
   it('supprime l’objet définitif lorsque la validation en aval échoue', async () => {
