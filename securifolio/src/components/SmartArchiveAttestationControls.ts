@@ -67,12 +67,20 @@ export function SmartArchiveAttestationControls({
           type: 'button',
           disabled: !canSubmitArchive(isCertified, isSaving, profileReady),
           onClick: onSubmit,
-          className: 'flex-[2] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex justify-center items-center gap-2',
+          className: 'flex-[2] min-h-[58px] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-white disabled:text-white/80 px-5 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex items-center justify-center',
         },
-        isSaving
-          ? React.createElement(Loader2, { size: 14, className: 'animate-spin' })
-          : React.createElement(Lock, { size: 14 }),
-        isSaving ? 'Enregistrement...' : 'Transmettre pour Validation',
+        React.createElement(
+          'span',
+          { className: 'inline-flex items-center justify-center gap-3' },
+          isSaving
+            ? React.createElement(Loader2, { size: 14, className: 'shrink-0 animate-spin' })
+            : React.createElement(Lock, { size: 14, className: 'shrink-0' }),
+          React.createElement(
+            'span',
+            { className: 'text-center leading-[1.35]' },
+            isSaving ? 'Enregistrement...' : 'Transmettre pour Validation',
+          ),
+        ),
       ),
     ),
   )

@@ -189,6 +189,31 @@ describe('workflow Smart-Archive', () => {
     expect(screen.getByRole('button', { name: /Transmettre pour Validation/i })).toBeEnabled()
   })
 
+  it('centre le contenu du bouton de transmission avec un libellé blanc', () => {
+    render(React.createElement(SmartArchiveAttestationControls, {
+      profileState: {
+        status: 'ready',
+        profile: {
+          full_name: 'Amina Kabasele',
+          role: 'agent',
+          matricule: 'MAT-2048',
+          fonction: 'Inspectrice cadastrale',
+        },
+      },
+      isCertified: true,
+      isSaving: false,
+      onCertifiedChange: vi.fn(),
+      onSubmit: vi.fn(),
+      onCancel: vi.fn(),
+    }))
+
+    const button = screen.getByRole('button', { name: /Transmettre pour Validation/i })
+    const label = screen.getByText('Transmettre pour Validation')
+
+    expect(button).toHaveClass('text-white')
+    expect(label.parentElement).toHaveClass('inline-flex', 'justify-center', 'gap-3')
+  })
+
   it('ne définit aucune version documentaire côté client', () => {
     expect(
       (validationModule as Record<string, unknown>).SMART_ARCHIVE_DOCUMENT_VERSION,
