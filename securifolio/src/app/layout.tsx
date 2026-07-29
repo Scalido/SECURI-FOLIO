@@ -15,8 +15,8 @@ const spaceGrotesk = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Sécurifolio RDC | Ministère des Affaires Foncières",
-  description: "Système d'authentification et de numérisation du Ministère des Affaires Foncières de la RDC",
+  title: "Sécurifolio RDC | Information foncière",
+  description: "Plateforme de consultation, de numérisation et d'information foncière en RDC",
 };
 
 export default function RootLayout({

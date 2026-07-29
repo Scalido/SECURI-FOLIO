@@ -24,7 +24,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-brand-text-muted text-sm leading-relaxed mt-4">
-              Infrastructure de Traitement Sécurisé et de Numérisation du Ministère des Affaires Foncières de la RDC.
+              Plateforme de consultation, de numérisation et d&apos;information foncière en RDC.
             </p>
           </div>
 
@@ -34,7 +34,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/anti-folio" className="text-brand-text-muted hover:text-brand-primary transition-colors text-sm">
-                  Vérification Anti-Folio
+                  Recherche Anti-Folio
                 </Link>
               </li>
               <li>
@@ -85,8 +85,7 @@ export default function Footer() {
               <li className="flex items-start gap-3 text-brand-text-muted text-sm">
                 <MapPin size={16} className="text-brand-primary mt-0.5 shrink-0" />
                 <span>
-                  Ministère des Affaires Foncières<br />
-                  Kinshasa, RDC
+                  Kinshasa, République Démocratique du Congo
                 </span>
               </li>
             </ul>
@@ -100,7 +99,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-2 text-xs font-mono text-brand-primary/60">
             <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
-            SYSTÈME SÉCURISÉ ACTIF
+            SERVICE EN LIGNE
           </div>
         </div>
       </div>
