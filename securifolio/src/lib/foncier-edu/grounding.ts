@@ -31,20 +31,36 @@ const SOURCE_CATALOG: Record<string, Omit<KnowledgeDocument, 'content'>> = {
     verification: 'secondary',
   },
   'arrete_cadastre_90_0012.md': {
-    id: 'resume-arrete-cadastre-90-0012',
-    title: 'Résumé de travail — arrêté cadastral n° 90-0012',
-    authority: 'Autorité et copie officielle non documentées',
-    kind: 'working_summary',
-    provenance: 'Résumé local sans articles ni copie officielle vérifiée',
-    verification: 'unverified',
+    id: 'arrete-90-0012-conversion-titres',
+    title: 'Arrêté n° 90/0012 du 31 mars 1990 fixant les modalités de conversion des titres',
+    authority: 'Département des Affaires foncières — République du Zaïre',
+    kind: 'regulation',
+    provenance: 'Copie secondaire identifiée : DroitCongolais.info ; texte concordant avec Leganet',
+    verification: 'secondary',
   },
   'arrete_tarifs_0075_2023.md': {
-    id: 'resume-arrete-tarifs-0075-2023',
-    title: 'Résumé de travail — arrêté tarifaire n° 0075/2023',
-    authority: 'Autorité et copie officielle non documentées',
-    kind: 'working_summary',
-    provenance: 'Résumé local sans articles ni copie officielle vérifiée',
-    verification: 'unverified',
+    id: 'arrete-0075-009-2023-tarifs',
+    title: 'Arrêté interministériel n° 0075/009 du 8 mai 2023 — tarifs des Affaires foncières',
+    authority: 'Ministères des Affaires foncières et des Finances',
+    kind: 'regulation',
+    provenance: 'Copie secondaire du Journal officiel, 15 juillet 2023, première partie n° 14',
+    verification: 'secondary',
+  },
+  'arrete_bancarisation_0076_2023.md': {
+    id: 'arrete-0076-010-2023-bancarisation',
+    title: 'Arrêté interministériel n° 0076/010 du 8 mai 2023 — bancarisation des opérations foncières',
+    authority: 'Ministères des Affaires foncières et des Finances',
+    kind: 'regulation',
+    provenance: 'Copie secondaire identifiée : DroitCongolais.info, texte signé le 8 mai 2023',
+    verification: 'secondary',
+  },
+  'note_circulaire_005_2013_mutation.md': {
+    id: 'note-circulaire-005-2013-mutation',
+    title: 'Note circulaire n° 005 du 12 juin 2013 — procédure et délai de mutation',
+    authority: 'Ministère des Affaires foncières',
+    kind: 'regulation',
+    provenance: 'Scan du Journal officiel, 1er octobre 2013, première partie n° 19, col. 113-115',
+    verification: 'secondary',
   },
   'loi_baux_a_loyer_2015.md': {
     id: 'resume-loi-baux-15-025',
@@ -202,13 +218,16 @@ export function retrieveKnowledge(
         chunk.section,
         chunk.content,
       ].join(' '))
+      const heading = normalizeText([chunk.title, chunk.section].join(' '))
       const score = queryTokens.reduce((total, token) => {
         const matches = searchable.match(new RegExp(`\\b${token}`, 'g'))?.length ?? 0
-        return total + Math.min(matches, 1)
-      }, 0) + expandedTokens.reduce((total, token) => {
-        const matches = searchable.match(new RegExp(`\\b${token}`, 'g'))?.length ?? 0
-        return total + (matches > 0 ? 2 : 0)
-      }, 0)
+        const headingMatch = new RegExp(`\\b${token}`).test(heading)
+        return total + (matches > 0 ? 2 : 0) + (headingMatch ? 3 : 0)
+      }, 0) + (
+        expandedTokens.some((token) => new RegExp(`\\b${token}`).test(searchable))
+          ? 3
+          : 0
+      )
       return { chunk, score }
     })
     .filter(({ score }) => score > 0)

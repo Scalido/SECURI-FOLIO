@@ -41,14 +41,20 @@ describe('ancrage documentaire Foncier-Édu', () => {
     const catalog = createKnowledgeDocuments({
       'guide_pratique_concession_fonciere.md': 'Guide officiel',
       'loi_25_062.md': 'Copie Leganews',
-      'arrete_cadastre_90_0012.md': 'Résumé sans articles',
+      'arrete_cadastre_90_0012.md': 'Copie identifiée de l’arrêté',
+      'arrete_tarifs_0075_2023.md': 'Copie du Journal officiel',
+      'arrete_bancarisation_0076_2023.md': 'Copie du texte sur la bancarisation',
+      'note_circulaire_005_2013_mutation.md': 'Scan du Journal officiel',
       'fichier_inconnu.md': 'Contenu non catalogué',
     })
 
     expect(catalog.map(({ id, verification }) => ({ id, verification }))).toEqual([
       { id: 'guide-pratique-concession', verification: 'official' },
       { id: 'loi-fonciere-73-021-modifiee', verification: 'secondary' },
-      { id: 'resume-arrete-cadastre-90-0012', verification: 'unverified' },
+      { id: 'arrete-90-0012-conversion-titres', verification: 'secondary' },
+      { id: 'arrete-0075-009-2023-tarifs', verification: 'secondary' },
+      { id: 'arrete-0076-010-2023-bancarisation', verification: 'secondary' },
+      { id: 'note-circulaire-005-2013-mutation', verification: 'secondary' },
     ])
   })
 
@@ -82,6 +88,38 @@ describe('ancrage documentaire Foncier-Édu', () => {
       verification: 'secondary',
     })
     expect(results[0].content).toContain('certificat d’enregistrement')
+  })
+
+  it('privilégie une section sur la cession aux passages qui ne contiennent que ses synonymes', () => {
+    const index = buildKnowledgeIndex([
+      {
+        id: 'texte-general',
+        title: 'Règles générales',
+        authority: 'République démocratique du Congo',
+        kind: 'law',
+        provenance: 'Copie secondaire',
+        verification: 'secondary',
+        content: '## Transfert\nLa mutation organise le transfert et la transmission des droits immobiliers.',
+      },
+      {
+        id: 'note-cession',
+        title: 'Procédure de mutation',
+        authority: 'Ministère des Affaires foncières',
+        kind: 'regulation',
+        provenance: 'Journal officiel',
+        verification: 'secondary',
+        content: '## Cession entre vifs\nLa cession exige un acte authentique et les pièces du dossier.',
+      },
+    ])
+
+    const results = retrieveKnowledge(
+      'Comment se fait une cession d’un bien immobilier ?',
+      index,
+      2,
+    )
+
+    expect(results[0].sourceId).toBe('note-cession')
+    expect(results[0].section).toBe('Cession entre vifs')
   })
 
   it('ne présente pas un résumé non vérifié comme fondement juridique suffisant', () => {
