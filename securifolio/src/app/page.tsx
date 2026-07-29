@@ -23,16 +23,16 @@ export default function Home() {
           
           <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-brand-primary/30 bg-brand-primary/5 text-brand-primary text-sm font-medium tracking-wide uppercase mb-10 shadow-[0_0_15px_rgba(16,185,129,0.15)] backdrop-blur-sm">
             <Lock size={16} />
-            Système Foncier Sécurisé
+            Plateforme d&apos;information foncière
           </div>
 
           <h1 className="font-display font-black text-slate-900 dark:text-white text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight max-w-5xl">
-            L&apos;Intégrité Numérique <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">du Foncier Congolais</span>
+            Des outils numériques <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">pour l&apos;information foncière</span>
           </h1>
 
           <p className="mt-8 text-slate-500 dark:text-slate-400 text-lg md:text-2xl font-light leading-relaxed max-w-3xl">
-            La plateforme institutionnelle haute sécurité pour la validation des titres, la protection des archives et l&apos;assistance juridique.
+            Consultez le registre Securifolio, numérisez des dossiers fonciers et accédez à une information pédagogique fondée sur les sources disponibles.
           </p>
           
           <div className="mt-14 flex flex-col sm:flex-row gap-6">
@@ -41,7 +41,7 @@ export default function Home() {
               className="group relative inline-flex items-center justify-center gap-3 bg-brand-primary text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-secondary transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]"
             >
               <Database size={20} className="group-hover:animate-pulse" />
-              Accéder aux Archives
+              Ouvrir Smart-Archive
             </Link>
             
             <Link 
@@ -49,7 +49,7 @@ export default function Home() {
               className="group inline-flex items-center justify-center gap-3 bg-transparent border border-slate-700 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold text-lg hover:border-brand-primary/50 hover:bg-brand-primary/10 transition-all duration-300"
             >
               <ShieldAlert size={20} className="text-brand-primary" />
-              Vérifier un Titre
+              Rechercher un titre
             </Link>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function Home() {
           </h2>
           <div className="space-y-6 text-slate-600 dark:text-slate-400 text-lg md:text-xl font-light leading-relaxed">
             <p>
-              <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> est la plateforme institutionnelle dédiée à l&apos;assainissement, la conformité et la sécurisation du secteur foncier et immobilier en République Démocratique du Congo.
+              <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> est une plateforme numérique de consultation, de numérisation et d&apos;information foncière en République Démocratique du Congo.
             </p>
             <p>
               Face aux erreurs d&apos;archivage et à la perte de documents physiques, la plateforme centralise la consultation du registre et le suivi des informations foncières numérisées.
@@ -81,10 +81,10 @@ export default function Home() {
           
           <div className="mb-16 flex flex-col items-center text-center space-y-4">
             <h2 className="font-display text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-              Périmètre de Sécurité
+              Outils disponibles
             </h2>
             <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl max-w-2xl font-light">
-              Des modules spécialisés pour auditer, protéger et clarifier la situation juridique des concessions.
+              Trois outils pour rechercher, numériser et comprendre les informations foncières disponibles.
             </p>
           </div>
 
@@ -127,7 +127,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-accent transition-colors">Foncier-Édu</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Assistant d&apos;intelligence artificielle spécialisé dans la législation congolaise pour éclairer les citoyens et assister les agents de l&apos;État.
+                  Assistant pédagogique répondant à partir des sources foncières disponibles et identifiées, avec indication de leur niveau de vérification.
                 </p>
               </div>
             </Link>
@@ -136,7 +136,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* METRICS SECTION */}
+      {/* CAPABILITIES SECTION */}
       <section className="py-24 px-6 border-t border-slate-200 dark:border-brand-border">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -146,8 +146,8 @@ export default function Home() {
                 <Zap size={20} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Vitesse</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Extraction immédiate des archives volumineuses.</p>
+                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Recherche</h4>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Consultation du registre Securifolio à partir des références disponibles.</p>
               </div>
             </div>
 
@@ -156,8 +156,8 @@ export default function Home() {
                 <CheckCircle2 size={20} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Fiabilité</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Réduction drastique des erreurs de retranscription.</p>
+                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Numérisation</h4>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Extraction OCR avec vérification et correction humaines des données.</p>
               </div>
             </div>
 
@@ -166,8 +166,8 @@ export default function Home() {
                 <Scale size={20} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Conformité</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Alignement continu avec les arrêtés ministériels.</p>
+                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Suivi</h4>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Traçabilité administrative des dossiers numérisés et de leur transmission.</p>
               </div>
             </div>
 
@@ -176,8 +176,8 @@ export default function Home() {
                 <ShieldAlert size={20} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Protection</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Constats de recherche traçables, sans conclusion automatique de fraude.</p>
+                <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Information</h4>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Réponses pédagogiques accompagnées des sources documentaires utilisées.</p>
               </div>
             </div>
 
