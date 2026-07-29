@@ -111,6 +111,12 @@ const STOP_WORDS = new Set([
   'sans', 'ses', 'son', 'sont', 'sur', 'une', 'vous', 'votre',
 ])
 
+const DOMAIN_SYNONYMS: Record<string, string[]> = {
+  cession: ['alienation', 'mutation', 'transfert', 'transmission'],
+  ceder: ['alienation', 'mutation', 'transfert', 'transmission'],
+  vente: ['alienation', 'mutation', 'transfert'],
+}
+
 function normalizeText(value: string): string {
   return value
     .normalize('NFD')
@@ -185,6 +191,9 @@ export function retrieveKnowledge(
 ): KnowledgeChunk[] {
   const queryTokens = tokens(query)
   if (queryTokens.length === 0) return []
+  const expandedTokens = Array.from(new Set(
+    queryTokens.flatMap((token) => DOMAIN_SYNONYMS[token] ?? []),
+  ))
 
   const ranked = index
     .map((chunk) => {
@@ -195,7 +204,10 @@ export function retrieveKnowledge(
       ].join(' '))
       const score = queryTokens.reduce((total, token) => {
         const matches = searchable.match(new RegExp(`\\b${token}`, 'g'))?.length ?? 0
-        return total + Math.min(matches, 4)
+        return total + Math.min(matches, 1)
+      }, 0) + expandedTokens.reduce((total, token) => {
+        const matches = searchable.match(new RegExp(`\\b${token}`, 'g'))?.length ?? 0
+        return total + (matches > 0 ? 2 : 0)
       }, 0)
       return { chunk, score }
     })

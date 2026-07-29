@@ -193,6 +193,45 @@ describe('ancrage documentaire Foncier-Édu', () => {
     expect(results[1].content).toContain('transmis au conservateur')
   })
 
+  it('relie le vocabulaire usuel de cession aux articles sur la mutation et l’aliénation', () => {
+    const index = buildKnowledgeIndex([
+      {
+        id: 'historique',
+        title: 'Historique foncier',
+        authority: 'République démocratique du Congo',
+        kind: 'law',
+        provenance: 'Copie secondaire identifiée',
+        verification: 'secondary',
+        content: 'La cession immobilière historique distinguait la cession, les cessions et les concessions.',
+      },
+      {
+        id: 'loi-mutations',
+        title: 'Loi foncière',
+        authority: 'République démocratique du Congo',
+        kind: 'law',
+        provenance: 'Copie secondaire identifiée',
+        verification: 'secondary',
+        content: [
+          '## Article 220',
+          'Les mutations de la propriété immobilière ne s’opèrent que par un nouveau certificat d’enregistrement.',
+          '## Article 231',
+          'Les contrats d’aliénation doivent être passés en forme authentique devant le conservateur ou un autre officier public.',
+        ].join('\n'),
+      },
+    ])
+
+    const results = retrieveKnowledge(
+      'Comment se fait la cession d’un bien immobilier ?',
+      index,
+      2,
+    )
+
+    expect(results.map(({ section }) => section)).toEqual([
+      'Article 220',
+      'Article 231',
+    ])
+  })
+
   it('remplace une citation reformulée par la phrase réellement présente dans la source', () => {
     const index = buildKnowledgeIndex(documents)
     const chunks = retrieveKnowledge('certificat droit de jouissance', index, 3)
