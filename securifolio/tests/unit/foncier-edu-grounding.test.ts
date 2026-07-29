@@ -120,6 +120,79 @@ describe('ancrage documentaire Foncier-Édu', () => {
     expect(validation.error).toContain('citation')
   })
 
+  it('conserve les citations vérifiables et rétrograde une réponse partiellement mal citée', () => {
+    const index = buildKnowledgeIndex(documents)
+    const chunks = retrieveKnowledge('certificat droit de jouissance', index, 3)
+
+    const validation = validateGroundedAnswer({
+      answer: 'Le droit de jouissance est établi par un certificat.',
+      coverage: 'covered',
+      sources: [
+        {
+          sourceId: 'loi-fonciere',
+          section: 'Article 219',
+          excerpt: 'Le droit de jouissance est légalement établi par un certificat d’enregistrement.',
+        },
+        {
+          sourceId: 'loi-fonciere',
+          section: 'Article 999',
+          excerpt: 'Une formalité inexistante dans les passages.',
+        },
+      ],
+    }, chunks)
+
+    expect(validation.ok).toBe(true)
+    if (validation.ok) {
+      expect(validation.value.coverage).toBe('partial')
+      expect(validation.value.sources).toHaveLength(1)
+      expect(validation.value.sources[0].section).toBe('Article 219')
+    }
+  })
+
+  it('retrouve un extrait réel dans un autre segment du même document', () => {
+    const index = buildKnowledgeIndex(documents)
+    const chunks = retrieveKnowledge('certificat enregistrement bureau', index, 3)
+
+    const validation = validateGroundedAnswer({
+      answer: 'L’enregistrement se fait au bureau de la circonscription foncière.',
+      coverage: 'covered',
+      sources: [{
+        sourceId: 'loi-fonciere',
+        section: 'Article 219',
+        excerpt: 'L’enregistrement s’opère au bureau de la circonscription foncière.',
+      }],
+    }, chunks)
+
+    expect(validation.ok).toBe(true)
+    if (validation.ok) {
+      expect(validation.value.sources[0].section).toBe('Article 222')
+      expect(validation.value.sources[0].excerpt).toBe(
+        'L’enregistrement s’opère au bureau de la circonscription foncière.',
+      )
+    }
+  })
+
+  it('ajoute les segments voisins nécessaires à une procédure répartie', () => {
+    const proceduralDocument: KnowledgeDocument = {
+      id: 'guide-procedure',
+      title: 'Guide administratif',
+      authority: 'Administration',
+      kind: 'guide',
+      provenance: 'Guide officiel',
+      verification: 'official',
+      content: [
+        `La procédure de cession commence par une demande écrite. ${'Information introductive. '.repeat(85)}`,
+        'Le dossier est ensuite transmis au conservateur pour contrôle et inscription.',
+      ].join('\n'),
+    }
+    const index = buildKnowledgeIndex([proceduralDocument])
+
+    const results = retrieveKnowledge('cession demande écrite', index, 3)
+
+    expect(results).toHaveLength(2)
+    expect(results[1].content).toContain('transmis au conservateur')
+  })
+
   it('remplace une citation reformulée par la phrase réellement présente dans la source', () => {
     const index = buildKnowledgeIndex(documents)
     const chunks = retrieveKnowledge('certificat droit de jouissance', index, 3)

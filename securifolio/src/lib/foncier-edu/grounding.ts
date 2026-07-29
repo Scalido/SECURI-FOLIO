@@ -186,7 +186,7 @@ export function retrieveKnowledge(
   const queryTokens = tokens(query)
   if (queryTokens.length === 0) return []
 
-  return index
+  const ranked = index
     .map((chunk) => {
       const searchable = normalizeText([
         chunk.title,
@@ -201,8 +201,30 @@ export function retrieveKnowledge(
     })
     .filter(({ score }) => score > 0)
     .sort((left, right) => right.score - left.score)
-    .slice(0, limit)
-    .map(({ chunk }) => chunk)
+
+  const selected: KnowledgeChunk[] = []
+  const add = (chunk: KnowledgeChunk | undefined) => {
+    if (
+      chunk
+      && selected.length < limit
+      && !selected.some((candidate) => candidate.chunkId === chunk.chunkId)
+    ) {
+      selected.push(chunk)
+    }
+  }
+
+  const seeds = ranked.slice(0, Math.max(1, Math.ceil(limit / 2)))
+  for (const { chunk } of seeds) {
+    add(chunk)
+    const position = index.findIndex((candidate) => candidate.chunkId === chunk.chunkId)
+    const previous = index[position - 1]
+    const next = index[position + 1]
+    if (previous?.sourceId === chunk.sourceId) add(previous)
+    if (next?.sourceId === chunk.sourceId) add(next)
+  }
+
+  for (const { chunk } of ranked) add(chunk)
+  return selected
 }
 
 const groundedAnswerSchema = z.object({
@@ -231,30 +253,36 @@ export function validateGroundedAnswer(
   }
 
   const sources: VerifiedCitation[] = []
+  let rejectedCitationCount = 0
   for (const citation of parsed.data.sources) {
-    const chunk = chunks.find((candidate) => (
-      candidate.sourceId === citation.sourceId
-      && normalizeText(candidate.section) === normalizeText(citation.section)
-    ))
+    const candidates = chunks
+      .filter((candidate) => candidate.sourceId === citation.sourceId)
+      .sort((left, right) => {
+        const leftMatches = normalizeText(left.section) === normalizeText(citation.section)
+        const rightMatches = normalizeText(right.section) === normalizeText(citation.section)
+        return Number(rightMatches) - Number(leftMatches)
+      })
+    const match = candidates
+      .map((chunk) => ({
+        chunk,
+        excerpt: resolveSourceExcerpt(chunk.content, citation.excerpt),
+      }))
+      .find(({ excerpt }) => Boolean(excerpt))
 
-    if (!chunk) {
-      return { ok: false, error: 'Une citation ne correspond pas aux passages transmis.' }
-    }
-
-    const resolvedExcerpt = resolveSourceExcerpt(chunk.content, citation.excerpt)
-    if (!resolvedExcerpt) {
-      return { ok: false, error: 'Une citation ne correspond pas aux passages transmis.' }
+    if (!match?.excerpt) {
+      rejectedCitationCount += 1
+      continue
     }
 
     sources.push({
       ...citation,
-      section: chunk.section,
-      excerpt: resolvedExcerpt.slice(0, 320),
-      title: chunk.title,
-      authority: chunk.authority,
-      kind: chunk.kind,
-      provenance: chunk.provenance,
-      verification: chunk.verification,
+      section: match.chunk.section,
+      excerpt: match.excerpt.slice(0, 320),
+      title: match.chunk.title,
+      authority: match.chunk.authority,
+      kind: match.chunk.kind,
+      provenance: match.chunk.provenance,
+      verification: match.chunk.verification,
     })
   }
 
@@ -265,6 +293,10 @@ export function validateGroundedAnswer(
       && candidate.excerpt === source.excerpt
     )) === index
   ))
+
+  if (parsed.data.coverage !== 'not_covered' && uniqueSources.length === 0) {
+    return { ok: false, error: 'Aucune citation ne correspond aux passages transmis.' }
+  }
 
   if (
     parsed.data.coverage === 'covered'
@@ -281,7 +313,9 @@ export function validateGroundedAnswer(
     ok: true,
     value: {
       answer: parsed.data.answer,
-      coverage: parsed.data.coverage,
+      coverage: parsed.data.coverage === 'covered' && rejectedCitationCount > 0
+        ? 'partial'
+        : parsed.data.coverage,
       sources: uniqueSources,
     },
   }
