@@ -337,6 +337,51 @@ describe('ancrage documentaire Foncier-Édu', () => {
       expect(validation.value.sources[0].excerpt.length).toBe(320)
     }
   })
+
+  it('valide puis borne un extrait modèle supérieur à la limite d’affichage', () => {
+    const longExcerpt = `Le certificat établit le droit. ${'Mention cadastrale détaillée. '.repeat(60)}`.trim()
+    const index = buildKnowledgeIndex([{
+      ...documents[0],
+      content: `## Article 219\n${longExcerpt}`,
+    }])
+    const chunks = retrieveKnowledge('certificat droit', index, 3)
+
+    const validation = validateGroundedAnswer({
+      answer: 'Le certificat établit le droit.',
+      coverage: 'covered',
+      sources: [{
+        sourceId: 'loi-fonciere',
+        section: 'Article 219',
+        excerpt: longExcerpt,
+      }],
+    }, chunks)
+
+    expect(validation.ok).toBe(true)
+    if (validation.ok) {
+      expect(validation.value.sources[0].excerpt.length).toBe(320)
+    }
+  })
+
+  it('accepte une liste modèle volumineuse puis déduplique les citations', () => {
+    const index = buildKnowledgeIndex(documents)
+    const chunks = retrieveKnowledge('certificat droit', index, 3)
+    const citation = {
+      sourceId: 'loi-fonciere',
+      section: 'Article 219',
+      excerpt: 'Le droit de jouissance est légalement établi par un certificat d’enregistrement.',
+    }
+
+    const validation = validateGroundedAnswer({
+      answer: 'Le certificat établit le droit.',
+      coverage: 'covered',
+      sources: Array.from({ length: 10 }, () => citation),
+    }, chunks)
+
+    expect(validation.ok).toBe(true)
+    if (validation.ok) {
+      expect(validation.value.sources).toHaveLength(1)
+    }
+  })
 })
 
 describe('contrat API Foncier-Édu', () => {

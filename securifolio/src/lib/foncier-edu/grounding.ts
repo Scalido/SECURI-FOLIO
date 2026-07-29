@@ -228,13 +228,13 @@ export function retrieveKnowledge(
 }
 
 const groundedAnswerSchema = z.object({
-  answer: z.string().trim().min(1).max(8_000),
+  answer: z.string().trim().min(1).max(16_000),
   coverage: z.enum(['covered', 'partial', 'not_covered']),
   sources: z.array(z.object({
-    sourceId: z.string().trim().min(1).max(100),
-    section: z.string().trim().min(1).max(200),
-    excerpt: z.string().trim().min(1).max(1_200),
-  })).max(8),
+    sourceId: z.string().trim().min(1).max(200),
+    section: z.string().trim().min(1).max(500),
+    excerpt: z.string().trim().min(1).max(8_000),
+  })).max(20),
 })
 
 export function validateGroundedAnswer(
