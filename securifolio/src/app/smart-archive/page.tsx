@@ -447,7 +447,7 @@ export default function SmartArchivePage() {
       console.error(err);
       let message = err.message || 'Une erreur est survenue.';
       if (message.includes('429 Too Many Requests') || message.includes('quota')) {
-        message = "Le service d'Intelligence Artificielle est actuellement surchargé (Quota gratuit de l'API atteint). Veuillez patienter environ 30 minutes avant de réessayer.";
+        message = "Le service d’intelligence artificielle a temporairement atteint sa limite d’utilisation. Veuillez réessayer dans 10 minutes. Si le problème persiste, le quota quotidien peut être épuisé.";
       }
       setErrorMsg(message);
       setStatus('error');

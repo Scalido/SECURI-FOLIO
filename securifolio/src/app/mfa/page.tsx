@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Smartphone, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -216,7 +217,14 @@ export default function MfaPage() {
           <div className="space-y-6">
             {qrCode && (
               <div className="flex flex-col items-center gap-4 rounded-2xl bg-white p-5 border border-slate-200">
-                <img src={qrCode} alt="QR code MFA" className="w-44 h-44" />
+                <Image
+                  src={qrCode}
+                  alt="QR code MFA"
+                  width={176}
+                  height={176}
+                  unoptimized
+                  className="w-44 h-44"
+                />
                 {secret && <p className="text-[11px] text-slate-600 font-mono break-all text-center">Secret manuel : {secret}</p>}
               </div>
             )}
