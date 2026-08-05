@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import type { RefObject } from 'react';
+import type { Feature, Polygon } from 'geojson';
 import { MapContainer, TileLayer, FeatureGroup, useMap, LayersControl } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import * as L from 'leaflet';
@@ -147,7 +149,7 @@ function LocateControl() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupRef: any, onPolygonDrawn: any }) {
+function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupRef: RefObject<L.FeatureGroup>, onPolygonDrawn: MapDigitizerProps['onPolygonDrawn'] }) {
   const map = useMap();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -209,7 +211,7 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
            coordinates.push([...first]); 
         }
 
-        const geojson = {
+        const geojson: Feature<Polygon> = {
           type: "Feature",
           properties: {},
           geometry: {
@@ -221,8 +223,8 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const layer = L.geoJSON(geojson as any, {
           style: {
-            color: '#10b981',
-            fillOpacity: 0.5,
+            color: '#007FFF',
+            fillOpacity: 0.28,
             weight: 3
           }
         });
@@ -265,7 +267,7 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
           e.stopPropagation();
           fileInputRef.current?.click();
         }}
-        className="bg-brand-primary text-white font-bold text-xs uppercase px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2 hover:bg-emerald-400 transition-all border border-emerald-500"
+        className="bg-[#007FFF] text-white font-bold text-xs uppercase px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(0,127,255,0.25)] flex items-center gap-2 hover:bg-blue-600 transition-all border border-blue-600"
       >
         <Upload className="w-4 h-4" />
         Importer Levé RTK (CSV)
@@ -275,11 +277,42 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
 }
 
 interface MapDigitizerProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onPolygonDrawn: (geojson: any, areaSqm: number) => void;
+  initialGeoJson?: Feature<Polygon> | null;
+  editingEnabled?: boolean;
+  onPolygonDrawn: (geojson: Feature<Polygon> | null, areaSqm: number) => void;
 }
 
-export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
+function InitialGeometryControl({
+  featureGroupRef,
+  initialGeoJson,
+}: {
+  featureGroupRef: RefObject<L.FeatureGroup>;
+  initialGeoJson?: Feature<Polygon> | null;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    const group = featureGroupRef.current;
+    if (!group) return;
+
+    group.clearLayers();
+    if (initialGeoJson) {
+      L.geoJSON(initialGeoJson, {
+        style: { color: '#007FFF', fillOpacity: 0.28, weight: 3 },
+      }).eachLayer((layer) => group.addLayer(layer));
+
+      if (group.getLayers().length > 0) {
+        map.fitBounds(group.getBounds(), { padding: [50, 50] });
+      }
+    }
+
+    map.invalidateSize();
+  }, [featureGroupRef, initialGeoJson, map]);
+
+  return null;
+}
+
+export default function MapDigitizer({ initialGeoJson = null, editingEnabled = false, onPolygonDrawn }: MapDigitizerProps) {
   const [mounted, setMounted] = useState(false);
   const featureGroupRef = useRef<L.FeatureGroup>(null);
   
@@ -322,13 +355,13 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData = (layer: any) => {
-    const geojson = layer.toGeoJSON();
+    const geojson = layer.toGeoJSON() as Feature<Polygon>;
     const area = turf.area(geojson);
     onPolygonDrawn(geojson, area);
   };
 
   return (
-    <div className="w-full h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border relative z-0">
+    <div className="w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border relative z-0">
       <style>{`
         .leaflet-left .leaflet-control-layers {
           margin-top: 50px !important;
@@ -360,30 +393,38 @@ export default function MapDigitizer({ onPolygonDrawn }: MapDigitizerProps) {
         </LayersControl>
         <SearchControl />
         <LocateControl />
-        <RtkUploaderControl featureGroupRef={featureGroupRef} onPolygonDrawn={onPolygonDrawn} />
+        {editingEnabled && (
+          <RtkUploaderControl featureGroupRef={featureGroupRef} onPolygonDrawn={onPolygonDrawn} />
+        )}
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <FeatureGroup ref={featureGroupRef as any}>
-          <EditControl
-            position="topright"
-            onCreated={handleCreated}
-            onEdited={handleEdited}
-            onDeleted={handleDeleted}
-            draw={{
-              rectangle: false,
-              circle: false,
-              circlemarker: false,
-              polyline: false,
-              polygon: false,
-              marker: {
-                icon: new L.Icon.Default()
-              }
-            }}
-          />
+          {editingEnabled && (
+            <EditControl
+              position="topright"
+              onCreated={handleCreated}
+              onEdited={handleEdited}
+              onDeleted={handleDeleted}
+              draw={{
+                rectangle: false,
+                circle: false,
+                circlemarker: false,
+                polyline: false,
+                marker: false,
+                polygon: {
+                  allowIntersection: false,
+                  showArea: true,
+                  shapeOptions: { color: '#007FFF', fillOpacity: 0.28, weight: 3 },
+                },
+              }}
+            />
+          )}
         </FeatureGroup>
+        <InitialGeometryControl featureGroupRef={featureGroupRef} initialGeoJson={initialGeoJson} />
       </MapContainer>
-      {mounted && featureGroupRef.current && (
-        // We render it outside MapContainer but it needs access to useMap? No, RtkUploaderControl uses useMap so it must be inside MapContainer
-        <div className="hidden"></div>
+      {editingEnabled && (
+        <div className="pointer-events-none absolute right-12 top-3 z-[1000] rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-[11px] font-bold text-slate-700 shadow-sm">
+          Tracer manuellement : sélectionnez l&apos;outil polygone
+        </div>
       )}
     </div>
   );
