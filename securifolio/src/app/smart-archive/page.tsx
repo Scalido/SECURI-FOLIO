@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
 import { saveCertificate, getHistoryServer } from './actions';
 import { createClient } from '@/utils/supabase/client';
+import { isValidParcelFeature } from '@/lib/spatial/parcel-geometry.mjs';
+import type { Feature, Polygon } from 'geojson';
 import dynamic from 'next/dynamic';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
@@ -30,14 +32,50 @@ export default function SmartArchivePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dbVerification, setDbVerification] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [geoData, setGeoData] = useState<any>(null);
+  const [geoData, setGeoData] = useState<Feature<Polygon> | null>(null);
   const [geoAreaSqm, setGeoAreaSqm] = useState<number>(0);
   const [isLocationUnknown, setIsLocationUnknown] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [draftGeoData, setDraftGeoData] = useState<Feature<Polygon> | null>(null);
+  const [draftGeoAreaSqm, setDraftGeoAreaSqm] = useState(0);
+  const [editorInitialGeoData, setEditorInitialGeoData] = useState<Feature<Polygon> | null>(null);
+  const [mapSessionKey, setMapSessionKey] = useState(0);
+  const [spatialError, setSpatialError] = useState('');
 
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
+
+  const openTracingWorkspace = () => {
+    setEditorInitialGeoData(geoData);
+    setDraftGeoData(geoData);
+    setDraftGeoAreaSqm(geoAreaSqm);
+    setSpatialError('');
+    setMapSessionKey((key) => key + 1);
+    setIsMapFullscreen(true);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  };
+
+  const cancelTracingWorkspace = () => {
+    setDraftGeoData(null);
+    setDraftGeoAreaSqm(0);
+    setSpatialError('');
+    setMapSessionKey((key) => key + 1);
+    setIsMapFullscreen(false);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  };
+
+  const validateTracingWorkspace = () => {
+    if (!isValidParcelFeature(draftGeoData, draftGeoAreaSqm)) {
+      setSpatialError('Tracez ou importez un polygone valide comportant au moins trois sommets.');
+      return;
+    }
+
+    setGeoData(draftGeoData);
+    setGeoAreaSqm(draftGeoAreaSqm);
+    setSpatialError('');
+    setIsMapFullscreen(false);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  };
 
   useEffect(() => {
     if (status === 'analyzing') {
@@ -776,7 +814,7 @@ export default function SmartArchivePage() {
 
                 {/* Résolution Spatiale (Technique B) */}
                 <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/10">
-                  <div className="mb-2 flex items-center justify-between">
+                  <div className="mb-2 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-brand-primary" /> Résolution Spatiale
                     </h3>
@@ -786,13 +824,19 @@ export default function SmartArchivePage() {
                           Aire tracée: {geoAreaSqm.toFixed(2)} m²
                         </span>
                       )}
-                      <button onClick={() => { setIsMapFullscreen(true); setTimeout(() => window.dispatchEvent(new Event('resize')), 50); }} className="hidden md:flex p-1.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 tooltip" title="Agrandir la carte">
-                        <Maximize className="w-4 h-4" />
+                      <button
+                        type="button"
+                        onClick={openTracingWorkspace}
+                        disabled={isLocationUnknown}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#007FFF] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        <Maximize className="h-4 w-4" />
+                        Ouvrir l&apos;espace de traçage
                       </button>
                     </div>
                   </div>
                   <p className="text-[10px] text-slate-500 mb-4 font-medium leading-relaxed">
-                    Si le document ne possède pas de coordonnées absolues, veuillez dessiner le polygone de la parcelle sur la carte (Technique B). Vous pouvez utiliser le marqueur pour vous positionner.
+                    Importez un levé RTK au format CSV/TXT ou utilisez le tracé manuel en option lorsque les coordonnées absolues ne sont pas disponibles.
                   </p>
                   
                   <div className={`transition-all duration-300 relative ${isLocationUnknown ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
@@ -803,47 +847,62 @@ export default function SmartArchivePage() {
                         : "relative h-[400px] hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border"
                     }>
                       {isMapFullscreen && (
-                        <div className="flex items-center justify-between mb-4 shrink-0 bg-slate-50 dark:bg-brand-surface p-4 rounded-xl border border-slate-200 dark:border-brand-border shadow-sm">
-                          <div>
-                            <h3 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white flex items-center gap-2">
-                              <Map className="w-5 h-5 text-brand-primary" /> Numérisation de la parcelle
-                            </h3>
-                            <p className="text-xs text-slate-500 font-medium mt-1 md:hidden flex items-center gap-2">
-                              <Sparkles className="w-3 h-3 text-brand-primary" />
-                              Tournez votre appareil en paysage
-                            </p>
+                        <div className="mb-4 shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-brand-border dark:bg-brand-surface">
+                          <div className="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                              <h3 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white flex items-center gap-2">
+                                <Map className="w-5 h-5 text-[#007FFF]" /> Espace de traçage géomètre
+                              </h3>
+                              <p className="mt-1 text-xs font-medium text-slate-500">
+                                Importez un CSV/TXT RTK ou sélectionnez l&apos;outil polygone pour tracer manuellement.
+                              </p>
+                              {draftGeoAreaSqm > 0 && (
+                                <p className="mt-2 text-xs font-bold text-[#007FFF]">
+                                  Superficie du brouillon : {draftGeoAreaSqm.toFixed(2)} m²
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={cancelTracingWorkspace}
+                                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+                              >
+                                <X className="h-4 w-4" />
+                                Annuler
+                              </button>
+                              <button
+                                type="button"
+                                onClick={validateTracingWorkspace}
+                                className="inline-flex items-center gap-2 rounded-xl bg-[#007FFF] px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-600"
+                              >
+                                <CheckCircle2 className="h-4 w-4" />
+                                Valider le tracé
+                              </button>
+                            </div>
                           </div>
-                          <button 
-                            onClick={() => {
-                               setIsMapFullscreen(false);
-                               setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
-                            }} 
-                            className="px-4 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 flex items-center gap-2 font-bold text-sm transition-colors shadow-sm"
-                          >
-                            <X className="w-4 h-4" /> <span className="hidden sm:inline">Valider le tracé</span>
-                          </button>
+                          {spatialError && (
+                            <div role="alert" className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700">
+                              {spatialError}
+                            </div>
+                          )}
                         </div>
                       )}
                       
-                      <div className={isMapFullscreen ? "flex-1 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative shadow-xl" : "h-full w-full"}>
-                        <MapDigitizer onPolygonDrawn={(geojson, area) => { setGeoData(geojson); setGeoAreaSqm(area); }} />
+                      <div className={isMapFullscreen ? "relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-xl dark:border-slate-700" : "h-full w-full"}>
+                        <MapDigitizer
+                          key={mapSessionKey}
+                          initialGeoJson={isMapFullscreen ? editorInitialGeoData : geoData}
+                          editingEnabled={isMapFullscreen}
+                          onPolygonDrawn={(geojson, area) => {
+                            if (!isMapFullscreen) return;
+                            setDraftGeoData(geojson);
+                            setDraftGeoAreaSqm(area);
+                            setSpatialError('');
+                          }}
+                        />
                       </div>
                     </div>
-
-                    {/* Bouton d'ouverture (Mobile) */}
-                    {!isMapFullscreen && (
-                       <div className="md:hidden mt-2">
-                         <button onClick={() => {
-                             setIsMapFullscreen(true);
-                             setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
-                           }} 
-                           className="w-full py-4 bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border hover:border-brand-primary/50 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold shadow-sm flex flex-col items-center justify-center gap-2 transition-colors group"
-                         >
-                           <Maximize className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" />
-                           Ouvrir la carte de numérisation
-                         </button>
-                       </div>
-                    )}
 
                     {isLocationUnknown && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 backdrop-blur-[1px] z-10 rounded-2xl">
@@ -863,6 +922,12 @@ export default function SmartArchivePage() {
                         if (e.target.checked) {
                           setGeoData(null);
                           setGeoAreaSqm(0);
+                          setDraftGeoData(null);
+                          setDraftGeoAreaSqm(0);
+                          setEditorInitialGeoData(null);
+                          setSpatialError('');
+                          setIsMapFullscreen(false);
+                          setMapSessionKey((key) => key + 1);
                         }
                       }}
                       className="mt-0.5 accent-amber-500" 
@@ -1012,7 +1077,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Le géomètre téléverse les données brutes (CSV/KML) issues de son appareil RTK. L'outil génère automatiquement le tracé avec une précision centimétrique, scellant la position sans intervention humaine.
+                  Le géomètre importe les coordonnées CSV/TXT issues de son appareil RTK. Le tracé manuel reste disponible en option lorsque le fichier de levé n&apos;est pas exploitable.
                 </p>
               </div>
 

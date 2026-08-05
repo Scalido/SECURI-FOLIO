@@ -148,7 +148,6 @@ function LocateControl() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupRef: RefObject<L.FeatureGroup>, onPolygonDrawn: MapDigitizerProps['onPolygonDrawn'] }) {
   const map = useMap();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -229,12 +228,18 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
           }
         });
 
-        featureGroupRef.current.clearLayers();
+        const group = featureGroupRef.current;
+        if (!group) {
+          alert('La carte n\'est pas encore prête. Veuillez réessayer.');
+          return;
+        }
+
+        group.clearLayers();
         layer.eachLayer((l) => {
-          featureGroupRef.current.addLayer(l);
+          group.addLayer(l);
         });
 
-        map.fitBounds(featureGroupRef.current.getBounds(), { padding: [50, 50] });
+        map.fitBounds(group.getBounds(), { padding: [50, 50] });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const area = turf.area(geojson as any);
@@ -270,7 +275,7 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
         className="bg-[#007FFF] text-white font-bold text-xs uppercase px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(0,127,255,0.25)] flex items-center gap-2 hover:bg-blue-600 transition-all border border-blue-600"
       >
         <Upload className="w-4 h-4" />
-        Importer Levé RTK (CSV)
+        Importer Levé RTK (CSV/TXT)
       </button>
     </div>
   );
