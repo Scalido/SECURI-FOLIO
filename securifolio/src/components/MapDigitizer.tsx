@@ -426,11 +426,6 @@ export default function MapDigitizer({ initialGeoJson = null, editingEnabled = f
         </FeatureGroup>
         <InitialGeometryControl featureGroupRef={featureGroupRef} initialGeoJson={initialGeoJson} />
       </MapContainer>
-      {editingEnabled && (
-        <div className="pointer-events-none absolute right-12 top-3 z-[1000] rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-[11px] font-bold text-slate-700 shadow-sm">
-          Tracer manuellement : sélectionnez l&apos;outil polygone
-        </div>
-      )}
     </div>
   );
 }
