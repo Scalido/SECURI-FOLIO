@@ -482,8 +482,8 @@ export default function SmartArchivePage() {
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
               <li>Prenez en photo ou uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Utilisez le bouton <strong>"Importer Levé RTK (CSV)"</strong> pour intégrer automatiquement les coordonnées exactes du terrain (ou cochez "Localisation inconnue").</li>
-              <li>Cliquez sur "Confirmer et Sceller" pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
+              <li>Ouvrez l&apos;espace de traçage pour importer un levé RTK CSV/TXT ou dessiner manuellement la parcelle.</li>
+              <li>Cliquez sur &quot;Transmettre pour Validation&quot; pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
             </ul>
           </div>
         </div>
