@@ -2,11 +2,28 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
-import { saveCertificate, getHistoryServer } from './actions';
+import {
+  deleteTemporaryScan,
+  getDocumentChecklist,
+  getConnectedAgentProfile,
+  getHistoryServer,
+  getTemporaryAnalysisUrl,
+  reservePrivateStoragePath,
+  saveCertificate,
+} from './actions';
 import { createClient } from '@/utils/supabase/client';
 import { isValidParcelFeature } from '@/lib/spatial/parcel-geometry.mjs';
 import type { Feature, Polygon } from 'geojson';
 import dynamic from 'next/dynamic';
+import { ExtractionReviewLabel } from '@/components/ExtractionReviewLabel';
+import { DossierWorkspace } from '@/components/DossierWorkspace';
+import { SmartArchiveAttestationControls } from '@/components/SmartArchiveAttestationControls';
+import type { AgentProfileState } from '@/lib/validations';
+import type { DocumentChecklist } from '@/lib/land-files';
+import {
+  withDefinitiveUploadObject,
+  withTemporaryAnalysisObject,
+} from '@/lib/documents/temporary-analysis';
 
 const MapDigitizer = dynamic(() => import('@/components/MapDigitizer'), { ssr: false });
 
@@ -41,6 +58,12 @@ export default function SmartArchivePage() {
   const [editorInitialGeoData, setEditorInitialGeoData] = useState<Feature<Polygon> | null>(null);
   const [mapSessionKey, setMapSessionKey] = useState(0);
   const [spatialError, setSpatialError] = useState('');
+  const [isCertified, setIsCertified] = useState(false);
+  const [agentProfileState, setAgentProfileState] = useState<AgentProfileState>({ status: 'loading' });
+  const [lastChecklist, setLastChecklist] = useState<{
+    dossierId: string;
+    checklist: DocumentChecklist;
+  } | null>(null);
 
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -133,6 +156,25 @@ export default function SmartArchivePage() {
 
   useEffect(() => {
     fetchHistory();
+    getConnectedAgentProfile()
+      .then(({ data, error }) => {
+        if (error || !data) {
+          setAgentProfileState({
+            status: 'error',
+            error: error || 'Profil agent indisponible.',
+          });
+          setIsCertified(false);
+          return;
+        }
+        setAgentProfileState({ status: 'ready', profile: data });
+      })
+      .catch(() => {
+        setAgentProfileState({
+          status: 'error',
+          error: 'Impossible de charger le profil agent.',
+        });
+        setIsCertified(false);
+      });
   }, []);
 
   const generateMockCertificate = (scenario: string, hasRatures: boolean) => {
@@ -376,34 +418,73 @@ export default function SmartArchivePage() {
     setDbVerification(null);
 
     try {
-      let imageUrlToSend = null;
-      let base64DataToSend = null;
       const mimeType = fileToProcess.type;
 
-      // 1. Si le fichier fait plus de 1.5 Mo, on l'upload d'abord sur Supabase pour contourner la limite stricte de 4.5 Mo de Vercel
+      const requestAnalysis = async (payload: {
+        mimeType: string;
+        imageUrl?: string;
+        base64Data?: string;
+      }) => {
+        const response = await fetch('/api/analyze-document', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Erreur lors de l'analyse du document.");
+        }
+
+        return data;
+      };
+
+      let data;
+
+      // Les documents lourds passent par un objet privé temporaire, supprimé dans tous les cas.
       if (fileToProcess.size > 1.5 * 1024 * 1024) {
         const supabase = createClient();
         const fileExt = fileToProcess.name.split('.').pop() || 'pdf';
-        const tempFileName = `temp_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('scans_certificats')
-          .upload(tempFileName, fileToProcess);
+        const reserved = await reservePrivateStoragePath('temporary', fileExt);
 
-        if (uploadError) {
-          console.error("Erreur d'upload temporaire:", uploadError);
-          throw new Error("Erreur réseau lors de l'envoi du document lourd. Vérifiez votre connexion.");
+        if (!reserved.data) {
+          throw new Error(reserved.error || 'Impossible de réserver le stockage temporaire.');
         }
 
-        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-          .from('scans_certificats')
-          .createSignedUrl(tempFileName, 300); // 5 minutes
+        const temporaryPath = reserved.data.path;
+        data = await withTemporaryAnalysisObject({
+          upload: async () => {
+            const { error: uploadError } = await supabase.storage
+              .from('scans_certificats')
+              .upload(temporaryPath, fileToProcess);
 
-        if (signedUrlError || !signedUrlData) {
-          throw new Error("Impossible de générer le lien de sécurité pour l'analyse.");
-        }
-        
-        imageUrlToSend = signedUrlData.signedUrl;
+            if (uploadError) {
+              throw new Error(
+                "Erreur réseau lors de l'envoi du document lourd. Vérifiez votre connexion.",
+              );
+            }
+          },
+          createSignedUrl: async () => {
+            const signed = await getTemporaryAnalysisUrl(temporaryPath);
+            if (!signed.data) {
+              throw new Error(
+                signed.error || "Impossible de générer le lien de sécurité pour l'analyse.",
+              );
+            }
+            return signed.data.signedUrl;
+          },
+          analyze: async (signedUrl) =>
+            requestAnalysis({ mimeType, imageUrl: signedUrl }),
+          cleanup: async () => {
+            const cleanup = await deleteTemporaryScan(temporaryPath);
+            if (!cleanup.success) {
+              throw new Error(cleanup.error || 'Nettoyage temporaire impossible.');
+            }
+          },
+        });
       } else {
         // Lecture locale en base64 pour les petits fichiers
         const base64Promise = new Promise<string>((resolve, reject) => {
@@ -415,32 +496,16 @@ export default function SmartArchivePage() {
           };
           reader.onerror = (err) => reject(err);
         });
-        base64DataToSend = await base64Promise;
-      }
-
-      // 2. Envoyer les métadonnées à la route API locale
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const payload: any = { mimeType };
-      if (imageUrlToSend) payload.imageUrl = imageUrlToSend;
-      if (base64DataToSend) payload.base64Data = base64DataToSend;
-
-      const response = await fetch('/api/analyze-document', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Erreur lors de l'analyse du document.");
+        data = await requestAnalysis({
+          mimeType,
+          base64Data: await base64Promise,
+        });
       }
 
       setResult(data.data);
       setFormData(data.data); // Initialize editable form
       setDbVerification(data.dbVerification);
+      setIsCertified(false);
       setStatus('success');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -451,6 +516,98 @@ export default function SmartArchivePage() {
       }
       setErrorMsg(message);
       setStatus('error');
+    }
+  };
+
+  const resetWorkflow = () => {
+    setResult(null);
+    setDbVerification(null);
+    setStatus('idle');
+    setFile(null);
+    setFormData(null);
+    setGeoData(null);
+    setGeoAreaSqm(0);
+    setIsLocationUnknown(false);
+    setIsCertified(false);
+  };
+
+  const transmitForValidation = async () => {
+    if (agentProfileState.status !== 'ready') {
+      setIsCertified(false);
+      alert("Erreur : L'identité complète de l'agent doit être chargée avant transmission.");
+      return;
+    }
+    if (!isCertified) {
+      alert("Erreur : Vous devez accepter l'attestation avant transmission.");
+      return;
+    }
+    if (!file) {
+      alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
+      return;
+    }
+    if (!geoData && !isLocationUnknown) {
+      alert("Erreur : Veuillez tracer le polygone de la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      const fileExt = file.name.split('.').pop() || 'png';
+      const reserved = await reservePrivateStoragePath('documents', fileExt);
+
+      if (!reserved.data) {
+        alert(`Erreur : ${reserved.error || 'Impossible de réserver le stockage privé.'}`);
+        return;
+      }
+
+      const storagePath = reserved.data.path;
+
+      const documentBucket = supabase.storage.from('scans_certificats');
+      const res = await withDefinitiveUploadObject({
+        upload: async () => {
+          const { error: uploadError } = await documentBucket.upload(storagePath, file);
+          if (uploadError) throw new Error(uploadError.message);
+        },
+        operation: () => saveCertificate(
+          { ...formData, attested: isCertified },
+          storagePath,
+          geoData,
+          isLocationUnknown,
+        ),
+        cleanup: async () => {
+          const { error } = await documentBucket.remove([storagePath]);
+          if (error && !/not found|does not exist/i.test(error.message)) {
+            throw new Error(error.message);
+          }
+        },
+      });
+
+      if (!res.success) {
+        if (res.error === 'TITRE_DEJA_NUMERISE') {
+          const duplicateMessage = 'message' in res ? res.message : res.error;
+          alert(`🚨 ALERTE DOUBLON : ${duplicateMessage}`);
+        } else {
+          alert(`Erreur : ${res.error}`);
+        }
+      } else {
+        const numeroCadastral = String(formData.numero_cadastral || '');
+        const checklistResult = await getDocumentChecklist(numeroCadastral);
+        if (checklistResult.data && checklistResult.dossierId) {
+          setLastChecklist({
+            dossierId: checklistResult.dossierId,
+            checklist: checklistResult.data,
+          });
+        }
+        alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
+        resetWorkflow();
+      }
+      await fetchHistory();
+    } catch (err) {
+      alert("Une erreur inattendue est survenue.");
+      console.error(err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -474,6 +631,8 @@ export default function SmartArchivePage() {
           </p>
         </div>
 
+        <DossierWorkspace initialDossier={lastChecklist} />
+
         {/* Instructions d'utilisation */}
         <div className="w-full max-w-3xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
           <BookOpen className="w-6 h-6 text-blue-500 shrink-0" />
@@ -482,8 +641,8 @@ export default function SmartArchivePage() {
             <ul className="text-sm text-blue-700/80 dark:text-blue-300/80 mt-2 space-y-1 list-disc list-inside">
               <li>Prenez en photo ou uploadez le document physique (Certificat ou Plan).</li>
               <li>Vérifiez et corrigez les données extraites par l'IA (OCR).</li>
-              <li>Ouvrez l&apos;espace de traçage pour importer un levé RTK CSV/TXT ou dessiner manuellement la parcelle.</li>
-              <li>Cliquez sur &quot;Transmettre pour Validation&quot; pour envoyer le dossier au <strong>Dashboard Cadastral</strong>.</li>
+              <li>Ouvrez l&apos;espace de traçage pour importer un levé RTK CSV/TXT ou dessiner manuellement la parcelle, puis faites vérifier les coordonnées par le service cadastral.</li>
+              <li>Cliquez sur <strong>&quot;Transmettre pour validation&quot;</strong> pour envoyer le dossier au Dashboard cadastral. Cette transmission ne vaut pas validation juridique.</li>
             </ul>
           </div>
         </div>
@@ -731,8 +890,8 @@ export default function SmartArchivePage() {
                       <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                         <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         <div>
-                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance Validée</h3>
-                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">L'extraction correspond au registre. Validation rapide possible.</p>
+                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance détectée</h3>
+                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Les champs comparés correspondent à un enregistrement présent dans Securifolio. Un contrôle humain reste obligatoire.</p>
                         </div>
                       </div>
                     )}
@@ -764,7 +923,7 @@ export default function SmartArchivePage() {
                     <FileText className="w-5 h-5 text-brand-primary" />
                     <div>
                       <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-wide">Validation de l'Extraction (OCR)</h2>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Vérification humaine obligatoire avant scellement</p>
+                      <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Vérification humaine obligatoire avant transmission</p>
                     </div>
                   </div>
                 </div>
@@ -772,7 +931,21 @@ export default function SmartArchivePage() {
                 <div className="p-6 space-y-5 flex-1">
                   
                   {/* Field Template */}
-                  {['nom', 'numero_cadastral', 'volume', 'folio', 'circonscription', 'superficie', 'date_etablissement'].map((key) => {
+                  {[
+                    'nom',
+                    'numero_cadastral',
+                    'volume',
+                    'folio',
+                    'circonscription',
+                    'superficie',
+                    'date_etablissement',
+                    'description_immeuble',
+                    'situation',
+                    'charges_reelles',
+                    'droits_constates',
+                    'date_sceau',
+                    'signataire_conservateur',
+                  ].map((key) => {
                     const labelMap: Record<string, string> = {
                       nom: "Propriétaire (Nom)",
                       numero_cadastral: "N° d'enregistrement (Cadastre)",
@@ -780,20 +953,22 @@ export default function SmartArchivePage() {
                       folio: "Folio du Registre",
                       circonscription: "Circonscription Foncière",
                       superficie: "Superficie de la Concession",
-                      date_etablissement: "Date d'établissement"
+                      date_etablissement: "Date d'établissement",
+                      description_immeuble: "Description de l'immeuble",
+                      situation: "Situation",
+                      charges_reelles: "Charges réelles",
+                      droits_constates: "Droits constatés",
+                      date_sceau: "Date du sceau",
+                      signataire_conservateur: "Conservateur signataire",
                     };
                     
-                    // Simulate confidence scores (lower if there's a discrepancy)
                     const isDivergent = dbVerification?.found && key !== 'superficie' && key !== 'date_etablissement' && dbVerification.matches && !dbVerification.matches[key];
-                    const confidence = isDivergent ? Math.floor(Math.random() * 15) + 65 : Math.floor(Math.random() * 10) + 90; 
 
                     return (
                       <div key={key} className="space-y-1.5">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
-                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}`}>
-                            Confiance IA: {confidence}%
-                          </span>
+                          <ExtractionReviewLabel />
                         </div>
                         <input 
                           type="text" 
@@ -933,103 +1108,19 @@ export default function SmartArchivePage() {
                       className="mt-0.5 accent-amber-500" 
                     />
                     <label htmlFor="unknownLocation" className="text-xs text-amber-800 dark:text-amber-200/80 font-medium leading-relaxed cursor-pointer">
-                      <strong>Localisation spatiale inconnue :</strong> Je n'ai pas les moyens d'identifier la parcelle avec précision. (Le dossier sera marqué "Topographie requise" pour une descente sur le terrain).
+                      <strong>Localisation spatiale inconnue :</strong> les coordonnées devront être établies et contrôlées avant la transmission du dossier.
                     </label>
                   </div>
                 </div>
 
-                <div className="p-6 border-t border-slate-200 dark:border-brand-border bg-brand-bg/30 space-y-4">
-                  <div className="flex items-start gap-2 text-[10px] text-slate-500 font-medium">
-                    <input type="checkbox" id="certify" className="mt-0.5 accent-brand-primary" />
-                    <label htmlFor="certify">En tant qu'agent assermenté (AF-7892), j'atteste sur l'honneur avoir vérifié visuellement la conformité de ces données avec le document physique original. Toute altération non signalée engagera ma responsabilité pénale.</label>
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => {
-                        setResult(null);
-                        setDbVerification(null);
-                        setStatus('idle');
-                        setFile(null);
-                        setFormData(null);
-                        setGeoData(null);
-                        setGeoAreaSqm(0);
-                        setIsLocationUnknown(false);
-                      }}
-                      className="flex-1 py-3.5 border border-slate-200 dark:border-brand-border hover:bg-slate-100 dark:hover:bg-brand-surface rounded-xl text-xs font-bold uppercase tracking-widest transition-colors text-slate-600 dark:text-slate-300"
-                    >
-                      Annuler
-                    </button>
-                    <button 
-                      disabled={isSaving}
-                      onClick={async () => {
-                        if (!file) {
-                          alert("Erreur : Aucun fichier scan n'est disponible pour le stockage.");
-                          return;
-                        }
-                        if (!geoData && !isLocationUnknown) {
-                          alert("Erreur : Veuillez tracer le polygone de la parcelle sur la carte, ou cochez 'Localisation spatiale inconnue'.");
-                          return;
-                        }
-                        setIsSaving(true);
-                        try {
-                          const supabase = createClient();
-                          // 1. Upload du fichier vers Supabase Storage
-                          const fileExt = file.name.split('.').pop() || 'png';
-                          const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                          
-                          const { error: uploadError } = await supabase.storage
-                            .from('scans_certificats')
-                            .upload(fileName, file);
-
-                          if (uploadError) {
-                            console.error("Erreur d'upload:", uploadError);
-                            alert("Erreur lors de la sauvegarde du fichier scan. Vérifiez que le bucket existe et est configuré.");
-                            setIsSaving(false);
-                            return;
-                          }
-
-                          // 2. Récupérer l'URL publique
-                          const { data: { publicUrl } } = supabase.storage
-                            .from('scans_certificats')
-                            .getPublicUrl(fileName);
-
-                          // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
-                          const res = await saveCertificate(formData, publicUrl, geoData, isLocationUnknown);
-                          
-                          if (!res.success) {
-                            if (res.error === 'TITRE_DEJA_NUMERISE') {
-                              alert(`🚨 ALERTE DOUBLON : ${res.message}`);
-                            } else {
-                              alert(`Erreur : ${res.error}`);
-                            }
-                          } else {
-                            alert("Données transmises ! Le dossier a été envoyé au Cadastre et est 'En attente de validation cadastrale'.");
-                            setResult(null);
-                            setDbVerification(null);
-                            setStatus('idle');
-                            setFile(null);
-                            setFormData(null);
-                            setGeoData(null);
-                            setGeoAreaSqm(0);
-                            setIsLocationUnknown(false);
-                          }
-                          // Mettre à jour l'historique après l'action !
-                          await fetchHistory();
-                        } catch (err) {
-                          alert("Une erreur inattendue est survenue.");
-                          console.error(err);
-                        } finally {
-                          setIsSaving(false);
-                        }
-                      }}
-                      className="flex-[2] bg-brand-primary hover:bg-emerald-400 disabled:bg-brand-primary/50 disabled:cursor-not-allowed text-brand-bg py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all flex justify-center items-center gap-2"
-                    >
-                      {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />} 
-                      {isSaving ? "Enregistrement..." : "Transmettre pour Validation"}
-                    </button>
-                  </div>
-                </div>
+                <SmartArchiveAttestationControls
+                  profileState={agentProfileState}
+                  isCertified={isCertified}
+                  isSaving={isSaving}
+                  onCertifiedChange={setIsCertified}
+                  onCancel={resetWorkflow}
+                  onSubmit={transmitForValidation}
+                />
               </div>
 
             </div>
@@ -1055,7 +1146,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Capture / Numérisation</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent photographie ou scanne le certificat d'enregistrement physique. Le document original est téléchargé de manière sécurisée vers les serveurs de l'État.
+                  L&apos;agent téléverse une copie numérique du certificat ou d&apos;une autre pièce du dossier dans un espace de stockage privé.
                 </p>
               </div>
 
@@ -1066,7 +1157,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Extraction (IA)</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Notre Vision AI lit, comprend et extrait automatiquement toutes les métadonnées (Propriétaire, Superficie, Dates) tout en traquant la moindre falsification (rature, blanco).
+                  L&apos;outil propose certains champs extraits du document et peut signaler une anomalie visuelle potentielle, comme une rature ou une trace de correcteur. L&apos;agent doit vérifier et corriger les résultats.
                 </p>
               </div>
 
@@ -1077,7 +1168,7 @@ export default function SmartArchivePage() {
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Ancrage Spatial</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Le géomètre importe les coordonnées CSV/TXT issues de son appareil RTK. Le tracé manuel reste disponible en option lorsque le fichier de levé n&apos;est pas exploitable.
+                  Le géomètre importe les coordonnées CSV/TXT issues de son appareil RTK ou trace la parcelle sur la carte. La provenance, la qualité et la précision des coordonnées restent soumises au contrôle du service cadastral.
                 </p>
               </div>
 
@@ -1086,9 +1177,9 @@ export default function SmartArchivePage() {
                 <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
                   <Lock className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">4. Scellement</h3>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">4. Empreinte et transmission</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Les métadonnées et les coordonnées sont "scellées" cryptographiquement dans la base de données. Le <strong>Jumeau Numérique</strong> est créé et prêt à être audité.
+                  Le système enregistre les empreintes du fichier et des métadonnées pour permettre un contrôle d&apos;intégrité, puis transmet le dossier au Cadastre. Cette opération ne constitue ni une authentification juridique ni le scellement légal du certificat.
                 </p>
               </div>
             </div>
@@ -1096,10 +1187,10 @@ export default function SmartArchivePage() {
 
           <div className="group bg-white dark:bg-brand-surface/40 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-8 hover:border-brand-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.05)]">
             <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-3">
-              <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Bases Légales (Numérisation)
+              <ShieldAlert className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Portée de l&apos;outil
             </h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-              Conformément à l&apos;évolution vers l&apos;e-gouvernance foncière, cet outil soutient les efforts d&apos;assainissement du cadastre congolais en accélérant l&apos;authentification des titres existants et en archivant numériquement les données pour une meilleure traçabilité.
+              Smart-Archive facilite la constitution, la traçabilité et le contrôle administratif des dossiers numérisés. Il ne remplace ni les vérifications du Cadastre, ni la décision du Conservateur des titres immobiliers. Le certificat juridiquement valable demeure celui établi, daté, scellé et signé conformément à la procédure foncière applicable.
             </p>
           </div>
         </section>

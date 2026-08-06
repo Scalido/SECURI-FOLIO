@@ -1,40 +1,52 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import {
+  executeCadastralSearch,
+  type SearchResponse,
+} from '@/lib/anti-folio/search'
+import type {
+  LandTitleSummary,
+  SearchState,
+} from '@/lib/anti-folio/types'
 
-export async function checkCadastralNumber(cadastralNumber: string) {
-  if (!cadastralNumber) return null
-
+export async function checkCadastralNumber(cadastralNumber: string): Promise<SearchResponse> {
   const supabaseServer = createClient()
-  const { data: { user } } = await supabaseServer.auth.getUser()
 
-  if (!user) return null
+  return executeCadastralSearch(cadastralNumber.trim(), {
+    getAuthenticatedUser: async () => {
+      const { data: { user } } = await supabaseServer.auth.getUser()
+      return user ? { id: user.id } : null
+    },
+    searchTitles: async (cleanSearch) => {
+      const volMatch = cleanSearch.match(
+        /vol(?:ume)?\s+([a-z0-9\s]+?)\s+folio\s+(\d+)/i,
+      )
+      let query = supabaseServer
+        .from('titres_fonciers')
+        .select('id, numero_cadastral, volume, folio, nom_proprietaire, circonscription, statut')
 
-  // Parser intelligent (No BS) pour éviter les conflits sur des nombres simples
-  const cleanSearch = cadastralNumber.trim()
-  const volMatch = cleanSearch.match(/vol(?:ume)?\s+([a-z0-9\s]+?)\s+folio\s+(\d+)/i)
+      if (volMatch) {
+        query = query
+          .eq('volume', volMatch[1].trim().toUpperCase())
+          .eq('folio', volMatch[2].trim())
+      } else {
+        query = query.ilike('numero_cadastral', cleanSearch)
+      }
 
-  let query = supabaseServer.from('titres_fonciers').select('*')
-
-  if (volMatch) {
-    const vol = volMatch[1].trim().toUpperCase() // ex: AMA 171
-    const fol = volMatch[2].trim()               // ex: 68
-    query = query.eq('volume', vol).eq('folio', fol)
-  } else {
-    query = query.eq('numero_cadastral', cleanSearch)
-  }
-
-  const { data, error } = await query
-
-  if (error) {
-    console.error('Erreur Supabase:', error)
-    return null
-  }
-
-  return data
+      const { data, error } = await query
+      return {
+        records: data as LandTitleSummary[] | null,
+        error,
+      }
+    },
+  })
 }
 
-export async function saveScanHistory(numeroCadastral: string, resultat: 'valid' | 'fraud' | 'pending') {
+export async function saveScanHistory(
+  numeroCadastral: string,
+  resultat: SearchState | 'overlap_detected',
+) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 

@@ -1,35 +1,69 @@
-# Arrêté n° 90-0012 du 31 mars 1990 fixant les modalités d'octroi de concession et de gestion du Cadastre en RDC
+# Arrêté n° 90/0012 du 31 mars 1990 fixant les modalités de conversion des titres de concession perpétuelle ou ordinaire
 
-Ce texte réglementaire régit les aspects techniques et administratifs de l'administration du cadastre, du mesurage des concessions, du bornage et de l'octroi des titres fonciers.
+> Source : copie secondaire identifiée, concordante avec le texte publié par Leganet. Ce texte concerne la conversion des livrets de logeur ou titres similaires ; il ne constitue pas un règlement général du cadastre, du morcellement ou du bornage.
 
-## 1. Le Contrat d'Occupation Provisoire (COP)
-Avant l'obtention d'une concession perpétuelle ou ordinaire définitive, la loi impose une phase intermédiaire sous la forme d'un Contrat d'Occupation Provisoire.
-* **Durée standard :** Fixée à **3 ans** pour les parcelles urbaines à usage résidentiel ou commercial, et à **5 ans** pour les terres rurales à vocation agricole ou d'élevage.
-* **Mise en valeur :** Le COP contient un cahier des charges précis stipulant les travaux de mise en valeur à réaliser (ex: édifier des fondations et élever les murs pour une habitation, défricher et planter pour un terrain agricole).
-* **Interdiction de cession :** Durant la période d'occupation provisoire, le bénéficiaire ne peut ni vendre, ni louer, ni grever d'hypothèque le terrain sans l'accord préalable écrit du Ministre des Affaires Foncières.
+## Article 1
 
----
+Quiconque possède actuellement sur un terrain urbain loti un droit d’occupation couvert par un livret de logeur ou tout autre titre similaire est invité à faire convertir ce droit en concession perpétuelle ou en concession ordinaire selon qu’il est respectivement personne physique de nationalité zaïroise ou qu’il est étranger ou personne morale de droit zaïrois.
 
-## 2. Procédure Cadastrale de Morcellement (Division)
-Le morcellement consiste à diviser une concession existante en deux ou plusieurs parcelles distinctes.
-* **Autorisation préalable obligatoire :** Aucun morcellement de terrain ne peut être effectué de manière privée. Il doit obligatoirement être instruit et exécuté par le **Chef de Division du Cadastre** de la circonscription concernée.
-* **Superficie minimale urbaine :** À Kinshasa et dans les grandes agglomérations, la superficie minimale autorisée pour une parcelle résidentielle morcelée est généralement fixée à **300 m²**. Tout morcellement créant des parcelles inférieures est nul et passible d'amende.
-* **Dossier requis :**
-  1. Demande écrite motivée du propriétaire.
-  2. Copie authentique du Certificat d'Enregistrement d'origine.
-  3. Descente sur les lieux par un géomètre officiel pour mesurage.
-  4. Création de nouveaux croquis et numéros cadastraux pour chaque nouvelle parcelle.
-  5. Paiement des taxes de morcellement à la banque agréée.
+## Article 2
 
----
+La demande de conversion de droit d’occupation en concession perpétuelle ou en concession ordinaire est introduite auprès du conservateur des titres immobiliers du ressort de la parcelle sous couvert d’un livret de logeur ou titre similaire.
 
-## 3. Le Bornage et la Délimitation des Parcelles
-* **Bornage contradictoire :** L'implantation des bornes délimitant la propriété doit être faite en présence du demandeur, des représentants du Cadastre et, si possible, des voisins limitrophes pour éviter tout empiétement ou litige ultérieur.
-* **Procès-verbal de Bornage :** À l'issue des opérations de terrain, le géomètre dresse un procès-verbal de bornage signé par lui-même et par le concessionnaire. Ce document est indispensable pour l'établissement de la fiche de mesurage cadastrale.
-* **Bornes réglementaires :** Les bornes physiques doivent être fabriquées en béton et implantées de manière durable et visible aux angles de la concession.
+## Article 3
 
----
+Le dossier joint à la demande de conversion de droit d’occupation est constitué du livret de logeur ou titre similaire, de la fiche cadastrale s’il y a lieu, et de tous renseignements et documents concernant la parcelle, l’identité du titulaire ou des titulaires du droit, la nationalité et le régime matrimonial du demandeur.
 
-## 4. Rôle des Organismes de Gestion Foncière
-* **Commission Nationale de la Réforme Foncière (CONAREF) :** Organe de coordination interministériel chargé de piloter la réforme foncière en RDC, de standardiser les procédures cadastrales et de numériser les titres pour lutter contre la superposition de titres (phénomène de double attribution).
-* **Guichet Unique de délivrance des Titres :** Dispositif en cours de déploiement pour centraliser les paiements des taxes (DGRAD/Affaires Foncières) et simplifier le circuit d'obtention du certificat d'enregistrement.
+## Article 4
+
+Dans le mois de la réception de la demande, le conservateur des titres immobiliers doit publier dans un ou plusieurs journaux locaux la demande de conversion de manière à permettre à toute personne d’identifier la parcelle pour laquelle le certificat d’enregistrement est sollicité.
+
+La demande fait aussi l’objet d’un affichage dans les locaux de la conservation des titres immobiliers de la zone et de la maison du chef de quartier intéressé.
+
+Au cours de la même période, le conservateur ordonne au service du cadastre de descendre sur les lieux pour constater sur procès-verbal les constructions érigées ou le niveau de mise en valeur du terrain, procéder aux mesurages et signaler les oppositions éventuelles.
+
+La publication, l’affichage et la descente cadastrale permettent aux tiers de faire valoir leurs droits éventuels avant l’établissement du certificat d’enregistrement.
+
+## Article 5
+
+Le conservateur des titres immobiliers vérifie, par les moyens d’investigation appropriés, la régularité du livret de logeur ou titre similaire. Si cette vérification ou les opérations de l’article 4 révèlent une situation litigieuse, le dossier est transmis à la commission du contentieux pour examen et proposition de règlement.
+
+## Article 6
+
+Lorsque les conditions de mise en valeur sont réunies, que le titre présenté est régulier et que l’occupation n’est affectée d’aucun litige non résolu, le conservateur procède, à dater du troisième mois après la publication de la demande, au remplacement du livret de logeur ou titre similaire par un certificat d’enregistrement établi conformément aux articles 279 et suivants de la loi foncière.
+
+Le titre remplacé est frappé d’un timbre « annulé » et conservé dans les archives de la conservation des titres immobiliers avec les documents y afférents.
+
+## Article 7
+
+Le certificat d’enregistrement ainsi établi est régi par les dispositions de l’article 227, modifié et complété par la loi n° 80-008 du 18 juillet 1980.
+
+## Article 8
+
+Sans préjudice de l’article 67 de la loi foncière, les livrets de logeur et titres similaires relatifs à une parcelle ne comportant aucune mise en valeur sont remplacés par un contrat de location simple ou un contrat de location avec option à la concession perpétuelle.
+
+## Article 9
+
+Le contrat de location visé à l’article 8 est régi par les articles 144 et suivants de la loi n° 73-021 du 20 juillet 1973 ainsi que par l’article 17 de l’ordonnance n° 74-148 du 2 juillet 1974.
+
+## Article 10
+
+Les étrangers et les personnes morales de droit zaïrois ayant mis une parcelle en valeur sous couvert d’un livret de logeur ou titre similaire voient leur droit d’occupation converti en concession ordinaire.
+
+Cette conversion intervient après paiement d’une redevance égale au prix de référence de la parcelle et apurement des arriérés locatifs éventuels, pour une période ne pouvant dépasser cinq ans.
+
+## Article 11
+
+Dès la publication de la demande de conversion, tout acte relatif au transfert de la parcelle est suspendu jusqu’à la clôture des formalités de conversion.
+
+## Article 12
+
+Les titulaires des livrets de logeur ou titres similaires gardent, en attendant la conversion, la jouissance de la parcelle occupée. Ils ne peuvent disposer de ce droit de jouissance qu’après avoir obtenu le certificat d’enregistrement ou le contrat de location prévu par le présent arrêté.
+
+## Article 13
+
+Le présent arrêté abroge et remplace les arrêtés antérieurs concernant l’occupation des parcelles domaniales suivant le régime du livret de logeur ou titres assimilés, ainsi que l’arrêté n° 00121 du 8 décembre 1975.
+
+## Article 14
+
+Les autorités territoriales et les conservateurs des titres immobiliers sont chargés, chacun en ce qui le concerne, de l’exécution du présent arrêté, qui produit ses effets à la date de sa signature.

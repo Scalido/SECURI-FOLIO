@@ -68,7 +68,7 @@
 
 ## Phase 0 — Installer une base de tests fiable
 
-### Tâche 1 : Ajouter les tests unitaires TypeScript
+### Task 1 : Ajouter les tests unitaires TypeScript
 
 **Fichiers :**
 
@@ -90,9 +90,9 @@
 ```
 
 - [ ] Configurer l’alias `@` vers `src` et l’environnement `jsdom`.
-- [ ] Ajouter un test minimal important `src/lib/anti-folio/verdict.ts` pour vérifier que la suite échoue avant création du module.
-- [ ] Exécuter `npm run test:unit` et constater l’échec attendu.
-- [ ] Créer le fichier minimal exportant les types nécessaires.
+- [ ] Ajouter `tests/unit/test-environment.test.ts` qui importe `certificateSchema` via l’alias `@`, vérifie un cas réel de validation et utilise un matcher DOM de `@testing-library/jest-dom`.
+- [ ] Exécuter `npm run test:unit` avant la configuration et constater l’échec attendu du script ou de la résolution de l’environnement.
+- [ ] Ajouter la configuration minimale permettant à ce test réel de réussir; la création du moteur Anti‑Folio reste réservée à la tâche 2.
 - [ ] Réexécuter `npm run test:unit`.
 - [ ] Commit de contrôle :
 
@@ -105,7 +105,7 @@ git commit -m "test: add unit test foundation"
 
 ## Phase 1 — Supprimer immédiatement les résultats trompeurs
 
-### Tâche 2 : Introduire un résultat Anti‑Folio typé
+### Task 2 : Introduire un résultat Anti‑Folio typé
 
 **Fichiers :**
 
@@ -160,7 +160,7 @@ it('exige une revue humaine lors d’un chevauchement');
 - [ ] Interdire tout libellé `authentique` ou `fraude` dérivé uniquement du nombre de résultats.
 - [ ] Exécuter `npm run test:unit -- anti-folio-verdict`.
 
-### Tâche 3 : Corriger la recherche et l’interface Anti‑Folio
+### Task 3 : Corriger la recherche et l’interface Anti‑Folio
 
 **Fichiers :**
 
@@ -207,7 +207,7 @@ git commit -m "fix: make Anti-Folio outcomes evidence-based"
 
 ## Phase 2 — Sécuriser et compléter Smart‑Archive
 
-### Tâche 4 : Supprimer les données simulées et rendre l’attestation effective
+### Task 4 : Supprimer les données simulées et rendre l’attestation effective
 
 **Fichiers :**
 
@@ -226,7 +226,7 @@ git commit -m "fix: make Anti-Folio outcomes evidence-based"
 - [ ] Refuser côté serveur toute sauvegarde sans `attested: true`; ne jamais dépendre uniquement de la case du navigateur.
 - [ ] Tester qu’une requête forgée sans attestation est rejetée.
 
-### Tâche 5 : Passer les documents en stockage privé et vérifier leur intégrité
+### Task 5 : Passer les documents en stockage privé et vérifier leur intégrité
 
 **Fichiers :**
 
@@ -259,7 +259,7 @@ export function buildIntegrityEnvelope(
 - [ ] Journaliser `integrity_check_passed` ou `integrity_check_failed`.
 - [ ] Exécuter les tests, puis vérifier qu’aucune occurrence de `getPublicUrl` ne subsiste pour ce bucket.
 
-### Tâche 6 : Transformer le certificat isolé en dossier foncier structuré
+### Task 6 : Transformer le certificat isolé en dossier foncier structuré
 
 **Justification documentaire :**
 
@@ -325,7 +325,7 @@ autre
 - [ ] Conserver chaque nouvelle pièce comme une version, sans écraser la précédente.
 - [ ] Tester un dossier complet, un dossier incomplet et le remplacement versionné d’une pièce.
 
-### Tâche 7 : Étendre le journal d’audit au cycle juridique du titre
+### Task 7 : Étendre le journal d’audit au cycle juridique du titre
 
 **Fichiers :**
 
@@ -361,7 +361,7 @@ CREATE TABLE title_events (
 
 ## Phase 3 — Implémenter la vraie détection spatiale
 
-### Tâche 8 : Ajouter PostGIS et normaliser les parcelles
+### Task 8 : Ajouter PostGIS et normaliser les parcelles
 
 **Fichiers :**
 
@@ -393,7 +393,7 @@ export async function checkSpatialConflicts(
 - [ ] Retourner surface et ratio de chevauchement; ne pas qualifier juridiquement le résultat.
 - [ ] Écrire les tests : parcelles séparées, bord commun sans surface, chevauchement partiel, inclusion totale, géométrie invalide.
 
-### Tâche 9 : Connecter le contrôle spatial aux trois workflows
+### Task 9 : Connecter le contrôle spatial aux trois workflows
 
 **Fichiers :**
 
@@ -417,7 +417,7 @@ export async function checkSpatialConflicts(
 
 ## Phase 4 — Rendre Foncier‑Édu vérifiable
 
-### Tâche 10 : Établir la provenance du corpus
+### Task 10 : Établir la provenance du corpus
 
 **Fichiers :**
 
@@ -451,7 +451,7 @@ export interface KnowledgeSource {
 - [ ] Ajouter un rapport de corpus listant source, date, niveau d’autorité et lacunes.
 - [ ] Faire valider ce rapport par un juriste foncier avant publication institutionnelle.
 
-### Tâche 11 : Ajouter recherche documentaire et citations contrôlées
+### Task 11 : Ajouter recherche documentaire et citations contrôlées
 
 **Fichiers :**
 
@@ -490,7 +490,7 @@ interface ChatAnswer {
 - [ ] Ajouter un bouton permettant d’ouvrir le passage exact, sans exposer tout le fichier serveur.
 - [ ] Tester une question couverte, partiellement couverte, non couverte et une citation inventée par le modèle.
 
-### Tâche 12 : Déplacer la limite publique côté serveur
+### Task 12 : Déplacer la limite publique côté serveur
 
 **Fichiers :**
 
@@ -512,7 +512,7 @@ interface ChatAnswer {
 
 ## Phase 5 — Validation globale et communication honnête
 
-### Tâche 13 : Audit final des promesses et tests de bout en bout
+### Task 13 : Audit final des promesses et tests de bout en bout
 
 **Fichiers :**
 

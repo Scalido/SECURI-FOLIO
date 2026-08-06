@@ -55,6 +55,37 @@ export async function updateTitleStatus(titleId: string, newStatus: 'Valide' | '
   const mfaError = await requireMfaForSensitiveRole(supabaseServer, profile.role)
   if (mfaError) return { success: false, error: mfaError }
 
+  if (newStatus === 'Valide') {
+    if (!notes?.trim()) {
+      return {
+        success: false,
+        error: 'La justification du contrôle est obligatoire.',
+      }
+    }
+
+    const { data: title, error: titleError } = await supabaseServer
+      .from('titres_fonciers')
+      .select('dossier_id')
+      .eq('id', titleId)
+      .single()
+
+    if (titleError || !title?.dossier_id) {
+      return { success: false, error: 'Dossier foncier introuvable.' }
+    }
+
+    const { data: checklist, error: checklistError } = await supabaseServer.rpc(
+      'get_dossier_document_checklist',
+      { p_dossier_id: title.dossier_id },
+    )
+
+    if (checklistError || !checklist?.conservateur?.ready) {
+      return {
+        success: false,
+        error: 'Minute du certificat et preuve de paiement requises.',
+      }
+    }
+  }
+
   const { error: updateError } = await supabaseServer
     .rpc('update_title_status_with_history', {
       p_title_id: titleId,

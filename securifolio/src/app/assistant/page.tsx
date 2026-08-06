@@ -1,44 +1,57 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, User, ShieldAlert, Bot, Lock } from "lucide-react";
+import { Send, User, ShieldAlert, Bot, BookOpen, Lock } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 
 type Message = {
   role: "user" | "assistant";
   content: string;
+  coverage?: "covered" | "partial" | "not_covered";
+  sources?: SourceReference[];
+};
+
+type SourceReference = {
+  sourceId: string;
+  title: string;
+  authority: string;
+  kind: "law" | "regulation" | "guide" | "working_summary";
+  provenance: string;
+  verification: "official" | "secondary" | "unverified";
+  section: string;
+  excerpt: string;
+};
+
+const coverageLabels = {
+  covered: "Question couverte par les passages cités",
+  partial: "Couverture documentaire partielle",
+  not_covered: "Information insuffisante dans les documents",
+};
+
+const verificationLabels = {
+  official: "Document institutionnel",
+  secondary: "Copie secondaire identifiée",
+  unverified: "Document de travail non vérifié",
 };
 
 export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([{
     role: "assistant",
-    content: "Bonjour. Je suis Foncier-Édu, votre conseiller stratégique en droit foncier de la RDC. Mon rôle est de vous guider dans vos démarches et de vous protéger des risques (spoliation, nullité de contrats, etc.).\n\n📜 **Ressources maîtrisées :**\n• Guide Pratique d'Acquisition d'une Concession Foncière (Nouveau)\n• Loi Foncière (Loi 73-021 modifiée)\n• Ordonnance n° 74/148\n• Loi n° 15/025 (Baux à loyer)\n• Arrêtés n° 0075 et n° 90-0012\n\n⚠️ *Transparence & Rigueur : Si votre démarche présente un risque légal ou si vous faites fausse route, je vous le dirai directement. En cas de blocage, je vous indiquerai la démarche administrative correcte.*"
+    content: "Bonjour. Je suis Foncier-Édu, un assistant pédagogique d’information foncière en RDC.\n\nJe peux expliquer les procédures présentes dans la documentation Securifolio et indiquer les passages utilisés. Les réponses sont informatives : elles ne constituent ni une décision administrative, ni une consultation juridique, ni une preuve de droit.\n\nLorsqu’une question n’est pas couverte par les documents disponibles, je dois le signaler sans spéculer."
   }]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPublicUser, setIsPublicUser] = useState(false);
-  const [questionsCount, setQuestionsCount] = useState(0);
-  const [isLimitReached, setIsLimitReached] = useState(false);
+  const [accessLabel, setAccessLabel] = useState("Limites serveur actives");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
-
-  const PUBLIC_LIMIT = 3;
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setIsPublicUser(true);
-        const count = parseInt(localStorage.getItem("foncier_edu_count") || "0");
-        setQuestionsCount(count);
-        if (count >= PUBLIC_LIMIT) {
-          setIsLimitReached(true);
-          setMessages(prev => [...prev, {
-            role: "assistant",
-            content: "⚠️ Vous avez atteint la limite de requêtes gratuites (3/3) pour le public. Pour continuer à utiliser Foncier-Édu en illimité, veuillez vous connecter avec un compte Agent officiel."
-          }]);
-        }
       }
     };
     checkUser();
@@ -54,16 +67,7 @@ export default function AssistantPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || isLimitReached) return;
-
-    if (isPublicUser) {
-      const newCount = questionsCount + 1;
-      setQuestionsCount(newCount);
-      localStorage.setItem("foncier_edu_count", newCount.toString());
-      if (newCount >= PUBLIC_LIMIT) {
-        setIsLimitReached(true);
-      }
-    }
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -77,22 +81,24 @@ export default function AssistantPage() {
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
-      if (!res.ok) throw new Error("Erreur de connexion au serveur");
-
       const data = await res.json();
-      setMessages((prev) => {
-        const newMessages = [...prev, data];
-        if (isPublicUser && questionsCount + 1 >= PUBLIC_LIMIT) {
-          newMessages.push({
-            role: "assistant",
-            content: "⚠️ Vous avez atteint la limite de requêtes gratuites (3/3) pour le public. Pour continuer à utiliser Foncier-Édu en illimité, veuillez vous connecter avec un compte Agent officiel."
-          });
-        }
-        return newMessages;
-      });
+      if (data.accessLabel) setAccessLabel(data.accessLabel);
+      if (!res.ok) throw new Error(data.error || "Erreur de connexion au serveur");
+
+      setMessages((prev) => [...prev, {
+        role: "assistant",
+        content: data.content,
+        coverage: data.coverage,
+        sources: data.sources,
+      }]);
     } catch (error) {
       console.error(error);
-      setMessages((prev) => [...prev, { role: "assistant", content: "Désolé, une erreur est survenue lors de la connexion au serveur." }]);
+      setMessages((prev) => [...prev, {
+        role: "assistant",
+        content: error instanceof Error
+          ? error.message
+          : "Le service documentaire est temporairement indisponible.",
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -112,18 +118,18 @@ export default function AssistantPage() {
           </div>
           <div>
             <h1 className="font-display font-extrabold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">
-              Assistant Foncier RDC
+              Foncier-Édu
             </h1>
             <p className="text-[8px] sm:text-[10px] text-brand-primary font-bold flex items-center gap-1 mt-0.5 sm:mt-1 uppercase tracking-widest bg-brand-primary/10 w-fit px-1.5 sm:px-2 py-0.5 rounded border border-brand-primary/20">
               <ShieldAlert size={10} className="hidden sm:block" />
-              Verrou d&apos;intégrité activé
+              Citations documentaires contrôlées
             </p>
           </div>
         </div>
         {isPublicUser && (
           <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold text-amber-600 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full">
-            <span>Accès Public : {questionsCount}/{PUBLIC_LIMIT}</span>
-            {isLimitReached && <Link href="/login" className="text-brand-primary underline ml-1">Connexion Agent</Link>}
+            <span>Accès public · {accessLabel}</span>
+            <Link href="/login" className="text-brand-primary underline ml-1">Se connecter</Link>
           </div>
         )}
       </div>
@@ -145,7 +151,42 @@ export default function AssistantPage() {
                   ? "bg-brand-primary/10 text-emerald-50 border border-brand-primary/20 rounded-tr-sm shadow-[0_0_15px_rgba(16,185,129,0.05)]" 
                   : "bg-white dark:bg-brand-surface/80 border border-slate-200 dark:border-brand-border text-slate-600 dark:text-slate-300 rounded-tl-sm shadow-[0_0_15px_rgba(0,0,0,0.2)]"
               }`}>
-                <p className="whitespace-pre-wrap font-medium">{msg.content}</p>
+                <div className="space-y-2 font-medium">
+                  {msg.content.split("\n").filter(Boolean).map((line, lineIndex) => (
+                    <p
+                      key={lineIndex}
+                      className={line.startsWith("- ") || line.startsWith("• ") ? "pl-4 relative before:absolute before:left-0 before:content-['•']" : ""}
+                    >
+                      {line.replace(/^[-•]\s*/, "")}
+                    </p>
+                  ))}
+                </div>
+                {msg.role === "assistant" && msg.coverage && (
+                  <div className={`mt-4 rounded-lg border px-3 py-2 text-[10px] font-bold uppercase tracking-wider ${
+                    msg.coverage === "covered"
+                      ? "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-300"
+                      : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300"
+                  }`}>
+                    {coverageLabels[msg.coverage]}
+                  </div>
+                )}
+                {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+                  <div className="mt-4 space-y-3 border-t border-slate-200 pt-4 dark:border-brand-border">
+                    <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      <BookOpen size={13} /> Sources utilisées
+                    </p>
+                    {msg.sources.map((source, sourceIndex) => (
+                      <article key={`${source.sourceId}-${sourceIndex}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs dark:border-brand-border dark:bg-brand-bg/60">
+                        <p className="font-bold text-slate-900 dark:text-white">{source.title}</p>
+                        <p className="mt-1 text-[10px] text-slate-500">{source.section} · {verificationLabels[source.verification]}</p>
+                        <blockquote className="mt-2 border-l-2 border-brand-primary/50 pl-3 text-slate-600 dark:text-slate-300">
+                          {source.excerpt}
+                        </blockquote>
+                        <p className="mt-2 text-[9px] text-slate-400">{source.provenance}</p>
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -177,28 +218,21 @@ export default function AssistantPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isLimitReached ? "Limite atteinte. Connexion requise." : "Décrivez votre situation ou posez votre question juridique..."}
+            placeholder="Posez une question sur les textes et procédures disponibles..."
             className="flex-1 border border-slate-200 dark:border-brand-border rounded-xl sm:rounded-2xl py-3 sm:py-4 px-4 sm:px-6 pr-14 focus:outline-none focus:ring-1 focus:ring-brand-primary focus:border-brand-primary text-sm text-slate-900 dark:text-white bg-brand-bg placeholder-slate-500 shadow-inner font-medium transition-all disabled:opacity-50"
-            disabled={isLoading || isLimitReached}
+            disabled={isLoading}
           />
           <button
             type="submit"
-            disabled={!input.trim() || isLoading || isLimitReached}
+            disabled={!input.trim() || isLoading}
             className="absolute right-1.5 sm:right-2 top-1.5 sm:top-2 bottom-1.5 sm:bottom-2 bg-brand-primary text-brand-bg rounded-lg sm:rounded-xl w-10 sm:w-12 flex items-center justify-center hover:bg-emerald-400 transition-all disabled:bg-brand-surface disabled:text-slate-600 border border-transparent disabled:border-brand-border shadow-[0_0_15px_rgba(16,185,129,0.2)] disabled:shadow-none"
           >
-            {isLimitReached ? <Lock size={16} className="sm:w-[18px] sm:h-[18px] ml-0.5 opacity-50" /> : <Send size={16} className="sm:w-[18px] sm:h-[18px] ml-0.5" />}
+            {isLoading ? <Lock size={16} className="sm:w-[18px] sm:h-[18px] ml-0.5 opacity-50" /> : <Send size={16} className="sm:w-[18px] sm:h-[18px] ml-0.5" />}
           </button>
         </form>
-        {isPublicUser && isLimitReached && (
-          <div className="mt-2 sm:mt-3 text-center">
-            <Link href="/login" className="inline-flex items-center gap-2 text-xs font-bold text-white bg-brand-primary hover:bg-emerald-500 px-4 py-2 rounded-lg transition-colors">
-              <Lock size={14} /> Connexion Agent requise
-            </Link>
-          </div>
-        )}
         <div className="mt-2 text-center">
           <p className="text-[9px] text-slate-400 dark:text-slate-500">
-            L'IA peut faire des erreurs. Ne remplace pas l'avis officiel d'un Conservateur.
+            Information générale fondée sur les passages cités. Ne remplace ni le service foncier compétent, ni un professionnel du droit, ni une juridiction.
           </p>
         </div>
       </div>
