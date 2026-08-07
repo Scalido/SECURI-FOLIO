@@ -9,6 +9,7 @@ import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 import { LocateFixed, Loader2, Search, Upload } from 'lucide-react';
 import Papa from 'papaparse';
+import { buildMapSearchCandidates } from '@/lib/map-search';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -29,21 +30,45 @@ function SearchControl() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [searchNotice, setSearchNotice] = useState('');
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!query.trim()) return;
     
     setIsSearching(true);
+    setSearchNotice('');
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', République Démocratique du Congo')}&limit=5`);
-      const data = await response.json();
+      const candidates = buildMapSearchCandidates(query);
+      let data = [];
+      let matchedCandidate = '';
+
+      for (const candidate of candidates) {
+        const params = new URLSearchParams({
+          format: 'json',
+          q: `${candidate}, République Démocratique du Congo`,
+          limit: '5',
+          countrycodes: 'cd',
+          'accept-language': 'fr',
+        });
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`);
+        if (!response.ok) throw new Error(`Geocoding failed with status ${response.status}`);
+        data = await response.json();
+        if (data.length > 0) {
+          matchedCandidate = candidate;
+          break;
+        }
+      }
+
       setResults(data);
       setShowResults(true);
       
       if (data.length > 0) {
         const { lat, lon } = data[0];
         map.flyTo([parseFloat(lat), parseFloat(lon)], 17);
+        if (matchedCandidate !== candidates[0]) {
+          setSearchNotice(`Résultat obtenu avec l’adresse simplifiée « ${matchedCandidate} ». Vérifiez le point avant de tracer.`);
+        }
         if (data.length === 1) setShowResults(false);
       } else {
         alert("Aucun résultat trouvé.");
@@ -84,6 +109,12 @@ function SearchControl() {
           {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
         </button>
       </form>
+
+      {searchNotice && (
+        <p role="status" className="mt-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold leading-relaxed text-amber-800 shadow-sm">
+          {searchNotice}
+        </p>
+      )}
       
       {showResults && results.length > 1 && (
         <div className="mt-1 bg-white rounded-lg shadow-lg border border-slate-200 overflow-hidden max-h-[200px] overflow-y-auto">
