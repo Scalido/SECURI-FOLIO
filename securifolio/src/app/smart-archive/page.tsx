@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { UploadCloud, FileImage, ShieldAlert, CheckCircle2, Loader2, AlertTriangle, FileText, Sparkles, Download, Lock, Clock, Activity, MapPinOff, BookOpen, Scan, Brain, Map, Camera, Maximize, X } from 'lucide-react';
 import {
   deleteTemporaryScan,
@@ -611,6 +612,71 @@ export default function SmartArchivePage() {
     }
   };
 
+  const mapWorkspace = (
+    <div className={
+      isMapFullscreen
+        ? "fixed inset-0 z-[100] bg-white dark:bg-brand-bg flex flex-col p-4 md:p-6 animate-in fade-in zoom-in-95 duration-200"
+        : "relative h-[400px] hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border"
+    }>
+      {isMapFullscreen && (
+        <div className="mb-4 shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-brand-border dark:bg-brand-surface">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h3 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white flex items-center gap-2">
+                <Map className="w-5 h-5 text-[#007FFF]" /> Espace de traçage géomètre
+              </h3>
+              <p className="mt-1 text-xs font-medium text-slate-500">
+                Importez un CSV/TXT RTK ou sélectionnez l&apos;outil polygone pour tracer manuellement.
+              </p>
+              {draftGeoAreaSqm > 0 && (
+                <p className="mt-2 text-xs font-bold text-[#007FFF]">
+                  Superficie du brouillon : {draftGeoAreaSqm.toFixed(2)} m²
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={cancelTracingWorkspace}
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <X className="h-4 w-4" />
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={validateTracingWorkspace}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#007FFF] px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-600"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                Valider le tracé
+              </button>
+            </div>
+          </div>
+          {spatialError && (
+            <div role="alert" className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700">
+              {spatialError}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className={isMapFullscreen ? "relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-xl dark:border-slate-700" : "h-full w-full"}>
+        <MapDigitizer
+          key={mapSessionKey}
+          initialGeoJson={isMapFullscreen ? editorInitialGeoData : geoData}
+          editingEnabled={isMapFullscreen}
+          onPolygonDrawn={(geojson, area) => {
+            if (!isMapFullscreen) return;
+            setDraftGeoData(geojson);
+            setDraftGeoAreaSqm(area);
+            setSpatialError('');
+          }}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="w-full flex-1 bg-brand-bg text-slate-900 dark:text-white font-sans selection:bg-brand-primary/20 relative overflow-hidden">
       
@@ -1015,69 +1081,8 @@ export default function SmartArchivePage() {
                   </p>
                   
                   <div className={`transition-all duration-300 relative ${isLocationUnknown ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
-                    {/* Conteneur principal (Plein écran ou intégré) */}
-                    <div className={
-                      isMapFullscreen 
-                        ? "fixed inset-0 z-[100] bg-white dark:bg-brand-bg flex flex-col p-4 md:p-6 animate-in fade-in zoom-in-95 duration-200"
-                        : "relative h-[400px] hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-brand-border"
-                    }>
-                      {isMapFullscreen && (
-                        <div className="mb-4 shrink-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-brand-border dark:bg-brand-surface">
-                          <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div>
-                              <h3 className="font-bold text-lg md:text-xl text-slate-900 dark:text-white flex items-center gap-2">
-                                <Map className="w-5 h-5 text-[#007FFF]" /> Espace de traçage géomètre
-                              </h3>
-                              <p className="mt-1 text-xs font-medium text-slate-500">
-                                Importez un CSV/TXT RTK ou sélectionnez l&apos;outil polygone pour tracer manuellement.
-                              </p>
-                              {draftGeoAreaSqm > 0 && (
-                                <p className="mt-2 text-xs font-bold text-[#007FFF]">
-                                  Superficie du brouillon : {draftGeoAreaSqm.toFixed(2)} m²
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex flex-wrap items-center justify-end gap-2">
-                              <button
-                                type="button"
-                                onClick={cancelTracingWorkspace}
-                                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
-                              >
-                                <X className="h-4 w-4" />
-                                Annuler
-                              </button>
-                              <button
-                                type="button"
-                                onClick={validateTracingWorkspace}
-                                className="inline-flex items-center gap-2 rounded-xl bg-[#007FFF] px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-600"
-                              >
-                                <CheckCircle2 className="h-4 w-4" />
-                                Valider le tracé
-                              </button>
-                            </div>
-                          </div>
-                          {spatialError && (
-                            <div role="alert" className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700">
-                              {spatialError}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      <div className={isMapFullscreen ? "relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-xl dark:border-slate-700" : "h-full w-full"}>
-                        <MapDigitizer
-                          key={mapSessionKey}
-                          initialGeoJson={isMapFullscreen ? editorInitialGeoData : geoData}
-                          editingEnabled={isMapFullscreen}
-                          onPolygonDrawn={(geojson, area) => {
-                            if (!isMapFullscreen) return;
-                            setDraftGeoData(geojson);
-                            setDraftGeoAreaSqm(area);
-                            setSpatialError('');
-                          }}
-                        />
-                      </div>
-                    </div>
+                    {/* La version plein écran est portée sous document.body pour échapper aux filtres CSS des cartes parentes. */}
+                    {!isMapFullscreen && mapWorkspace}
 
                     {isLocationUnknown && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/10 dark:bg-slate-900/30 backdrop-blur-[1px] z-10 rounded-2xl">
@@ -1273,6 +1278,8 @@ export default function SmartArchivePage() {
         </section>
 
       </main>
+
+      {isMapFullscreen && createPortal(mapWorkspace, document.body)}
       
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes pulse-slow {
