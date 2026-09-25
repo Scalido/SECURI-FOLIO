@@ -12,8 +12,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Trop de requêtes. Réessayez dans quelques instants.' }, { status: 429 })
   }
 
+  let body
+  try { body = await req.json() } catch {
+    return NextResponse.json({ error: 'Requête JSON invalide.' }, { status: 400 })
+  }
   try {
-    const { numeroCadastral } = await req.json()
+    const { numeroCadastral } = body || {}
 
     if (typeof numeroCadastral !== 'string' || !numeroCadastral.trim() || numeroCadastral.length > MAX_NUMERO_LENGTH) {
       return NextResponse.json({ error: 'Numéro cadastral invalide.' }, { status: 400 })
@@ -38,18 +42,15 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await query.limit(1).maybeSingle()
 
-    if (error || !data) {
-      if (error?.code === 'PGRST116' || !data) {
-        return NextResponse.json({ error: 'Aucun titre foncier trouvé pour ce numéro cadastral.' }, { status: 404 })
-      }
-
-      console.error('Erreur due diligence:', error)
-      return NextResponse.json({ error: 'Erreur lors de la recherche.' }, { status: 500 })
+    if (error) {
+      console.error('Erreur due diligence:', error.code)
+      return NextResponse.json({ error: 'Le registre est temporairement indisponible. Réessayez plus tard.' }, { status: 503 })
     }
+    if (!data) return NextResponse.json({ error: 'Aucun titre foncier trouvé pour ce numéro cadastral.' }, { status: 404 })
 
     return NextResponse.json({ data })
   } catch (error) {
     console.error('Erreur API due diligence:', error)
-    return NextResponse.json({ error: 'Requête invalide.' }, { status: 400 })
+    return NextResponse.json({ error: 'Le registre est temporairement indisponible.' }, { status: 503 })
   }
 }

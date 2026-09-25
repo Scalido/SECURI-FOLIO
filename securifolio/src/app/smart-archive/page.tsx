@@ -375,6 +375,7 @@ export default function SmartArchivePage() {
     setResult(null);
     setDbVerification(null);
 
+    let temporaryScanPath: string | null = null;
     try {
       let imageUrlToSend = null;
       let base64DataToSend = null;
@@ -395,6 +396,7 @@ export default function SmartArchivePage() {
           throw new Error("Erreur réseau lors de l'envoi du document lourd. Vérifiez votre connexion.");
         }
 
+        temporaryScanPath = tempFileName;
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
           .from('scans_certificats')
           .createSignedUrl(tempFileName, 300); // 5 minutes
@@ -451,6 +453,13 @@ export default function SmartArchivePage() {
       }
       setErrorMsg(message);
       setStatus('error');
+    } finally {
+      if (temporaryScanPath) {
+        try {
+          const { error } = await createClient().storage.from('scans_certificats').remove([temporaryScanPath]);
+          if (error) console.warn('Nettoyage temporaire à reprendre:', error.message);
+        } catch { console.warn('Nettoyage temporaire indisponible.'); }
+      }
     }
   };
 
@@ -684,8 +693,8 @@ export default function SmartArchivePage() {
                   <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                     <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                     <div>
-                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Document Intègre</h3>
-                      <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Aucune altération visuelle suspecte détectée sur le scan.</p>
+                      <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Aucune alerte visuelle signalée</h3>
+                      <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Cette analyse automatisée ne prouve pas l’authenticité du document. Une vérification humaine reste nécessaire.</p>
                     </div>
                   </div>
                 )}
@@ -693,7 +702,11 @@ export default function SmartArchivePage() {
                 {/* Registre Central Verification Banner */}
                 {dbVerification && (
                   <div className="animate-in slide-in-from-bottom-2 duration-300">
-                    {!dbVerification.found ? (
+                    {dbVerification.available === false ? (
+                      <div role="alert" className="border border-brand-accent/30 rounded-2xl p-6 text-brand-accent">
+                        Registre indisponible : aucune conclusion sur ce titre ne peut être donnée. Réessayez la vérification plus tard.
+                      </div>
+                    ) : !dbVerification.found ? (
                       <div className="bg-white dark:bg-brand-surface/80 backdrop-blur-sm border border-slate-200 dark:border-brand-border rounded-2xl p-6 flex items-center gap-5 shadow-sm">
                         <div className="bg-brand-bg p-3 rounded-xl shrink-0 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-brand-border">
                           <AlertTriangle className="w-6 h-6" />
@@ -731,8 +744,8 @@ export default function SmartArchivePage() {
                       <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-2xl p-6 flex items-center gap-5 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
                         <CheckCircle2 className="w-10 h-10 text-brand-primary shrink-0 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         <div>
-                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Concordance Validée</h3>
-                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">L'extraction correspond au registre. Validation rapide possible.</p>
+                          <h3 className="text-slate-900 dark:text-white font-bold text-base uppercase tracking-wider">Champs concordants</h3>
+                          <p className="text-brand-primary/80 text-xs mt-1.5 font-medium leading-relaxed">Les champs comparés correspondent au registre. Statut du dossier : {dbVerification.status}. La décision reste soumise au contrôle humain.</p>
                         </div>
                       </div>
                     )}
@@ -783,16 +796,16 @@ export default function SmartArchivePage() {
                       date_etablissement: "Date d'établissement"
                     };
                     
-                    // Simulate confidence scores (lower if there's a discrepancy)
+                    // Un écart au registre n'est pas une mesure de confiance OCR.
                     const isDivergent = dbVerification?.found && key !== 'superficie' && key !== 'date_etablissement' && dbVerification.matches && !dbVerification.matches[key];
-                    const confidence = isDivergent ? Math.floor(Math.random() * 15) + 65 : Math.floor(Math.random() * 10) + 90; 
+
 
                     return (
                       <div key={key} className="space-y-1.5">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{labelMap[key]}</label>
-                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${confidence > 85 ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}`}>
-                            Confiance IA: {confidence}%
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${!isDivergent ? 'bg-brand-primary/10 text-brand-primary' : 'bg-brand-accent/20 text-brand-accent'}`}>
+                            {isDivergent ? 'Écart au registre' : 'À vérifier sur le document'}
                           </span>
                         </div>
                         <input 
@@ -933,7 +946,7 @@ export default function SmartArchivePage() {
                       className="mt-0.5 accent-amber-500" 
                     />
                     <label htmlFor="unknownLocation" className="text-xs text-amber-800 dark:text-amber-200/80 font-medium leading-relaxed cursor-pointer">
-                      <strong>Localisation spatiale inconnue :</strong> Je n'ai pas les moyens d'identifier la parcelle avec précision. (Le dossier sera marqué "Topographie requise" pour une descente sur le terrain).
+                      <strong>Localisation spatiale inconnue :</strong> Je n'ai pas les moyens d'identifier la parcelle avec précision. (Le dossier restera en attente ; une géométrie valide sera nécessaire avant validation cadastrale).
                     </label>
                   </div>
                 </div>
@@ -995,9 +1008,11 @@ export default function SmartArchivePage() {
                             .getPublicUrl(fileName);
 
                           // 3. Sauvegarder dans la DB (avec Zod et RBAC en backend)
-                          const res = await saveCertificate(formData, publicUrl, geoData, isLocationUnknown);
+                          const res = await saveCertificate(formData, publicUrl, isLocationUnknown ? null : geoData, isLocationUnknown);
                           
                           if (!res.success) {
+                            const { error: cleanupError } = await supabase.storage.from('scans_certificats').remove([fileName]);
+                            if (cleanupError) console.warn('Scan non enregistré à nettoyer:', cleanupError.message);
                             if (res.error === 'TITRE_DEJA_NUMERISE') {
                               alert(`🚨 ALERTE DOUBLON : ${res.message}`);
                             } else {

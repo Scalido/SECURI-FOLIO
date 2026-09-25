@@ -3,34 +3,27 @@
 import { createClient } from '@/utils/supabase/server'
 import { certificateSchema } from '@/lib/validations'
 import crypto from 'crypto'
+import { isValidParcelFeature } from '@/lib/spatial/parcel-geometry.mjs'
 
-function parseFrenchDate(dateStr?: string | null): string {
-  if (!dateStr) return new Date().toISOString();
-  
-  const timestamp = Date.parse(dateStr);
-  if (!isNaN(timestamp)) return new Date(timestamp).toISOString();
-
-  const months: Record<string, string> = {
-    'janvier': '01', 'février': '02', 'fevrier': '02', 'mars': '03', 'avril': '04',
-    'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08', 'aout': '08',
-    'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12', 'decembre': '12'
-  };
-
-  const match = dateStr.toLowerCase().match(/(\d{1,2})\s+([a-zéû]+)\s+(\d{4})/);
-  if (match) {
-    const day = match[1].padStart(2, '0');
-    const month = months[match[2]];
-    const year = match[3];
-    if (month) {
-      return new Date(`${year}-${month}-${day}T12:00:00Z`).toISOString();
-    }
-  }
-
-  return new Date().toISOString(); // Fallback
+function parseFrenchDate(value?: string | null): string | null | undefined {
+  if (!value?.trim()) return null
+  const text = value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre']
+  let year: number, month: number, day: number
+  const iso = text.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  const french = text.match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/)
+  const words = text.match(/^(\d{1,2})(?:er)?\s+([a-z]+)\s+(\d{4})$/)
+  if (iso) [, year, month, day] = iso.map(Number)
+  else if (french) [, day, month, year] = french.map(Number)
+  else if (words) { day = Number(words[1]); month = months.indexOf(words[2]) + 1; year = Number(words[3]) }
+  else return undefined
+  const date = new Date(Date.UTC(year, month - 1, day, 12))
+  if (year < 1000 || date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return undefined
+  return date.toISOString()
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, requiresTopography: boolean = false) {
+export async function saveCertificate(formData: any, scanUrl?: string, coordonneesSpatiales?: any, isLocationUnknown: boolean = false) {
   const supabaseServer = createClient()
   const { data: { user } } = await supabaseServer.auth.getUser()
 
@@ -47,8 +40,9 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
     return { success: false, error: 'Accès refusé. Seuls les agents assermentés peuvent transmettre un document (rôle "agent" requis dans la DB).' }
   }
 
-  if (requiresTopography && !coordonneesSpatiales) {
-    return { success: false, error: 'Coordonnées topographiques requises pour ce dossier.' }
+  if (isLocationUnknown) coordonneesSpatiales = null
+  else if (!isValidParcelFeature(coordonneesSpatiales)) {
+    return { success: false, error: 'Parcelle invalide. Fournissez un polygone fermé sans croisement, ou déclarez la localisation inconnue.' }
   }
 
   // 2. Validation Zod stricte
@@ -60,6 +54,8 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
   }
 
   const validData = validationResult.data
+  const parsedDate = parseFrenchDate(validData.date_etablissement)
+  if (parsedDate === undefined) return { success: false, error: "Date invalide. Utilisez JJ/MM/AAAA ou AAAA-MM-JJ, ou laissez la date vide si elle est inconnue." }
   const numeroCadastral = validData.numero_cadastral.trim()
 
   // 3. Vérifier si le titre existe déjà
@@ -116,7 +112,6 @@ export async function saveCertificate(formData: any, scanUrl?: string, coordonne
 
   const hashSignature = crypto.createHmac('sha256', signatureSecret).update(dataToSign).digest('hex');
 
-  const parsedDate = parseFrenchDate(validData.date_etablissement);
 
   const { error: insertError } = await supabaseServer
     .rpc('create_title_with_history', {

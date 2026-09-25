@@ -1,5 +1,6 @@
 'use server'
 
+import { isValidParcelFeature } from '@/lib/spatial/parcel-geometry.mjs'
 import { createClient } from '@/utils/supabase/server'
 import { requireMfaForSensitiveRole } from '@/lib/security/mfa'
 
@@ -54,6 +55,14 @@ export async function updateTitleStatus(titleId: string, newStatus: 'Validé tec
 
   const mfaError = await requireMfaForSensitiveRole(supabaseServer, profile.role)
   if (mfaError) return { success: false, error: mfaError }
+
+  if (!['Validé techniquement', 'Falsifié', 'Litige'].includes(newStatus)) return { success: false, error: 'Statut invalide.' }
+  if (newStatus === 'Validé techniquement') {
+    const { data: title, error } = await supabaseServer.from('titres_fonciers')
+      .select('coordonnees_spatiales').eq('id', titleId).single()
+    if (error || !title) return { success: false, error: 'Impossible de vérifier la parcelle.' }
+    if (!isValidParcelFeature(title.coordonnees_spatiales)) return { success: false, error: 'Topographie requise : renseignez une parcelle valide avant la validation cadastrale.' }
+  }
 
   const { error: updateError } = await supabaseServer
     .rpc('update_title_status_with_history', {

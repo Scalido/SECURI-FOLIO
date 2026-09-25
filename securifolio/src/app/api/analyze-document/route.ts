@@ -21,7 +21,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Trop de requêtes. Réessayez dans quelques instants.' }, { status: 429 });
     }
 
-    const { imageUrl, base64Data, mimeType } = await req.json();
+    let body;
+    try { body = await req.json(); } catch {
+      return NextResponse.json({ error: 'Requête JSON invalide.' }, { status: 400 });
+    }
+    const { imageUrl, base64Data, mimeType } = body || {};
 
     if (!imageUrl && !base64Data) {
       return NextResponse.json({ error: 'L\'URL de l\'image ou les données base64 sont requises.' }, { status: 400 });
@@ -42,27 +46,48 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Document trop volumineux. Taille maximale: 8 Mo.' }, { status: 413 });
     }
 
-    if (finalMimeType && typeof finalMimeType === 'string' && !/^image\/(png|jpe?g|webp)$|^application\/pdf$/.test(finalMimeType)) {
+    if (typeof finalMimeType !== 'string' || !['image/png','image/jpeg','image/webp','application/pdf'].includes(finalMimeType)) {
       return NextResponse.json({ error: 'Type de fichier non autorisé.' }, { status: 415 });
     }
 
     // 1. Si une URL est passée (rétrocompatibilité), récupérer l'image
     if (imageUrl) {
-      const url = new URL(imageUrl);
-      if (url.protocol !== 'https:') {
-        return NextResponse.json({ error: 'Seules les URL HTTPS sont acceptées.' }, { status: 400 });
+      let url: URL;
+      try {
+        url = new URL(imageUrl);
+        const allowed = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
+        if (url.protocol !== 'https:' || url.origin !== allowed.origin || url.username || url.password ||
+            !url.pathname.startsWith('/storage/v1/object/sign/scans_certificats/') || !url.searchParams.get('token')) throw new Error('url');
+      } catch {
+        return NextResponse.json({ error: 'Seul un lien signé du stockage de certificats est autorisé.' }, { status: 400 });
       }
-
-      const imageResp = await fetch(imageUrl);
-      if (!imageResp.ok) {
-        throw new Error('Impossible de télécharger l\'image depuis l\'URL fournie.');
+      const imageResp = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(20_000) });
+      if (!imageResp.ok || !imageResp.body) throw new Error('Document indisponible.');
+      const contentType = imageResp.headers.get('content-type')?.split(';')[0].trim();
+      if (!contentType || !['image/png','image/jpeg','image/webp','application/pdf'].includes(contentType)) {
+        await imageResp.body.cancel();
+        return NextResponse.json({ error: 'Type de fichier non autorisé.' }, { status: 415 });
       }
-      const arrayBuffer = await imageResp.arrayBuffer();
-      if (arrayBuffer.byteLength > MAX_BASE64_BYTES) {
-        return NextResponse.json({ error: 'Document trop volumineux. Taille maximale: 8 Mo.' }, { status: 413 });
-      }
-      finalBase64 = Buffer.from(arrayBuffer).toString('base64');
-      finalMimeType = imageResp.headers.get('content-type') || 'image/jpeg';
+      const reader = imageResp.body.getReader();
+      const chunks: Uint8Array[] = [];
+      let size = 0;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          size += value.byteLength;
+          if (size > MAX_BASE64_BYTES) {
+            await reader.cancel();
+            return NextResponse.json({ error: 'Document trop volumineux. Taille maximale: 8 Mo.' }, { status: 413 });
+          }
+          chunks.push(value);
+        }
+      } finally { reader.releaseLock(); }
+      finalBase64 = Buffer.concat(chunks).toString('base64');
+      finalMimeType = contentType;
+    }
+    if (!finalBase64 || typeof finalBase64 !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(finalBase64)) {
+      return NextResponse.json({ error: 'Document base64 invalide.' }, { status: 400 });
     }
 
     // 2. Préparer le modèle Gemini Vision avec schéma JSON structuré
@@ -124,6 +149,7 @@ export async function POST(req: NextRequest) {
     // 5. Interroger Supabase pour la vérification Anti-Folio
     const dbVerification = {
       found: false,
+      available: true,
       matches: {
         nom: false,
         numero_cadastral: false,
@@ -143,6 +169,7 @@ export async function POST(req: NextRequest) {
           .select('numero_cadastral, nom_proprietaire, volume, folio, circonscription, statut')
           .eq('numero_cadastral', parsedJson.numero_cadastral.trim());
 
+        if (dbError) dbVerification.available = false;
         if (!dbError && dbData && dbData.length > 0) {
           // Trouver le meilleur match si plusieurs enregistrements
           let matchRecord = dbData[0];
@@ -169,6 +196,7 @@ export async function POST(req: NextRequest) {
           dbVerification.matches.circonscription = cleanStr(matchRecord.circonscription) === cleanStr(parsedJson.circonscription);
         }
       } catch (dbErr) {
+        dbVerification.available = false;
         console.error('Erreur lors de la vérification de la base de données:', dbErr);
       }
     }

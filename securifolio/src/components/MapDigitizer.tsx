@@ -1,5 +1,7 @@
 'use client';
 
+import { isValidParcelFeature } from '@/lib/spatial/parcel-geometry.mjs';
+
 import { useEffect, useState, useRef } from 'react';
 import type { RefObject } from 'react';
 import type { Feature, Polygon } from 'geojson';
@@ -186,17 +188,19 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
         
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         for (const row of results.data as any[]) {
-           if (!row[latKey] || !row[lngKey]) continue;
+           if (row[latKey] === '' && row[lngKey] === '') continue;
            
            // Replace commas with dots for French locales
            const latStr = String(row[latKey]).trim().replace(',', '.');
            const lngStr = String(row[lngKey]).trim().replace(',', '.');
            
-           const lat = parseFloat(latStr);
-           const lng = parseFloat(lngStr);
-           if (!isNaN(lat) && !isNaN(lng)) {
-             coordinates.push([lng, lat]);
+           const lat = Number(latStr);
+           const lng = Number(lngStr);
+           if (!latStr || !lngStr || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+             alert('Coordonnées CSV invalides : vérifiez chaque latitude et longitude.');
+             return;
            }
+           coordinates.push([lng, lat]);
         }
 
         if (coordinates.length < 3) {
@@ -219,6 +223,10 @@ function RtkUploaderControl({ featureGroupRef, onPolygonDrawn }: { featureGroupR
           }
         };
 
+        if (!isValidParcelFeature(geojson)) {
+          alert('Parcelle CSV invalide : vérifiez les sommets et les croisements.');
+          return;
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const layer = L.geoJSON(geojson as any, {
           style: {
