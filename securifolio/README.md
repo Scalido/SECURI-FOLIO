@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sécurifolio
 
-## Getting Started
+Application Next.js de consultation et d'archivage des titres fonciers. Les décisions administratives restent humaines ; une concordance de champs ne prouve ni l'authenticité juridique ni l'absence de chevauchement.
 
-First, run the development server:
+## Démarrer en local
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Installer les dépendances avec `npm ci` si elles sont absentes.
+2. Copier `.env.example` vers `.env.local` et renseigner les valeurs de l'environnement de test. Ne jamais committer les secrets.
+3. Lancer `npm run dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pour tester le build de production : `npm run build`, puis `npm run start -- --hostname 127.0.0.1 --port 3100`. Ne pas lancer build et dev simultanément dans le même dossier `.next`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vérifier les corrections
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run test:unit` : tests métier, géométrie, dates, classement des titres, navigation, frontières API et contrôles administrateur. Les services externes sont remplacés aux frontières des tests ; aucune base distante n'est modifiée.
+- `npm run test:security` : contrôles statiques complémentaires, qui ne prouvent pas l'efficacité des règles déployées.
+- `npm run test:api` : contrôles HTTP sans session contre `http://127.0.0.1:3100` (modifiable via `SMOKE_BASE_URL`). Nécessite le serveur lancé.
+- `npm test` : les trois suites ci-dessus.
+- `npm run lint` et `npm run build` : contrôles de code, types et compilation.
 
-## Learn More
+## Accès et stockage
 
-To learn more about Next.js, take a look at the following resources:
+Les rôles métier sont `agent`, `chef_cadastre`, `conservateur`, `notaire` et `citoyen`. L'accès administrateur est déterminé côté serveur par `ADMIN_EMAILS`, pas par des métadonnées modifiables par l'utilisateur. Les opérations sensibles exigent le MFA, y compris en développement.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Les documents sans localisation restent en attente ; une géométrie valide est requise pour leur validation cadastrale. Les dates inconnues sont conservées comme telles. Les médias temporaires sont nettoyés au mieux ; les politiques de suppression du bucket doivent le permettre.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Validation encore nécessaire avant production
 
-## Deploy on Vercel
+Le projet Supabase Securifolio est en pause. Aucun changement de base ni déploiement ne doit être déduit du succès des tests locaux. Restent notamment : audit des politiques RLS réelles et fermeture des écritures directes contournant les RPC ; contrôle MFA/transition/historique atomique dans la base ; quota public durable partagé ; stockage privé et liens signés avec reprise des références existantes ; reprise des documents sans géométrie ; recette par rôle sur données fictives et sauvegarde restaurable.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Les URL publiques existantes des scans sont conservées par compatibilité tant que la migration du stockage n'a pas été validée. Les anciens résultats d'historique `fraud` peuvent refléter un ancien classement erroné et ne doivent pas être interprétés comme une preuve de falsification.

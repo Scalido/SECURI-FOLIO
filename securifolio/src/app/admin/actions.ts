@@ -81,76 +81,53 @@ async function checkSuperviseurAccess() {
   const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
   if (!adminEmails.includes(user.email?.toLowerCase() || "")) return false;
 
-  return true;
+  return !(await requireMfaForSensitiveRole(supabase, 'admin'));
+}
+
+// All privileged reads follow the server allowlist and MFA gate above.
+async function readTable(table: 'profiles' | 'titres_fonciers' | 'anti_folio_history' | 'smart_archive_history') {
+  if (!(await checkSuperviseurAccess())) return { error: 'Accès refusé ou authentification MFA requise.' };
+  try {
+    const admin = createAdminClient();
+    const rows = [];
+    for (let offset = 0; offset < 10000; offset += 1000) {
+      const { data, error } = await admin.from(table).select('*').order('id').range(offset, offset + 999);
+      if (error) return { error: 'Lecture du registre indisponible.' };
+      rows.push(...(data || []));
+      if (!data || data.length < 1000) return { data: rows };
+    }
+    return { error: 'Volume trop important pour cette vue. Un export paginé est nécessaire.' };
+  } catch { return { error: 'Configuration du registre indisponible.' }; }
 }
 
 export async function getProfilesData() {
-  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
-  const adminAuthClient = createAdminClient();
-  const supabase = createClient();
-
-  // 1. Récupérer la liste absolue de tous les comptes de connexion
-  const { data: usersData, error: usersError } = await adminAuthClient.auth.admin.listUsers();
-  if (usersError) return { error: usersError.message };
-
-  // 2. Récupérer les profils métiers
-  const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('*');
-  if (profilesError) return { error: profilesError.message };
-
-  // 3. Fusionner les deux listes pour un affichage complet
-  const mergedData = usersData.users.map(user => {
-    const profile = profilesData?.find(p => p.id === user.id);
-    return {
+  if (!(await checkSuperviseurAccess())) return { error: 'Accès refusé ou authentification MFA requise.' };
+  try {
+    const admin = createAdminClient();
+    const users = [];
+    let complete = false;
+    for (let page = 1; page <= 100; page++) {
+      const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 100 });
+      if (error) return { error: 'Liste des comptes indisponible.' };
+      users.push(...data.users);
+      if (data.users.length < 100) { complete = true; break; }
+    }
+    if (!complete) return { error: 'Volume trop important pour cette vue.' };
+    const profiles = await readTable('profiles');
+    if (!profiles.data) return { error: profiles.error };
+    const byId = new Map(profiles.data.map(p => [p.id, p]));
+    users.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at));
+    return { data: users.map(user => ({
       id: user.id,
       email: user.email,
       created_at: new Date(user.created_at).toLocaleString('fr-FR'),
       last_sign_in: user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('fr-FR') : 'Jamais',
-      role: profile?.role || 'citoyen (défaut)',
-      circonscription: profile?.circonscription || '-'
-    };
-  });
-
-  // Trier par date de création décroissante
-  mergedData.sort((a, b) => new Date(usersData.users.find(u => u.id === b.id)?.created_at || 0).getTime() - new Date(usersData.users.find(u => u.id === a.id)?.created_at || 0).getTime());
-
-  return { data: mergedData };
+      role: byId.get(user.id)?.role || 'Profil métier absent',
+      circonscription: byId.get(user.id)?.circonscription || '-'
+    })) };
+  } catch { return { error: 'Configuration administrateur indisponible.' }; }
 }
 
-export async function getTitresFonciersData() {
-  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from('titres_fonciers')
-    .select('*')
-    .order('created_at', { ascending: false });
-    
-  if (error) return { error: error.message };
-  return { data };
-}
-
-export async function getAntiFolioHistoryData() {
-  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from('anti_folio_history')
-    .select('*')
-    .order('date_scan', { ascending: false });
-    
-  if (error) return { error: error.message };
-  return { data };
-}
-
-export async function getSmartArchiveHistoryData() {
-  if (!(await checkSuperviseurAccess())) return { error: "Non autorisé" };
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from('smart_archive_history')
-    .select('*')
-    .order('created_at', { ascending: false });
-    
-  if (error) return { error: error.message };
-  return { data };
-}
+export async function getTitresFonciersData() { return readTable('titres_fonciers'); }
+export async function getAntiFolioHistoryData() { return readTable('anti_folio_history'); }
+export async function getSmartArchiveHistoryData() { return readTable('smart_archive_history'); }

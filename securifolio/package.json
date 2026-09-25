@@ -9,8 +9,9 @@
     "lint": "next lint",
     "test:security": "node scripts/security-checks.mjs",
     "test:api": "node tests/api-smoke-tests.mjs",
-    "test": "npm run test:security && npm run test:api",
-    "audit:deps": "npm audit --audit-level=moderate"
+    "test": "npm run test:unit && npm run test:security && npm run test:api",
+    "audit:deps": "npm audit --audit-level=moderate",
+    "test:unit": "node --test tests/unit/*.test.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

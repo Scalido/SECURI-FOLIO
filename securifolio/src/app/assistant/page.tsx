@@ -8,6 +8,7 @@ import Link from "next/link";
 type Message = {
   role: "user" | "assistant";
   content: string;
+  error?: boolean;
 };
 
 export default function AssistantPage() {
@@ -30,7 +31,8 @@ export default function AssistantPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setIsPublicUser(true);
-        const count = parseInt(localStorage.getItem("foncier_edu_count") || "0");
+        const savedCount = Number(localStorage.getItem("foncier_edu_count") || "0");
+        const count = Number.isFinite(savedCount) && savedCount >= 0 ? savedCount : 0;
         setQuestionsCount(count);
         if (count >= PUBLIC_LIMIT) {
           setIsLimitReached(true);
@@ -56,15 +58,6 @@ export default function AssistantPage() {
     e.preventDefault();
     if (!input.trim() || isLoading || isLimitReached) return;
 
-    if (isPublicUser) {
-      const newCount = questionsCount + 1;
-      setQuestionsCount(newCount);
-      localStorage.setItem("foncier_edu_count", newCount.toString());
-      if (newCount >= PUBLIC_LIMIT) {
-        setIsLimitReached(true);
-      }
-    }
-
     const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
@@ -74,12 +67,18 @@ export default function AssistantPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
+        body: JSON.stringify({ messages: [...messages.filter(message => !message.error), userMessage].slice(-19).map(message => ({ role: message.role, content: message.content.slice(0, 8000) })) }),
       });
 
-      if (!res.ok) throw new Error("Erreur de connexion au serveur");
-
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur de connexion au serveur");
+      if (data.role !== 'assistant' || typeof data.content !== 'string') throw new Error('Réponse du service invalide.');
+      if (isPublicUser) {
+        const count = questionsCount + 1;
+        setQuestionsCount(count);
+        localStorage.setItem("foncier_edu_count", String(count));
+        setIsLimitReached(count >= PUBLIC_LIMIT);
+      }
       setMessages((prev) => {
         const newMessages = [...prev, data];
         if (isPublicUser && questionsCount + 1 >= PUBLIC_LIMIT) {
@@ -92,7 +91,8 @@ export default function AssistantPage() {
       });
     } catch (error) {
       console.error(error);
-      setMessages((prev) => [...prev, { role: "assistant", content: "Désolé, une erreur est survenue lors de la connexion au serveur." }]);
+      setMessages((prev) => [...prev.slice(0, -1), { role: "assistant", content: error instanceof Error ? error.message : "Service indisponible. Réessayez plus tard.", error: true }]);
+      setInput(userMessage.content);
     } finally {
       setIsLoading(false);
     }

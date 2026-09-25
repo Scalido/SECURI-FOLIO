@@ -44,8 +44,15 @@ export async function POST(req: Request) {
       );
     }
 
-    const { messages } = await req.json();
-    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 20) {
+    let body;
+    try { body = await req.json(); } catch {
+      return NextResponse.json({ error: "Requête JSON invalide." }, { status: 400 });
+    }
+    const { messages } = body || {};
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 200 ||
+        messages.some(message => !message || !['user','assistant'].includes(message.role) || typeof message.content !== 'string' || !message.content.trim() || message.content.length > (message.role === 'user' ? 8000 : 120000)) ||
+        messages.reduce((total, message) => total + message.content.length, 0) > 1000000 ||
+        messages[messages.length - 1]?.role !== 'user' ) {
       return NextResponse.json(
         { error: "Historique de conversation invalide." },
         { status: 400 }
@@ -78,18 +85,20 @@ ${lawContent}`;
     const history: { role: string; parts: { text: string }[] }[] = [];
     let foundFirstUser = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messages.slice(0, -1).forEach((msg: any) => {
+    messages.slice(-19, -1).forEach((msg: any) => {
       if (msg.role === "user") {
         foundFirstUser = true;
       }
       if (foundFirstUser) {
-        history.push({
-          role: msg.role === "user" ? "user" : "model",
-          parts: [{ text: msg.content }],
-        });
+        const role = msg.role === "user" ? "user" : "model";
+        const previous = history[history.length - 1];
+        if (previous?.role === role) previous.parts[0].text = (previous.parts[0].text + "\n\n" + msg.content).slice(-8000);
+        else history.push({ role, parts: [{ text: msg.content.slice(0, 8000) }] });
       }
     });
 
+    while (history.reduce((size, message) => size + message.parts[0].text.length, 0) > 56000) history.shift();
+    while (history[0]?.role === 'model') history.shift();
     const chat = model.startChat({ history });
 
     const lastMessage = messages[messages.length - 1].content;
