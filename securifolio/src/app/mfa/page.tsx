@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Smartphone, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { roleDestination } from '@/lib/navigation/role';
+import { getCurrentNavigationRole } from '@/app/auth/navigation-role';
 
 type MfaStep = 'loading' | 'enroll' | 'verify' | 'complete';
 
@@ -12,11 +14,6 @@ type TotpFactor = {
   id: string;
   friendly_name?: string;
   status?: string;
-};
-
-const redirectByRole: Record<string, string> = {
-  chef_cadastre: '/cadastre-dashboard',
-  conservateur: '/conservateur-dashboard',
 };
 
 export default function MfaPage() {
@@ -38,13 +35,12 @@ export default function MfaPage() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    router.push(profile?.role ? redirectByRole[profile.role] || '/smart-archive' : '/smart-archive');
+    try {
+      router.push(roleDestination(await getCurrentNavigationRole()));
+    } catch (roleError) {
+      console.error('Rôle indisponible :', roleError);
+      router.push('/smart-archive');
+    }
   };
 
   useEffect(() => {

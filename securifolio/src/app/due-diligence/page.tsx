@@ -53,25 +53,25 @@ export default function DueDiligencePage() {
       case 'Valide':
         return (
           <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full font-bold">
-            <CheckCircle2 className="w-5 h-5" /> Titre Authentique & Valide
+            <CheckCircle2 className="w-5 h-5" /> Statut enregistré : Valide
           </div>
         );
       case 'Litige':
         return (
           <div className="flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-full font-bold">
-            <AlertTriangle className="w-5 h-5" /> En Litige (Superposition / Conflit)
+            <AlertTriangle className="w-5 h-5" /> Statut enregistré : Litige
           </div>
         );
       case 'Falsifié':
         return (
           <div className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-2 rounded-full font-bold">
-            <XCircle className="w-5 h-5" /> Falsifié / Invalide
+            <XCircle className="w-5 h-5" /> Statut enregistré : Falsifié
           </div>
         );
       default:
         return (
           <div className="flex items-center gap-2 text-slate-600 bg-slate-50 px-4 py-2 rounded-full font-bold">
-            <ShieldCheck className="w-5 h-5" /> En attente d'audit
+            <ShieldCheck className="w-5 h-5" /> Statut enregistré : {statut || 'Non renseigné'}
           </div>
         );
     }
@@ -90,7 +90,7 @@ export default function DueDiligencePage() {
             Portail <span className="text-brand-primary">Due Diligence</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mx-auto">
-            Vérifiez instantanément l'authenticité et le statut juridique d'un titre foncier avant toute transaction immobilière.
+            Consultez le statut enregistré d'un titre foncier. Pour une transaction, faites confirmer les pièces et les droits par le service compétent.
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export default function DueDiligencePage() {
         {error && (
           <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-6 text-center animate-in fade-in slide-in-from-bottom-4">
             <XCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-red-700 dark:text-red-400 mb-1">Document introuvable</h3>
+            <h3 className="text-lg font-bold text-red-700 dark:text-red-400 mb-1">Recherche non aboutie</h3>
             <p className="text-red-600/80 dark:text-red-400/80">{error}</p>
           </div>
         )}
@@ -134,7 +134,7 @@ export default function DueDiligencePage() {
           <div className="bg-white dark:bg-brand-surface border border-slate-200 dark:border-brand-border rounded-3xl p-8 shadow-2xl shadow-slate-200/50 dark:shadow-none animate-in fade-in slide-in-from-bottom-4 space-y-8">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 dark:border-brand-border pb-6">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Certificat Numérique</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Enregistrement consulté</p>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white font-mono">{result.numero_cadastral}</h2>
               </div>
               {renderStatus(result.statut)}
@@ -159,15 +159,15 @@ export default function DueDiligencePage() {
               </div>
             </div>
 
-            {/* Paywall Teaser */}
+            {/* Fonction non disponible */}
             <div className="mt-8 bg-brand-bg/50 border border-brand-primary/20 rounded-2xl p-6 text-center">
               <ShieldCheck className="w-8 h-8 text-brand-primary mx-auto mb-3" />
-              <h4 className="font-bold text-slate-900 dark:text-white mb-2">Rapport Détaillé & Historique des Mutations</h4>
+              <h4 className="font-bold text-slate-900 dark:text-white mb-2">Rapport détaillé</h4>
               <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                Pour obtenir l'historique complet des propriétaires précédents et le rapport topographique détaillé, débloquez le certificat premium.
+                La génération du rapport détaillé et le paiement ne sont pas encore disponibles.
               </p>
-              <button className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">
-                Obtenir le rapport complet (15$)
+              <button type="button" disabled aria-label="Rapport complet à 15 dollars indisponible" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 rounded-xl font-bold text-sm opacity-50 cursor-not-allowed">
+                Rapport complet (15$) — indisponible
               </button>
             </div>
           </div>

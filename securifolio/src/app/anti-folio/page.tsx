@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { checkCadastralNumber, saveScanHistory, getScanHistory } from './actions';
-import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCircle, XCircle, Database, BookOpen } from 'lucide-react';
+import { Search, ShieldAlert, ShieldCheck, Loader2, Clock, Brain, Map, CheckCircle, Database, BookOpen } from 'lucide-react';
+import { classifyTitleResults, type VerificationStatus } from './verification';
 
 export default function AntiFolioPage() {
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'valid' | 'fraud' | 'pending'>('idle');
+  const [circonscription, setCirconscription] = useState('all');
+  const [status, setStatus] = useState<'idle' | 'loading' | VerificationStatus>('idle');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [details, setDetails] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,51 +21,45 @@ export default function AntiFolioPage() {
       setHistory(data || []);
     };
     fetchHistory();
+    const linkedQuery = new URLSearchParams(window.location.search).get('q')?.trim();
+    if (linkedQuery) {
+      setQuery(linkedQuery);
+      void runSearch(linkedQuery, 'all');
+    }
+  // Run the linked query once on arrival; subsequent searches use the form.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
+  const runSearch = async (search: string, selectedZone: string) => {
+    if (!search.trim()) return;
     setStatus('loading');
     setDetails([]);
 
     try {
-      const results = await checkCadastralNumber(query.trim());
-      
-      let currentStatus: 'valid' | 'fraud' | 'pending' = 'fraud';
+      const results = await checkCadastralNumber(search.trim(), selectedZone);
+      const currentStatus = classifyTitleResults(results);
+      setDetails(results || []);
+      setStatus(currentStatus);
 
-      if (!results || results.length === 0) {
-        currentStatus = 'fraud';
-      } else {
-        setDetails(results);
-
-        const isFraud = results.some(r => r.statut === 'Falsifié' || r.statut === 'Litige') || results.length > 1;
-
-        if (isFraud) {
-          currentStatus = 'fraud';
-        } else if (results.some(r => r.statut === 'Valide')) {
-          currentStatus = 'valid';
-        } else if (results.some(r => r.statut?.startsWith("En attente") || r.statut === "Validé techniquement")) {
-          currentStatus = 'pending';
-        } else {
-          currentStatus = 'fraud';
+      if (currentStatus === 'valid' || currentStatus === 'pending' || currentStatus === 'falsified') {
+        try {
+          await saveScanHistory(search.trim(), currentStatus === 'falsified' ? 'fraud' : currentStatus);
+          const newHistory = await getScanHistory();
+          setHistory(newHistory || []);
+        } catch (historyError) {
+          console.error('Historique indisponible :', historyError);
         }
       }
 
-      setStatus(currentStatus);
-
-      // Sauvegarder l'historique
-      await saveScanHistory(query.trim(), currentStatus);
-      
-      // Rafraîchir l'historique
-      const newHistory = await getScanHistory();
-      setHistory(newHistory || []);
-
     } catch (err) {
       console.error(err);
-      setStatus('fraud');
+      setStatus('error');
     }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    void runSearch(query, circonscription);
   };
 
   return (
@@ -82,7 +78,7 @@ export default function AntiFolioPage() {
             Vérification <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-emerald-300">Anti-Folio</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base max-w-xl mx-auto font-medium">
-            Portail institutionnel de validation de conformité des titres fonciers de la RDC. Détectez instantanément les faux et les superpositions grâce à notre architecture hybride (IA + Spatial).
+            Consultation des titres fonciers enregistrés. Le résultat reprend le statut disponible dans le registre et peut nécessiter une vérification administrative.
           </p>
         </div>
 
@@ -94,13 +90,14 @@ export default function AntiFolioPage() {
             <div className="w-full sm:w-1/3 border-b sm:border-b-0 sm:border-r border-slate-200 dark:border-brand-border/50 p-1 mb-2 sm:mb-0">
               <select 
                 className="w-full bg-transparent border-none py-2.5 px-3 text-slate-900 dark:text-white focus:outline-none focus:ring-0 text-xs font-bold uppercase tracking-wider appearance-none cursor-pointer"
-                defaultValue="all"
+                value={circonscription}
+                onChange={(e) => setCirconscription(e.target.value)}
               >
                 <option value="all" className="text-slate-900">National (Toutes zones)</option>
-                <option value="kin-gombe" className="text-slate-900">Kinshasa - Gombe (Numérisé)</option>
-                <option value="kin-ngaliema" className="text-slate-900">Kinshasa - Ngaliema (Numérisé)</option>
-                <option value="goma" className="text-slate-900">Nord-Kivu - Goma (En cours)</option>
-                <option value="lushi" className="text-slate-900">Katanga - Lubumbashi (Non numérisé)</option>
+                <option value="Gombe" className="text-slate-900">Kinshasa - Gombe</option>
+                <option value="Ngaliema" className="text-slate-900">Kinshasa - Ngaliema</option>
+                <option value="Goma" className="text-slate-900">Nord-Kivu - Goma</option>
+                <option value="Lubumbashi" className="text-slate-900">Lubumbashi</option>
               </select>
             </div>
 
@@ -122,10 +119,10 @@ export default function AntiFolioPage() {
               {status === 'loading' ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Double Vérification...
+                  Recherche...
                 </>
               ) : (
-                'Scanner le Titre'
+                'Rechercher le Titre'
               )}
             </button>
           </form>
@@ -139,7 +136,7 @@ export default function AntiFolioPage() {
           <div className="flex items-start gap-2 px-4">
              <ShieldAlert size={14} className="text-brand-accent mt-0.5 shrink-0" />
              <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-               <strong className="text-slate-400">Transparence des Données (Phase 1) :</strong> Seules les circonscriptions numérisées et validées par le Conservateur des Titres Immobiliers sont interrogeables en temps réel. Un titre "Inconnu" dans une zone non numérisée nécessite une vérification manuelle aux archives physiques.
+               <strong className="text-slate-400">Portée de la consultation :</strong> Une absence de résultat ne prouve ni la fraude ni l'inexistence du titre. Consultez la conservation compétente pour une confirmation officielle.
              </p>
           </div>
 
@@ -154,13 +151,14 @@ export default function AntiFolioPage() {
                 {history.map((item, idx) => (
                   <button 
                     key={item.id || idx}
+                    title={item.resultat === 'fraud' ? 'Résultat historique à reconfirmer' : undefined}
                     onClick={() => {
                       setQuery(item.numero_cadastral);
                     }}
                     className={`flex items-center gap-2 text-[10px] font-mono font-bold px-3 py-1.5 rounded-lg border transition-colors hover:opacity-80 ${
                       item.resultat === 'valid' 
                         ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
-                        : 'bg-red-500/10 border-red-500/20 text-red-500'
+                        : 'bg-amber-500/10 border-amber-500/20 text-amber-500'
                     }`}
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
@@ -186,49 +184,49 @@ export default function AntiFolioPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                    CERTIFICAT AUTHENTIQUE
+                    TITRE ENREGISTRÉ
                   </h2>
                   <p className="text-xs font-bold text-brand-primary bg-brand-primary/10 px-4 py-1.5 mt-2 inline-block rounded-full border border-brand-primary/20 tracking-wide uppercase">
-                    Enregistrement Conforme & Valide
+                    Statut du registre : Valide
                   </p>
                 </div>
               </div>
 
-              {/* Double Vérification Cards */}
+              {/* Portée de la consultation */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 mb-8">
-                {/* Couche 1 : IA */}
+                {/* Statut administratif */}
                 <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5 flex flex-col">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-2 bg-brand-primary/20 text-brand-primary rounded-lg border border-brand-primary/30">
-                      <Brain size={18} />
+                      <Database size={18} />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Sémantique (IA)</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Registre des titres</h3>
                       <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5">
-                        <CheckCircle size={10} className="text-brand-primary" /> Validation Documentaire
+                        <CheckCircle size={10} className="text-brand-primary" /> Statut enregistré
                       </p>
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Les métadonnées administratives (noms, dates, signatures) sont authentiques. Aucune trace de falsification ou d'altération détectée.
+                    Ce titre porte le statut « Valide » dans les données consultées. Cette recherche ne vérifie pas l'authenticité d'un document présenté.
                   </p>
                 </div>
 
-                {/* Couche 2 : Spatial */}
+                {/* Limites de la consultation */}
                 <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5 flex flex-col">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-2 bg-brand-primary/20 text-brand-primary rounded-lg border border-brand-primary/30">
                       <Map size={18} />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Topographique</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Vérification complémentaire</h3>
                       <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5">
-                        <CheckCircle size={10} className="text-brand-primary" /> Moteur Spatial PostGIS
+                        <Clock size={10} className="text-brand-primary" /> À confirmer auprès du service compétent
                       </p>
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Le polygone de la parcelle a été vérifié géospatialement. <strong>Aucun chevauchement</strong> avec les parcelles voisines n'a été détecté (tolérance &lt; 5%).
+                    La recherche dans le registre ne constitue pas une analyse des limites de la parcelle ni une attestation de l'absence de conflit.
                   </p>
                 </div>
               </div>
@@ -274,12 +272,12 @@ export default function AntiFolioPage() {
                     EN ATTENTE DE VALIDATION
                   </h2>
                   <p className="text-xs font-bold text-amber-500 bg-amber-500/10 px-4 py-1.5 mt-2 inline-block rounded-full border border-amber-500/20 tracking-wide uppercase">
-                    Vérification par le Conservateur requise
+                    Statut du registre : {details[0]?.statut}
                   </p>
                 </div>
               </div>
 
-              {/* Double Vérification Cards (Pending) */}
+              {/* Portée de la consultation */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 mb-8">
                 {/* Couche 1 : IA */}
                 <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5 flex flex-col">
@@ -288,14 +286,14 @@ export default function AntiFolioPage() {
                       <Brain size={18} />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Sémantique (IA)</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Registre des titres</h3>
                       <p className="text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 text-amber-500">
-                        <Clock size={10} className="text-amber-500" /> Numérisé par un agent
+                        <Clock size={10} className="text-amber-500" /> Validation en cours
                       </p>
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Le document a été scanné et extrait par l'IA. Il est actuellement dans la file d'attente pour être approuvé par le Conservateur des Titres Immobiliers.
+                    Le titre porte un statut intermédiaire dans le registre. Il ne peut pas encore être présenté comme définitivement validé.
                   </p>
                 </div>
 
@@ -306,14 +304,14 @@ export default function AntiFolioPage() {
                       <Map size={18} />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Topographique</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Vérification complémentaire</h3>
                       <p className="text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 text-amber-500">
-                        <Clock size={10} className="text-amber-500" /> En cours de traitement
+                        <Clock size={10} className="text-amber-500" /> Non attestée ici
                       </p>
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Les coordonnées spatiales seront définitivement validées lors de l'approbation du Conservateur. Veuillez réessayer plus tard.
+                    Aucune conclusion spatiale ou documentaire ne découle de cette consultation. Renseignez-vous auprès de la conservation compétente.
                   </p>
                 </div>
               </div>
@@ -344,91 +342,63 @@ export default function AntiFolioPage() {
             </div>
           )}
 
-          {status === 'fraud' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-white dark:bg-brand-surface/80 backdrop-blur-md border border-red-500/40 p-8 shadow-[0_0_40px_rgba(239,68,68,0.15)] animate-pulse-slow">
-              <div className="absolute top-0 right-0 p-8 opacity-5">
-                <ShieldAlert className="w-64 h-64 text-red-500" />
-              </div>
-              
+          {(status === 'falsified' || status === 'disputed') && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-white dark:bg-brand-surface/80 backdrop-blur-md border border-red-500/40 p-8 shadow-[0_0_40px_rgba(239,68,68,0.15)]">
+              <div className="absolute top-0 right-0 p-8 opacity-5"><ShieldAlert className="w-64 h-64 text-red-500" /></div>
               <div className="relative z-10 flex flex-col items-center text-center space-y-4 mb-8">
-                <div className="p-4 bg-red-500/10 rounded-full border border-red-500/30 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-                  <ShieldAlert className="w-10 h-10" />
-                </div>
+                <div className="p-4 bg-red-500/10 rounded-full border border-red-500/30 text-red-500"><ShieldAlert className="w-10 h-10" /></div>
                 <div>
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
-                    ALERTE : Anomalie Critique
+                    {status === 'falsified' ? 'STATUT : FALSIFIÉ' : 'STATUT : LITIGE'}
                   </h2>
                   <p className="text-xs font-bold text-red-400 bg-red-500/10 px-4 py-1.5 mt-2 inline-block rounded-full border border-red-500/20 tracking-wide uppercase">
-                    Titrisation Rejetée
+                    Statut enregistré dans le registre
                   </p>
                 </div>
               </div>
-
-              {/* Double Vérification Cards (Fraud) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 mb-8">
-                {/* Couche 1 : IA */}
-                <div className={`bg-brand-bg/60 border rounded-2xl p-5 flex flex-col ${details.length <= 1 ? 'border-red-500/40 bg-red-500/5' : 'border-slate-200 dark:border-brand-border'}`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-2 rounded-lg border ${details.length <= 1 ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-brand-primary/20 text-brand-primary border-brand-primary/30'}`}>
-                      <Brain size={18} />
-                    </div>
-                    <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Sémantique (IA)</h3>
-                      <p className={`text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 ${details.length <= 1 ? 'text-red-400' : 'text-slate-500'}`}>
-                        {details.length <= 1 ? <XCircle size={10} className="text-red-500" /> : <CheckCircle size={10} className="text-brand-primary" />} 
-                        {details.length <= 1 ? 'Incohérence Documentaire' : 'Document Valide'}
-                      </p>
-                    </div>
-                  </div>
+                <div className="bg-brand-bg/60 border border-red-500/40 rounded-2xl p-5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">Donnée consultée</h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {details.length <= 1 
-                      ? "Falsification détectée : le numéro d'enregistrement ou les informations du propriétaire ne correspondent pas aux archives centrales."
-                      : "Les métadonnées administratives semblent correctes. Aucune falsification du papier lui-même détectée."}
+                    Ce titre porte le statut « {details[0]?.statut} » dans le registre. Le motif et les pièces justificatives doivent être confirmés par le service compétent.
                   </p>
                 </div>
-
-                {/* Couche 2 : Spatial */}
-                <div className={`bg-brand-bg/60 border rounded-2xl p-5 flex flex-col ${details.length > 1 ? 'border-red-500/40 bg-red-500/5' : 'border-slate-200 dark:border-brand-border'}`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-2 rounded-lg border ${details.length > 1 ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-brand-primary/20 text-brand-primary border-brand-primary/30'}`}>
-                      <Map size={18} />
-                    </div>
-                    <div className="text-left">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Analyse Topographique</h3>
-                      <p className={`text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-0.5 ${details.length > 1 ? 'text-red-400' : 'text-slate-500'}`}>
-                        {details.length > 1 ? <XCircle size={10} className="text-red-500" /> : <CheckCircle size={10} className="text-brand-primary" />}
-                        {details.length > 1 ? 'Conflit Spatial PostGIS' : 'En attente des coordonnées'}
-                      </p>
-                    </div>
-                  </div>
+                <div className="bg-brand-bg/60 border border-slate-200 dark:border-brand-border rounded-2xl p-5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">Portée</h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {details.length > 1 
-                      ? <span><strong>ALERTE SUPERPOSITION :</strong> Le polygone de ce titre empiète illégalement sur une ou plusieurs parcelles déjà enregistrées.</span>
-                      : "L'erreur ayant été interceptée dès l'analyse sémantique, l'analyse spatiale n'a pas été jugée nécessaire."}
+                    Cette consultation ne constitue ni une expertise documentaire ni une analyse de chevauchement des parcelles.
                   </p>
                 </div>
               </div>
-                
-              {/* Affichage des conflits (Phénomène Folio) */}
-              {details.length > 1 && (
-                <div className="w-full relative z-10 bg-red-500/5 rounded-2xl p-6 border border-red-500/30 text-left">
-                  <p className="text-red-400 text-xs font-bold mb-4 flex items-center gap-2 uppercase tracking-widest">
-                    <ShieldAlert className="w-4 h-4" /> 
-                    Détail du conflit (Phénomène Folio) - {details.length} Titres superposés :
-                  </p>
-                  <div className="space-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
-                    {details.map((titre, idx) => (
-                      <div key={idx} className="bg-brand-bg/80 backdrop-blur-sm p-4 rounded-xl border border-red-500/20 text-xs flex flex-col gap-2 relative">
-                        {titre.statut === 'Valide' && (
-                          <div className="absolute top-4 right-4 text-[9px] font-bold uppercase tracking-wider text-brand-primary bg-brand-primary/10 px-2 py-1 rounded border border-brand-primary/20">
-                            Propriétaire Légitime
-                          </div>
-                        )}
-                        <p className="text-slate-900 dark:text-white font-bold text-sm pr-24">{titre.nom_proprietaire}</p>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium">Vol: {titre.volume} / Folio: {titre.folio} — Statut: <span className={titre.statut === 'Valide' ? 'text-brand-primary font-bold' : 'text-red-400 font-bold'}>{titre.statut}</span></p>
-                      </div>
-                    ))}
-                  </div>
+              <div className="w-full relative z-10 bg-red-500/5 rounded-2xl p-6 border border-red-500/30 text-left text-xs">
+                <p className="text-slate-900 dark:text-white font-bold text-sm">{details[0]?.numero_cadastral}</p>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Vol : {details[0]?.volume} / Folio : {details[0]?.folio} — {details[0]?.circonscription}</p>
+              </div>
+            </div>
+          )}
+
+          {(['missing', 'error', 'multiple', 'unknown'] as VerificationStatus[]).includes(status as VerificationStatus) && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 relative overflow-hidden rounded-3xl bg-white dark:bg-brand-surface/80 backdrop-blur-md border border-amber-500/40 p-8 shadow-[0_0_40px_rgba(245,158,11,0.15)]">
+              <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+                <div className="p-4 bg-amber-500/10 rounded-full border border-amber-500/30 text-amber-500"><ShieldAlert className="w-10 h-10" /></div>
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
+                  {status === 'missing' ? 'Aucun titre trouvé' : status === 'error' ? 'Recherche indisponible' : status === 'multiple' ? 'Plusieurs titres trouvés' : 'Statut à confirmer'}
+                </h2>
+                <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl">
+                  {status === 'missing' ? "Aucun enregistrement ne correspond à cette recherche dans les données accessibles. Cela ne prouve pas que le titre est frauduleux ou inexistant."
+                    : status === 'error' ? 'La consultation a échoué. Veuillez réessayer ou contacter le service compétent.'
+                    : status === 'multiple' ? 'Plusieurs enregistrements correspondent au volume et au folio saisis. Une vérification administrative est nécessaire ; aucun chevauchement spatial ne peut en être déduit.'
+                    : `Le statut « ${details[0]?.statut ?? 'non renseigné'} » nécessite une vérification administrative.`}
+                </p>
+              </div>
+              {status === 'multiple' && (
+                <div className="relative z-10 mt-8 space-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
+                  {details.map((titre, idx) => (
+                    <div key={titre.id || idx} className="bg-brand-bg/80 p-4 rounded-xl border border-amber-500/20 text-xs">
+                      <p className="text-slate-900 dark:text-white font-bold">{titre.numero_cadastral}</p>
+                      <p className="text-slate-500 dark:text-slate-400">{titre.circonscription} — Statut : {titre.statut}</p>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -440,7 +410,7 @@ export default function AntiFolioPage() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center flex items-center justify-center gap-3">
               <BookOpen className="w-6 h-6 text-brand-primary" />
-              Comment fonctionne le moteur Anti-Folio ?
+              Comment fonctionne la consultation Anti-Folio ?
             </h2>
             
             <div className="grid md:grid-cols-3 gap-6 relative">
@@ -454,7 +424,7 @@ export default function AntiFolioPage() {
                 </div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">1. Interrogation</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  L'agent ou l'usager saisit un numéro cadastral (Vol/Folio). Le système interroge instantanément la base de données sécurisée des <strong>Jumeaux Numériques</strong> (certificats physiques préalablement scellés et analysés par l'IA).
+                  L'utilisateur saisit un numéro cadastral ou un volume et folio. Le système recherche les enregistrements accessibles dans le registre.
                 </p>
               </div>
 
@@ -463,9 +433,9 @@ export default function AntiFolioPage() {
                 <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
                   <Brain className="w-6 h-6" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Audit Sémantique</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">2. Lecture du statut</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Le moteur d'Intelligence Artificielle vérifie les métadonnées (dates, noms, signatures). Il croise ces données pour s'assurer qu'il n'y a aucune trace de fraude documentaire ou de falsification (blanco, ratures, anachronismes).
+                  Le résultat indique le statut administratif enregistré : valide, en attente, litige ou falsifié. Il ne certifie pas le document présenté.
                 </p>
               </div>
 
@@ -474,9 +444,9 @@ export default function AntiFolioPage() {
                 <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-500 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors border border-slate-200 dark:border-brand-border">
                   <Map className="w-6 h-6" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Résolution Spatiale</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wide">3. Confirmation officielle</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Ultime rempart : le moteur <strong>PostGIS</strong> charge les coordonnées géographiques du terrain et calcule mathématiquement si un <em>autre</em> titre revendique déjà la même parcelle (Détection du "Phénomène Folio").
+                  Pour une transaction ou un désaccord, la conservation compétente confirme les pièces, les droits et les limites de la parcelle.
                 </p>
               </div>
             </div>
@@ -489,20 +459,20 @@ export default function AntiFolioPage() {
             </div>
             <div className="relative z-10">
               <h2 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-4">
-                <ShieldCheck className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> L'Architecture Hybride : Défense en Profondeur
+                <ShieldCheck className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" /> Portée de la recherche
               </h2>
               <div className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed space-y-4">
                 <p>
-                  Pour neutraliser complètement la fraude foncière, Sécurifolio ne se limite pas à la vérification des textes. Notre moteur Anti-Folio agit comme un étau à deux couches :
+                  Cette recherche donne un premier accès aux données disponibles. Une absence de résultat ou plusieurs résultats appellent une vérification administrative.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div className="bg-brand-bg/50 p-5 rounded-xl border border-slate-200 dark:border-brand-border/50">
-                    <strong className="text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Brain size={16} className="text-brand-primary" /> Couche 1 : L'IA Sémantique</strong>
-                    <p className="text-xs">Elle détecte la falsification pure : erreurs dans la nomenclature, noms corrompus, fausses signatures ou documents anachroniques.</p>
+                    <strong className="text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Database size={16} className="text-brand-primary" /> Statut du registre</strong>
+                    <p className="text-xs">Le statut affiché est celui de l'enregistrement consulté. Il ne résulte pas d'une expertise de signature ou de document.</p>
                   </div>
                   <div className="bg-brand-bg/50 p-5 rounded-xl border border-slate-200 dark:border-brand-border/50">
-                    <strong className="text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Map size={16} className="text-brand-primary" /> Couche 2 : Le Moteur Spatial (PostGIS)</strong>
-                    <p className="text-xs">Elle bloque le vol de terrain. Même si un document est parfait, le système calcule le chevauchement physique des polygones et alerte si une autre parcelle est empiétée.</p>
+                    <strong className="text-slate-900 dark:text-white flex items-center gap-2 mb-2"><Map size={16} className="text-brand-primary" /> Limites spatiales</strong>
+                    <p className="text-xs">Cette consultation n'établit pas les limites de parcelle et ne conclut pas à l'absence ou à l'existence d'un chevauchement.</p>
                   </div>
                 </div>
               </div>

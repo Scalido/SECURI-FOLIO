@@ -32,7 +32,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 text-slate-500 dark:text-slate-400 text-lg md:text-2xl font-light leading-relaxed max-w-3xl">
-            La plateforme institutionnelle haute sécurité pour la validation des titres, la protection des archives et l&apos;assistance juridique.
+            Une plateforme de consultation des titres, de gestion des archives et d&apos;information juridique foncière.
           </p>
           
           <div className="mt-14 flex flex-col sm:flex-row gap-6">
@@ -63,13 +63,13 @@ export default function Home() {
           </h2>
           <div className="space-y-6 text-slate-600 dark:text-slate-400 text-lg md:text-xl font-light leading-relaxed">
             <p>
-              <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> est la plateforme institutionnelle dédiée à l&apos;assainissement, la conformité et la sécurisation du secteur foncier et immobilier en République Démocratique du Congo.
+              <strong className="font-semibold text-slate-900 dark:text-slate-200">SÉCURIFOLIO RDC</strong> rassemble des outils de consultation et de gestion des informations foncières en République Démocratique du Congo.
             </p>
             <p>
-              Face aux défis historiques liés aux erreurs d&apos;archivage, à la perte de documents physiques et au phénomène ravageur des superpositions de titres, notre écosystème apporte une réponse technologique radicale.
+              Les erreurs d&apos;archivage, les documents manquants et les différends entre titres exigent des données traçables et une vérification par les services compétents.
             </p>
             <p>
-              Notre mission est d&apos;éradiquer l&apos;insécurité juridique et la fraude foncière grâce à une architecture hybride inédite : l&apos;Intelligence Artificielle pour les documents, et les technologies géospatiales pour la réalité physique du terrain.
+              La consultation numérique facilite l&apos;accès aux statuts enregistrés. Les conclusions juridiques et les limites de terrain restent à établir par les autorités compétentes.
             </p>
           </div>
         </div>
@@ -99,7 +99,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Anti-Folio</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Le moteur d'audit hybride (Sémantique + Spatial). Il détecte les documents falsifiés et bloque instantanément les superpositions de polygones pour empêcher le vol de terrain.
+                  Consultez le statut d&apos;un titre enregistré par numéro cadastral ou volume et folio. Les résultats nécessitent une confirmation administrative selon le cas.
                 </p>
               </div>
             </Link>
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-primary transition-colors">Smart-Archive</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  La plateforme de création des Jumeaux Numériques. Numérisation OCR, extraction par IA et ancrage spatial pour créer des archives infalsifiables.
+                  Outils de saisie, de classement et de consultation des archives foncières numérisées.
                 </p>
               </div>
             </Link>
@@ -127,7 +127,7 @@ export default function Home() {
               <div className="space-y-3">
                 <h3 className="font-display font-bold text-slate-900 dark:text-white text-2xl group-hover:text-brand-accent transition-colors">Foncier-Édu</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  Assistant d&apos;intelligence artificielle spécialisé dans la législation congolaise pour éclairer les citoyens et assister les agents de l&apos;État.
+                  Assistant d&apos;information sur les textes fonciers congolais, à confronter aux sources et aux conseils professionnels.
                 </p>
               </div>
             </Link>
@@ -147,7 +147,7 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Vitesse</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Extraction immédiate des archives volumineuses.</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Recherche dans les données accessibles.</p>
               </div>
             </div>
 
@@ -157,7 +157,7 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Fiabilité</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Réduction drastique des erreurs de retranscription.</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Statut affiché tel qu&apos;enregistré.</p>
               </div>
             </div>
 
@@ -167,7 +167,7 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Conformité</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Alignement continu avec les arrêtés ministériels.</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Contrôle administratif à confirmer selon le dossier.</p>
               </div>
             </div>
 
@@ -177,7 +177,7 @@ export default function Home() {
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 dark:text-white text-lg">Protection</h4>
-                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Blocage anticipé des superpositions de titres.</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs mt-1 leading-relaxed">Signalement des statuts nécessitant une vérification.</p>
               </div>
             </div>
 

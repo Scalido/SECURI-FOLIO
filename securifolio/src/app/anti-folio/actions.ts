@@ -1,8 +1,9 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { selectedCirconscription } from './verification'
 
-export async function checkCadastralNumber(cadastralNumber: string) {
+export async function checkCadastralNumber(cadastralNumber: string, circonscription = 'all') {
   if (!cadastralNumber) return null
 
   const supabaseServer = createClient()
@@ -23,6 +24,9 @@ export async function checkCadastralNumber(cadastralNumber: string) {
   } else {
     query = query.eq('numero_cadastral', cleanSearch)
   }
+
+  const selected = selectedCirconscription(circonscription)
+  if (selected) query = query.eq('circonscription', selected)
 
   const { data, error } = await query
 

@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { ShieldCheck, FileSearch, GraduationCap, Home, Menu, X, Lock, User, ZapOff, Zap, LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { createClient } from "@/utils/supabase/client";
+import { roleLabel } from "@/lib/navigation/role";
+import { getCurrentNavigationRole } from "@/app/auth/navigation-role";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,44 +16,52 @@ export default function Navbar() {
   const [ecoMode, setEcoMode] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<string>("Agent");
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-        if (profile) {
-          switch (profile.role) {
-            case 'chef_cadastre': setUserRole('Chef Cadastre'); break;
-            case 'conservateur': setUserRole('Conservateur'); break;
-            case 'notaire': setUserRole('Notaire'); break;
-            case 'citoyen': setUserRole('Citoyen'); break;
-            case 'agent': setUserRole('Agent Foncier'); break;
-            case 'superviseur': setUserRole('Superviseur'); break;
-            default: setUserRole(profile.role);
-          }
-        } else {
-          setUserRole('Superviseur'); // Si pas de profil, c'est l'admin
-        }
+    let active = true;
+    let sequence = 0;
+    let receivedAuthEvent = false;
+    const loadUser = async (currentUser: typeof user) => {
+      if (!active) return;
+      const request = ++sequence;
+      setUser(currentUser);
+      setUserRole(null);
+      if (!currentUser) return;
+      try {
+        const role = await getCurrentNavigationRole();
+        if (active && request === sequence) setUserRole(role);
+      } catch (error) {
+        console.error('Rôle indisponible :', error);
+        if (active && request === sequence) setUserRole(null);
       }
     };
-    getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
+        receivedAuthEvent = true;
+        // Query the profile after Supabase finishes processing the auth event.
+        setTimeout(() => void loadUser(session?.user ?? null), 0);
       }
     );
 
-    return () => subscription.unsubscribe();
+    void supabase.auth.getUser().then(({ data }) => {
+      if (active && !receivedAuthEvent) void loadUser(data.user);
+    });
+
+    return () => {
+      active = false;
+      sequence++;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
+    setUser(null);
+    setUserRole(null);
     router.push("/login");
   };
 
@@ -71,11 +81,11 @@ export default function Navbar() {
     { name: "Foncier-Édu", href: "/assistant", icon: GraduationCap },
   ];
 
-  if (userRole === "Chef Cadastre") {
+  if (user && userRole === "chef_cadastre") {
     navItems.push({ name: "Dashboard", href: "/cadastre-dashboard", icon: LayoutDashboard });
-  } else if (userRole === "Conservateur") {
+  } else if (user && userRole === "conservateur") {
     navItems.push({ name: "Dashboard", href: "/conservateur-dashboard", icon: LayoutDashboard });
-  } else if (userRole === "Superviseur") {
+  } else if (user && (userRole === "admin" || userRole === "superviseur")) {
     navItems.push({ name: "Admin", href: "/admin", icon: Settings });
   }
 
@@ -156,7 +166,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3 xl:pl-3">
                   <div className="flex items-center gap-1 text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/10 px-2 py-0.5 rounded border border-brand-primary/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                     <Lock size={10} />
-                    {userRole}
+                    {roleLabel(userRole)}
                   </div>
                   <button onClick={handleSignOut} title="Déconnexion" className="text-slate-400 hover:text-red-400 transition-colors">
                     <LogOut size={14} />
@@ -218,7 +228,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1 text-[9px] font-bold text-brand-primary uppercase bg-brand-primary/10 border border-brand-primary/20 px-2 py-1 rounded-md">
-                    <Lock size={10} /> {userRole}
+                    <Lock size={10} /> {roleLabel(userRole)}
                   </div>
                   <button onClick={() => { handleSignOut(); setIsOpen(false); }} className="text-slate-400 hover:text-red-400 transition-colors p-1">
                     <LogOut size={16} />
